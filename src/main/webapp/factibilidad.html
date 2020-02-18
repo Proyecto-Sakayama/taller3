@@ -46,15 +46,11 @@ var bote1, patrullero1, jugador;
 //definicion de cual comando
 var manejo = "";
 var texto;
-var jugador; 
+var jugador;
+var jugadorRemoto;
 
-var nombreremoto;
-var selBoton1,selBoton2,selBoton3,selBoton4;
-var jugadorServerBote1,jugadorServerPatrullero1;
-var request = new XMLHttpRequest();
-
-//definiciones de coordenadas propias y ajenas 
-var manejoX,manejoY,miangulo,remotoangulo;
+var selBoton1,selBoton2;
+var jugadorServerRecibido, jugadorServerEnviado;
 
 function preload() {
 	
@@ -72,46 +68,31 @@ function create() {
     
     cursors = this.input.keyboard.createCursorKeys();
     this.add.image(400, 300, 'sky');
-    const selBoton1 = this.add.sprite(600,120, 'botonBote1')
-      .setInteractive()
-      .on('pointerdown', function () {
-          manejo = 'bote1';
-          jugador = bote1;
-          jugadorServerBote1 = new JugadorServer('bote1', 600,120);
-      });
+//     const selBoton1 = this.add.sprite(600,120, 'botonBote1')
+//       .setInteractive()
+//       .on('pointerdown', function () {
+//           manejo = 'bote1';
+//           jugador = bote1;
+//           jugadorServerBote1 = new JugadorServer('bote1', 600,120);
+//       });
     	
 
-      const selBoton2 = this.add.sprite(600,220, 'botonPatrullero1')
-      .setInteractive()
-      .on('pointerdown', function () {
-          manejo = 'patrullero1';
-          jugador = patrullero1;
-          jugadorServerPatrullero1 = new JugadorServer('patrullero1', 600,220);
-      });
+//       const selBoton2 = this.add.sprite(600,220, 'botonPatrullero1')
+//       .setInteractive()
+//       .on('pointerdown', function () {
+//           manejo = 'patrullero1';
+//           jugador = patrullero1;
+//           jugadorServerPatrullero1 = new JugadorServer('patrullero1', 600,220);
+//       });
 
       bote1 = this.physics.add.sprite(100, 200, 'bote1');
+      bote1.setCollideWorldBounds(true);
       
       patrullero1 = this.physics.add.sprite(200, 300, 'patrullero1');
       patrullero1.setCollideWorldBounds(true);
-	
-      websocket = new WebSocket('ws://localhost:8080/pruebaTecnicaSockets/juego/');
-      websocket.onmessage = function(event) {
-  	    if(event.data != null)
-  	    {
-  	    	let jugadorServer = JSON.parse(event.data);
-  	    	if(jugadorServer.nombre == 'bote1'){
-  	    		jugador = bote1;
-  	    		jugadorServerBote1=jugadorServer;
-  	    	}
-  	    	else{
-  	    		jugador = patrullero1;
-  	    		jugadorServerPatrullero1=jugadorServer;
-  	    	}
-  	    	jugador.x = jugadorServer.x;
-  	    	jugador.y = jugadorServer.y;
-  	    	
-  	    }
-      };
+      websocket = new WebSocket('ws://localhost:8080/taller3/juego/');
+      
+      
     
     texto = this.add.text(550, 580, "Controla la patrulla:" + manejo, { font: "14px Arial", fill: "#ff0044"});
 }
@@ -122,8 +103,61 @@ function enviarJSON(objeto) {
     websocket.send(json);
 }
 
-function update() {
 
+
+
+//   webSocket.onclose=function(message){processClose(message);};
+  
+// 	function proccesClose(message){
+// 		webSocket.send("cliente desconectado");
+// 	} 
+  
+function update() {
+	websocket.onmessage = function(event) {
+	    if(event.data != null)
+	    {
+	    	//defino el jugador
+	    	if(typeof jugador === 'undefined')
+	    	{
+	    		let nombre = JSON.parse(event.data);
+	    		manejo = nombre;
+	    		if(nombre == 'bote1')
+	    		{
+	    			jugador = bote1;
+// 	    			jugadorRemoto = patrullero1;
+	    		}
+	    		else 
+	    		{
+	    			if(nombre == 'patrullero1')
+	    			{
+	    				jugador = patrullero1;
+// 	    				jugadorRemoto = bote1;
+	    			}
+	    			
+	    		}
+	    	}
+	    	else
+	    	{
+	  	    	let jugadorServer = JSON.parse(event.data);
+	  	    	if(jugador == bote1 && jugadorServer.nombre != 'bote1'){
+	  	    		//jugador = bote1;
+	  	    		jugadorRemoto = patrullero1;
+	  	    	}
+	  	    	else{
+	  	    		if(jugador == patrullero1 && jugadorServer.nombre != 'patrullero1'){
+		  	    		//jugador = patrullero1;
+		  	    		jugadorRemoto = bote1;
+	  	    		}
+	  	    	}
+	  	    //actualizo rival
+	  	    	if(jugadorRemoto != null && !(typeof jugadorRemoto === 'undefined'))
+	  	    	{
+	  	    		jugadorRemoto.x = jugadorServer.x;
+		  	    	jugadorRemoto.y = jugadorServer.y;
+	  	    	}
+	    	}
+	    }
+  };
 //actualiza las imagenes cuando te vas moviendo
     texto.setText("Controla la patrulla:" + manejo);
 	this.add.text(550, 0, "envia al servidor", { font: "14px Arial", fill: "#ff0044"});
@@ -149,19 +183,9 @@ function update() {
         {
             jugador.setVelocityY(100);
         }
-
-        if(manejo == 'bote1' && jugadorServerBote1 != null){
-	        jugadorServerBote1.x = jugador.x;
-	        jugadorServerBote1.y = jugador.y;
-	        enviarJSON(jugadorServerBote1);
-        }
-        else{
-        	if(jugadorServerPatrullero1 != null){
-	        	jugadorServerPatrullero1.x = jugador.x;
-	        	jugadorServerPatrullero1.y = jugador.y;
-	        	enviarJSON(jugadorServerPatrullero1);
-        	}
-        }
+		
+        let jugadorServer = new JugadorServer(manejo, jugador.x, jugador.y);
+        enviarJSON(jugadorServer);
         
     }
 

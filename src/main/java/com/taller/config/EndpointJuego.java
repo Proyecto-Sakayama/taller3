@@ -13,6 +13,9 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import com.google.gson.Gson;
+import com.taller.model.Jugador;
+
 
 @ServerEndpoint(value = "/juego/")
 public class EndpointJuego{
@@ -22,20 +25,21 @@ public class EndpointJuego{
     
     @OnOpen
     public void onOpen(Session session) throws IOException, EncodeException {
-//    	Gson gson = new  Gson();
+    	Gson gson = new  Gson();
 //    	Jugador jugador;
     	this.session = session;
 //    	int x = (int) ((Math.random() * (400 - 50)) + 50);
 //    	int y = (int) ((Math.random() * (400 - 50)) + 50);
         endpointsPartida.add(this);
 //        if(jugadores.isEmpty())
-//        	jugador = new Jugador(nombreJugador,"bote1", x , y);
+//        	jugador = new Jugador(1,"bote1", x , y);
 //        else
-//        	jugador = new Jugador(nombreJugador,"patrullero1", x, y);
+//        	jugador = new Jugador(2,"patrullero1", x, y);
 //        
 //        jugadores.put(session.getId(), jugador);
-//        String json = gson.toJson(jugador);
-//        session.getBasicRemote().sendText(json);
+        String nombre = endpointsPartida.size() == 1 ? "bote1" : endpointsPartida.size() == 2 ? "patrullero1" : "nada"; 
+        String json = gson.toJson(nombre);
+        session.getBasicRemote().sendText(json);
     }
 
     @OnMessage
