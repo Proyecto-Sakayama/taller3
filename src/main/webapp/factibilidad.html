@@ -48,13 +48,8 @@ var manejo = "";
 var texto;
 var jugador; 
 
-var nombreremoto;
-var selBoton1,selBoton2,selBoton3,selBoton4;
+var selBoton1,selBoton2;
 var jugadorServerBote1,jugadorServerPatrullero1;
-var request = new XMLHttpRequest();
-
-//definiciones de coordenadas propias y ajenas 
-var manejoX,manejoY,miangulo,remotoangulo;
 
 function preload() {
 	
@@ -94,7 +89,7 @@ function create() {
       patrullero1 = this.physics.add.sprite(200, 300, 'patrullero1');
       patrullero1.setCollideWorldBounds(true);
 	
-      websocket = new WebSocket('ws://localhost:8080/pruebaTecnicaSockets/juego/');
+      websocket = new WebSocket('ws://localhost:8080/taller3/juego/');
       websocket.onmessage = function(event) {
   	    if(event.data != null)
   	    {
