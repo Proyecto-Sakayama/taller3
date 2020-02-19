@@ -68,32 +68,13 @@ function create() {
     
     cursors = this.input.keyboard.createCursorKeys();
     this.add.image(400, 300, 'sky');
-//     const selBoton1 = this.add.sprite(600,120, 'botonBote1')
-//       .setInteractive()
-//       .on('pointerdown', function () {
-//           manejo = 'bote1';
-//           jugador = bote1;
-//           jugadorServerBote1 = new JugadorServer('bote1', 600,120);
-//       });
-    	
-
-//       const selBoton2 = this.add.sprite(600,220, 'botonPatrullero1')
-//       .setInteractive()
-//       .on('pointerdown', function () {
-//           manejo = 'patrullero1';
-//           jugador = patrullero1;
-//           jugadorServerPatrullero1 = new JugadorServer('patrullero1', 600,220);
-//       });
-
       bote1 = this.physics.add.sprite(100, 200, 'bote1');
       bote1.setCollideWorldBounds(true);
       
       patrullero1 = this.physics.add.sprite(200, 300, 'patrullero1');
       patrullero1.setCollideWorldBounds(true);
       websocket = new WebSocket('ws://localhost:8080/taller3/juego/');
-      
-      
-    
+
     texto = this.add.text(550, 580, "Controla la patrulla:" + manejo, { font: "14px Arial", fill: "#ff0044"});
 }
 
@@ -103,15 +84,6 @@ function enviarJSON(objeto) {
     websocket.send(json);
 }
 
-
-
-
-//   webSocket.onclose=function(message){processClose(message);};
-  
-// 	function proccesClose(message){
-// 		webSocket.send("cliente desconectado");
-// 	} 
-  
 function update() {
 	websocket.onmessage = function(event) {
 	    if(event.data != null)
@@ -150,7 +122,7 @@ function update() {
 	  	    		}
 	  	    	}
 	  	    //actualizo rival
-	  	    	if(jugadorRemoto != null && !(typeof jugadorRemoto === 'undefined'))
+	  	    	if(jugadorRemoto != null && !(typeof jugadorRemoto === 'undefined') &&  jugadorServer.nombre != manejo)
 	  	    	{
 	  	    		jugadorRemoto.x = jugadorServer.x;
 		  	    	jugadorRemoto.y = jugadorServer.y;
