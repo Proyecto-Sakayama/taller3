@@ -140,20 +140,20 @@ function update() {
     
         if (cursors.left.isDown)
         {
-            jugador.setVelocityX(-100);
+            jugador.setVelocityX(-150);
         }
         else if (cursors.right.isDown)
         {
-            jugador.setVelocityX(100);
+            jugador.setVelocityX(150);
         }
 
         if (cursors.up.isDown)
         {
-            jugador.setVelocityY(-100);
+            jugador.setVelocityY(-150);
         }
         else if (cursors.down.isDown)
         {
-            jugador.setVelocityY(100);
+            jugador.setVelocityY(150);
         }
 		
         let jugadorServer = new JugadorServer(manejo, jugador.x, jugador.y);
