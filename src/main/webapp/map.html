@@ -64,7 +64,7 @@ var jugadorServerRecibido, jugadorServerEnviado;
 function preload() {
 	
     //carga las imagenes al juegoç
-    this.load.image('sky', 'assets/sky_big.png');
+    this.load.image('plataforma', 'assets/plataforma.png');
     this.load.image('bote1', 'assets/bote1_h.png');
     this.load.image('patrullero1', 'assets/patrullero1_h.png');
     this.load.image('botonBote1', 'assets/btn_bote.png');
@@ -74,30 +74,28 @@ function preload() {
 
 
 function create() {
-	 //  The world is 3200 x 600 in size
-	this.matter.world.setBounds(0, 0, 3200, 600);
-    this.cameras.main.setBounds(0, 0, 3200, 600).setName('main');
+	 //El "mundo" es de 3200 x 3200
+	this.matter.world.setBounds(0, 0, 3000, 4000);
+    this.cameras.main.setBounds(0, 0, 3000, 4000).setName('main');
 
-    //  The miniCam is 400px wide, so can display the whole world at a zoom of 0.2
-    this.minimap = this.cameras.add(200, 10, 400, 100).setZoom(0.2).setName('mini');
+    //  La camara es de 400 px, entonces podemos ver todo el mundo con un zoom de 0.2
+    this.minimap = this.cameras.add(600, 0, 200, 200).setZoom(0.15).setName('mini');
     this.minimap.setBackgroundColor(0x002244);
-    this.minimap.scrollX = 1600;
-    this.minimap.scrollY = 300;
+    this.minimap.scrollX = 2000;
+    this.minimap.scrollY = 1500;
 	
-    this.add.image(400, 300, 'sky');
-    bote1 = this.matter.add.image(100, 200, 'bote1');
-    //bote1.setCollideWorldBounds(true);
+    this.add.image(1500, 2000, 'plataforma');
+    bote1 = this.matter.add.image(1600, 1600, 'bote1');
     
     bote1.setFrictionAir(0.15);
     bote1.setMass(30);
     bote1.setFixedRotation();
     bote1.setAngle(270);
     
-    patrullero1 = this.matter.add.image(200, 300, 'patrullero1');
-    //patrullero1.setCollideWorldBounds(true);
+    patrullero1 = this.matter.add.image(1500, 1700, 'patrullero1');
     
     patrullero1.setFrictionAir(0.15);
-    patrullero1.setMass(30);
+    patrullero1.setMass(90);
     patrullero1.setFixedRotation();
     patrullero1.setAngle(270);
     
@@ -125,14 +123,12 @@ function update() {
 	    		if(nombre == 'bote1')
 	    		{
 	    			jugador = bote1;
-// 	    			jugadorRemoto = patrullero1;
 	    		}
 	    		else 
 	    		{
 	    			if(nombre == 'patrullero1')
 	    			{
 	    				jugador = patrullero1;
-// 	    				jugadorRemoto = bote1;
 	    			}
 	    			
 	    		}
@@ -141,12 +137,10 @@ function update() {
 	    	{
 	  	    	let jugadorServer = JSON.parse(event.data);
 	  	    	if(jugador == bote1 && jugadorServer.nombre != 'bote1'){
-	  	    		//jugador = bote1;
 	  	    		jugadorRemoto = patrullero1;
 	  	    	}
 	  	    	else{
 	  	    		if(jugador == patrullero1 && jugadorServer.nombre != 'patrullero1'){
-		  	    		//jugador = patrullero1;
 		  	    		jugadorRemoto = bote1;
 	  	    		}
 	  	    	}
@@ -182,12 +176,12 @@ function update() {
         let jugadorServer = new JugadorServer(manejo, jugador.x, jugador.y, jugador.angle);
         enviarJSON(jugadorServer);
         
-   		 //  Position the center of the camera on the player
-        //  We -400 because the camera width is 800px and
-        //  we want the center of the camera on the player, not the left-hand side of it
+   		// Centro la camara en el jugador
+        // -400 porque el ancho es 800
         this.cameras.main.scrollX = jugador.x - 400;
+        this.cameras.main.scrollY = jugador.y - 300;
 
-        //  And this camera is 400px wide, so -200
+        //  Como esta camara es de 400px de ancho, centro resto 200
         this.minimap.scrollX = Phaser.Math.Clamp(jugador.x - 200, 800, 2000);
     }
 	

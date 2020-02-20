@@ -72,7 +72,6 @@ function create() {
     cursors = this.input.keyboard.createCursorKeys();
     this.add.image(400, 300, 'sky');
       bote1 = this.matter.add.image(100, 200, 'bote1');
-      //bote1.setCollideWorldBounds(true);
       
       bote1.setFrictionAir(0.15);
       bote1.setMass(30);
@@ -80,10 +79,9 @@ function create() {
       bote1.setAngle(270);
       
       patrullero1 = this.matter.add.image(200, 300, 'patrullero1');
-      //patrullero1.setCollideWorldBounds(true);
       
       patrullero1.setFrictionAir(0.15);
-      patrullero1.setMass(30);
+      patrullero1.setMass(90);
       patrullero1.setFixedRotation();
       patrullero1.setAngle(270);
       
@@ -111,14 +109,12 @@ function update() {
 	    		if(nombre == 'bote1')
 	    		{
 	    			jugador = bote1;
-// 	    			jugadorRemoto = patrullero1;
 	    		}
 	    		else 
 	    		{
 	    			if(nombre == 'patrullero1')
 	    			{
 	    				jugador = patrullero1;
-// 	    				jugadorRemoto = bote1;
 	    			}
 	    			
 	    		}
@@ -127,16 +123,13 @@ function update() {
 	    	{
 	  	    	let jugadorServer = JSON.parse(event.data);
 	  	    	if(jugador == bote1 && jugadorServer.nombre != 'bote1'){
-	  	    		//jugador = bote1;
 	  	    		jugadorRemoto = patrullero1;
 	  	    	}
 	  	    	else{
 	  	    		if(jugador == patrullero1 && jugadorServer.nombre != 'patrullero1'){
-		  	    		//jugador = patrullero1;
 		  	    		jugadorRemoto = bote1;
 	  	    		}
 	  	    	}
-	  	    //actualizo rival
 	  	    	if(jugadorRemoto != null && !(typeof jugadorRemoto === 'undefined') &&  jugadorServer.nombre != manejo)
 	  	    	{
 	  	    		jugadorRemoto.x = jugadorServer.x;
