@@ -23,8 +23,8 @@ function JugadorServer(nombre, x, y, angle)
 }
 var config = {
     type: Phaser.WEBGL,
-    width: 800,
-    height: 600,
+    width: 525,
+    height: 700,
     physics: {
         default: 'matter',
         matter: {
@@ -60,6 +60,9 @@ var jugadorRemoto;
 
 var selBoton1,selBoton2;
 var jugadorServerRecibido, jugadorServerEnviado;
+
+var zoomOut, zoomIn;
+
 
 function preload() {
 	
@@ -103,6 +106,9 @@ function create() {
     websocket = new WebSocket('ws://localhost:8080/taller3/juego/');
     cursors = this.input.keyboard.createCursorKeys();
     texto = this.add.text(550, 580, "Controla la patrulla:" + manejo, { font: "14px Arial", fill: "#ff0044"});
+    zoomOut = this.input.keyboard.addKey('O'); 
+    zoomIn = this.input.keyboard.addKey('I');  
+   
 }
 
 function enviarJSON(objeto) {
@@ -112,6 +118,16 @@ function enviarJSON(objeto) {
 }
 
 function update() {
+	if (Phaser.Input.Keyboard.JustDown(zoomOut))
+    {
+		this.cameras.main.setZoom(0.175);
+    }
+	else{
+		if (Phaser.Input.Keyboard.JustDown(zoomIn))
+	    {
+			this.cameras.main.setZoom(1);
+	    }
+	}
 	websocket.onmessage = function(event) {
 	    if(event.data != null)
 	    {
@@ -178,9 +194,9 @@ function update() {
         
    		// Centro la camara en el jugador
         // -400 porque el ancho es 800
-        this.cameras.main.scrollX = jugador.x - 400;
-        this.cameras.main.scrollY = jugador.y - 300;
-
+        this.cameras.main.scrollX = jugador.x - 262;
+        this.cameras.main.scrollY = jugador.y - 350;
+        
         //  Como esta camara es de 400px de ancho, centro resto 200
 //         this.minimap.scrollX = Phaser.Math.Clamp(jugador.x - 200, 800, 2000);
     }
