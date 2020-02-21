@@ -11,11 +11,11 @@ public class Jugador {
 	{
 		
 	}
-	public Jugador(int Id,String nick, Vehiculos ve)
+	public Jugador(int IdJugador,String nick, Vehiculos ve)
 	{
-		this.IdJugador=Id;
-		this.nickname= nick;
-		this.vehiculos= ve;
+		this.IdJugador=IdJugador;
+		this.setNickname(nick);
+		this.setVehiculos(ve);
 	}
 	
 	public int ObtenerIdJugador()
@@ -23,14 +23,18 @@ public class Jugador {
 		return IdJugador;
 	}
 	
-	public String ObtenerNick()
-	{
+	
+	public String getNickname() {
 		return nickname;
 	}
-	
-	public Vehiculos ObtenerVehiculos()
-	{
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+	public Vehiculos getVehiculos() {
 		return vehiculos;
+	}
+	public void setVehiculos(Vehiculos vehiculos) {
+		this.vehiculos = vehiculos;
 	}
 	
 }

@@ -33,12 +33,6 @@ public class Vehiculos {
 		
 		Vehiculos.remove(clave);
 	}
-	
-	
-	
-	
-	
-	
-	
+
 }
 	
