@@ -74,15 +74,15 @@ function preload() {
 
 
 function create() {
-	 //El "mundo" es de 3200 x 3200
+	 //El "mundo" es de 3000 x 4000
 	this.matter.world.setBounds(0, 0, 3000, 4000);
     this.cameras.main.setBounds(0, 0, 3000, 4000).setName('main');
 
-    //  La camara es de 400 px, entonces podemos ver todo el mundo con un zoom de 0.2
-    this.minimap = this.cameras.add(600, 0, 200, 200).setZoom(0.15).setName('mini');
-    this.minimap.setBackgroundColor(0x002244);
-    this.minimap.scrollX = 2000;
-    this.minimap.scrollY = 1500;
+    //  La camara es de 400 px, entonces podemos ver todo el mundo con un zoom de 0.1
+//     this.minimap = this.cameras.add(600, 0, 300, 400).setZoom(0.1).setName('mini');
+//     this.minimap.setBackgroundColor(0x002244);
+//     this.minimap.scrollX = 2000;
+//     this.minimap.scrollY = 1500;
 	
     this.add.image(1500, 2000, 'plataforma');
     bote1 = this.matter.add.image(1600, 1600, 'bote1');
@@ -95,7 +95,7 @@ function create() {
     patrullero1 = this.matter.add.image(1500, 1700, 'patrullero1');
     
     patrullero1.setFrictionAir(0.15);
-    patrullero1.setMass(90);
+    patrullero1.setMass(30);
     patrullero1.setFixedRotation();
     patrullero1.setAngle(270);
     
@@ -182,7 +182,7 @@ function update() {
         this.cameras.main.scrollY = jugador.y - 300;
 
         //  Como esta camara es de 400px de ancho, centro resto 200
-        this.minimap.scrollX = Phaser.Math.Clamp(jugador.x - 200, 800, 2000);
+//         this.minimap.scrollX = Phaser.Math.Clamp(jugador.x - 200, 800, 2000);
     }
 	
 
