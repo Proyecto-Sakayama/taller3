@@ -48,7 +48,10 @@ var bote1, patrullero1, jugador;
 
 //definicion de cual comando
 var manejo = "";
+var mensaje = "{ \"accion\" : \"tiempo\", \"tiempoRestante\" : \" " + 0 + " \"}";
 var texto;
+var textoTiempo;
+var time;
 var jugador;
 var jugadorRemoto;
 
@@ -87,17 +90,31 @@ function create() {
       
       this.matter.world.setBounds(0, 0, 800, 600);
       websocket = new WebSocket('ws://localhost:8080/taller3/juego/');
+      
+      websocketAcciones = new WebSocket('ws://localhost:8080/taller3/acciones/');
 
-    texto = this.add.text(550, 580, "Controla la patrulla:" + manejo, { font: "14px Arial", fill: "#ff0044"});
+      texto = this.add.text(550, 580, "Controla la patrulla:" + manejo, { font: "14px Arial", fill: "#ff0044"});
+
+textoTiempo = this.add.text(32, 32, 'Tiempo restante de partida: ' + time);
+
+
 }
 
 function enviarJSON(objeto) {
-	console.log('enviarJSON');
     let json = JSON.stringify(objeto);
     websocket.send(json);
 }
 
+function enviarJSONAcciones(objeto) {
+    let json = JSON.stringify(objeto);
+    websocketAcciones.send(json);
+}
+
+
 function update() {
+	
+	// LOGICA PARA MOVIMIENTOS
+	
 	websocket.onmessage = function(event) {
 	    if(event.data != null)
 	    {
@@ -139,7 +156,8 @@ function update() {
 	    	}
 	    }
   };
-//actualiza las imagenes cuando te vas moviendo
+  
+	//actualiza las imagenes cuando te vas moviendo
     texto.setText("Controla la patrulla:" + manejo);
 	this.add.text(550, 0, "envia al servidor", { font: "14px Arial", fill: "#ff0044"});
     
@@ -162,6 +180,38 @@ function update() {
         enviarJSON(jugadorServer);
         
     }
+    
+
+	// LOGICA PARA MANEJO DE ACCIONES
+	
+	websocketAcciones.onmessage = function(event) {
+	    if(event.data != null) {
+			
+	    	let mensaje = JSON.parse(event.data);
+	    		
+	    		switch (mensaje.accion){
+	    			
+	    			case 'tiempo':
+	    				time = mensaje.tiempoRestante;
+	    				// Actualizacion del timer
+    					textoTiempo.setText('Tiempo restante de partida: ' + time);
+	    				break;
+	    				
+	    			case 'estadoJuego':
+	    				if(mensaje.estadoActual == 'FINALIZADO'){
+	    					//Logica de finalizacion del juego
+	    					alert("Se ha terminado el tiempo, el juego finalizó.");
+	    				}
+	    				break;
+	    				
+	    			case 'disparo':
+	    				break;
+	    		}
+	    }
+	    		
+  	};
+
+
 
 }
 
