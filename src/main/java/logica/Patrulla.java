@@ -2,6 +2,8 @@ package logica;
 
 public abstract class Patrulla extends Barco {
 	
+
+	private static final long serialVersionUID = 1L;
 	private int alcanceRadar;
 
 	public Patrulla(int id, int coordX, int coordY, int orientacion, int cantComb, String tipoVehiculo, int vel, int ar) {

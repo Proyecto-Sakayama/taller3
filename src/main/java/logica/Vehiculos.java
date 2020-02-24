@@ -1,44 +1,73 @@
 package logica;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import logica.Vehiculo;
 
-public class Vehiculos {
+public class Vehiculos implements Serializable {
 	
-	private Map<Integer,Vehiculo> Vehiculos;
+	private static final long serialVersionUID = 1L;
+	private List<Vehiculo> Vehiculos;
 	
 	public Vehiculos() {
 		
-		Vehiculos = new HashMap<Integer,Vehiculo>();
+		Vehiculos = new ArrayList<Vehiculo>();
 	}
 	
-	public boolean member (int clave) {
+	public List<Vehiculo> getVehiculos(){
 		
-		return Vehiculos.containsKey(clave);
+		return Vehiculos;
 	}
 	
-	public void insert (int clave, Vehiculo ve) {
+	public void setVehiculos (List<Vehiculo> vehiculos) {
+		this.Vehiculos=vehiculos;
+	}
+	
+	public boolean member (int idVehiculo) {
 		
-		Vehiculos.put(clave, ve);
+		boolean existe = false;
+		for (int i=0; i < Vehiculos.size();i++) {
+			if(!existe)
+			{
+				Vehiculo ve = Vehiculos.get(i);
+				if(ve.getId()==idVehiculo)
+				{
+					existe=true;
+				}
+			}
+		}
+		return existe;
 	}
 	
-	public Vehiculo find(int clave) {
+	public void insert (Vehiculo ve) {
 		
-		return Vehiculos.get(clave);
+		Vehiculos.add(ve);
 	}
 	
-	public void delete (int clave) {
+	public Vehiculo find(int idVehiculo) {
 		
-		Vehiculos.remove(clave);
+		boolean esta=false;
+		Vehiculo veh = null;
+		for(int i=0; i<Vehiculos.size();i++) {
+			if(!esta)
+			{
+				Vehiculo v = Vehiculos.get(i);
+				if(v.getId()== idVehiculo)
+				{
+					esta=true;
+					veh=v;
+				}
+			}
+		}
+		return veh;
 	}
 	
-	
-	
-	
-	
-	
-	
+	public boolean esVacia () {
+		
+		return Vehiculos.isEmpty();
+	}
+
 }
 	
