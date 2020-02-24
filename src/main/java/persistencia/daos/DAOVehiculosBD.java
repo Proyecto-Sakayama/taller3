@@ -46,7 +46,8 @@ public class DAOVehiculosBD implements IDAOVehiculos {
 		Conexion con = (Conexion)icon;
 		
 		try {
-			PreparedStatement pstm = con.getConnection().prepareStatement(Consultas.existeVehiculo());
+			Consultas cons = new Consultas();
+			PreparedStatement pstm = con.getConnection().prepareStatement(cons.existeVehiculo());
 			pstm.setInt(1,idVehiculo);
 			ResultSet rs = pstm.executeQuery();
 			

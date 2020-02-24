@@ -2,6 +2,7 @@ package logica;
 
 public class Oceanica extends Patrulla {
 	
+	private static final long serialVersionUID = 1L;
 	private Bote bote;
 	private Helicoptero helicoptero;
 	private Canion canion;
