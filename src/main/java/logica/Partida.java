@@ -10,7 +10,7 @@ import persistencia.fabricas.FabricaAbstracta;
 
 public class Partida {
 	
-	private int idPartida;
+	private int IdPartida;
 	private Date fechaHora;
 	private String clima;
 	private Jugadores jugadores;
@@ -56,12 +56,12 @@ public class Partida {
 
 
 	public int getIdPartida() {
-		return idPartida;
+		return IdPartida;
 	}
 
 
 	public void setIdPartida(int idPartida) {
-		this.idPartida = idPartida;
+		this.IdPartida = idPartida;
 	}
 
 

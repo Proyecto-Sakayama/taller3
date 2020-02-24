@@ -28,6 +28,13 @@ public class Consultas {
 		return "select * FROM Milla200.Partidas where idPartida=(?)";
 	}
 	
+	public String ingresarPartida() {
+		return "INSERT INTO Milla200.Partidas (IdPartida, fechaHora, clima) VALUES (?,?;?)";
+	}
+	
+	public String ingresarJugadorEnPartida() {
+		return "INSERT INTO Milla200.jugadores_partidas (IdJugador,IdPartida) VALUES (?.?)";
+	}
 	
 	
 	

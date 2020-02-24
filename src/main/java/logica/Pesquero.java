@@ -1,6 +1,6 @@
 package logica;
 
-public abstract class Pesquero extends Barco {
+public abstract class Pesquero extends Vehiculo {
 	
 
 	private static final long serialVersionUID = 1L;
