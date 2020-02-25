@@ -43,7 +43,7 @@ public abstract class Pesquero extends Vehiculo {
 		this.cantidadPescada = cantidadPescada;
 	}
 
-	public boolean isAtrapado() {
+	public boolean getAtrapado() {
 		return atrapado;
 	}
 

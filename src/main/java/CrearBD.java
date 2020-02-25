@@ -7,11 +7,7 @@ import java.sql.Statement;
 import java.util.Properties;
 
 public class CrearBD {
-
-	public CrearBD() {
-		// TODO Auto-generated constructor stub
-	}
-
+		
 	public static void main(String[] args) {
 		
 		Connection con = null;
@@ -46,7 +42,7 @@ public class CrearBD {
 			
 			String crearVehiculos= "CREATE TABLE IF NOT EXISTS vehiculos(IdVehiculo int(8), coordX int (8),"
 					+"coordY int(8), orientacion int(5), cantCombustible int(5), tipoVehiculo VARCHAR(20),"
-					+ "velocidad int(5), primary key(IdVehiculo))";
+					+ "velocidad int(5), primary key(IdVehiculo));";
 			st.executeUpdate(crearVehiculos);
 			
 			String crearPatrullas ="CREATE TABLE IF NOT EXISTS patrullas(IdVehiculo int(8), alcanceRadar int(5),"
@@ -54,19 +50,27 @@ public class CrearBD {
 			st.executeUpdate(crearPatrullas);
 			
 			String crearPesqueros ="CREATE TABLE IF NOT EXISTS pesqueros(IdVehiculo int(8), velocidadPesca int(5), resistencia int(5),"
-					+ "cantidadPesca int(6), inutilizado bool,"
+					+ "cantidadPesca int(6), danio int(6), atrapado bool,"
 					+ "foreign key (IdVehiculo) references vehiculos(IdVehiculo));";
 			st.executeUpdate(crearPesqueros);
 			
-			/*String crearOceanicas = "";
+			String crearOceanicas = "CREATE TABLE IF NOT EXISTS oceanicas(IdVehiculo int(8)"
+					+ "foreign key (IdVehiculo) references vehiculos(IdVehiculo));";
+			st.executeUpdate(crearOceanicas);
 			
-			String crearLigeras ="";
+			String crearLigeras = "CREATE TABLE IF NOT EXISTS ligeras(IdVehiculo int(8)"
+					+ "foreign key (IdVehiculo) references vehiculos(IdVehiculo));";
+			st.executeUpdate(crearLigeras);
 			
-			String crearFabricas="";
+			String crearFabricas= "CREATE TABLE IF NOT EXISTS fabricas(IdVehiculo int(8)"
+					+ "foreign key (IdVehiculo) references vehiculos(IdVehiculo));";
+			st.executeUpdate(crearFabricas);
 			
-			String crearComun="";*/
+			String crearComun= "CREATE TABLE IF NOT EXISTS comunes(IdVehiculo int(8)"
+					+ "foreign key (IdVehiculo) references vehiculos(IdVehiculo));";
+			st.executeUpdate(crearComun);
 			
-			String crearPartidas= "CREATE TABLE IF NOT EXISTS partidas(IdPartida int(8), fechaHora timestamp,"
+			String crearPartidas= "CREATE TABLE IF NOT EXISTS partidas(IdPartida int(8), fechaHora timestamp, clima VARCHAR(20),"
 					+ "primary key(IdPartida));";
 			st.executeUpdate(crearPartidas);
 			
