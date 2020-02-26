@@ -10,22 +10,24 @@ public class Consultas {
 				+ "cantCombustible, tipoVehiculo, velocidad)"
 				+ "VALUES (?,?,?,?,?,?,?)";
 	}
-	public String insertarOceanica() {
-		return "INSERT INTO milla200.patrullas (IdVehiculo,alcanceRadar)"
-				+ "VALUES(?,?)";
-	}
-	public String insertarLigera() {
+	public String insertarPatrulla() {
 		return "INSERT INTO milla200.patrullas (IdVehiculo,alcanceRadar)"
 				+ "VALUES(?,?)";
 	}
 	
-	public String insertarFabrica() {
+	public String insertarPesquero() {
 		return "INSERT INTO milla200.pesqueros (IdVehiculo,velocidadPesca, resistencia, cantidadPesca, danio, atrapado)"
 				+ "VALUES(?,?,?,?,?)";
 	}
-	public String insertarComun() {
-		return "INSERT INTO milla200.pesqueros (IdVehiculo,velocidadPesca, resistencia, cantidadPesca, danio, atrapado)"
-				+ "VALUES(?,?,?,?,?)";
+	
+	public String buscarPatrulla() {
+		
+		return "SELECT * FROM Milla200.patrullas where IdVehiculo= ?";
+	}
+	
+	public String buscarPesquero() {
+		
+		return "SELECT * FROM Milla200.pesqueros where IdVehiculo= ?";
 	}
 	
 	

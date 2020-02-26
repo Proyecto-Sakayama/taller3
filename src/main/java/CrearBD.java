@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
+import com.google.gson.*;
 
 public class CrearBD {
 		
@@ -54,21 +55,21 @@ public class CrearBD {
 					+ "foreign key (IdVehiculo) references vehiculos(IdVehiculo));";
 			st.executeUpdate(crearPesqueros);
 			
-			String crearOceanicas = "CREATE TABLE IF NOT EXISTS oceanicas(IdVehiculo int(8)"
+			/*String crearOceanicas = "CREATE TABLE IF NOT EXISTS oceanicas(IdVehiculo int(8), Bote json NOT NULL, Helicoptero json NOT NULL, Canion json NOT NULL, Ametralladora json NOT NULL"
 					+ "foreign key (IdVehiculo) references vehiculos(IdVehiculo));";
-			st.executeUpdate(crearOceanicas);
+			st.executeUpdate(crearOceanicas);*/
 			
-			String crearLigeras = "CREATE TABLE IF NOT EXISTS ligeras(IdVehiculo int(8)"
+			/*String crearLigeras = "CREATE TABLE IF NOT EXISTS ligeras(IdVehiculo int(8), Ametralladora json,"
 					+ "foreign key (IdVehiculo) references vehiculos(IdVehiculo));";
-			st.executeUpdate(crearLigeras);
+			st.executeUpdate(crearLigeras);/*
 			
-			String crearFabricas= "CREATE TABLE IF NOT EXISTS fabricas(IdVehiculo int(8)"
+			/*String crearFabricas= "CREATE TABLE IF NOT EXISTS fabricas(IdVehiculo int(8)"
 					+ "foreign key (IdVehiculo) references vehiculos(IdVehiculo));";
 			st.executeUpdate(crearFabricas);
 			
 			String crearComun= "CREATE TABLE IF NOT EXISTS comunes(IdVehiculo int(8)"
 					+ "foreign key (IdVehiculo) references vehiculos(IdVehiculo));";
-			st.executeUpdate(crearComun);
+			st.executeUpdate(crearComun);*/
 			
 			String crearPartidas= "CREATE TABLE IF NOT EXISTS partidas(IdPartida int(8), fechaHora timestamp, clima VARCHAR(20),"
 					+ "primary key(IdPartida));";

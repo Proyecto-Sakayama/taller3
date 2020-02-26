@@ -48,7 +48,7 @@ public class DAOVehiculosBD implements IDAOVehiculos {
 			if(ve instanceof Fabrica)
 			{
 				PreparedStatement ps2;
-				update= cons.insertarFabrica();
+				update= cons.insertarPesquero();
 				ps2= con.getConnection().prepareStatement(update);
 				ps2.setInt(1, ve.getId());
 				ps2.setInt(2, ((Pesquero) ve).getVelocidadPesca());
@@ -62,7 +62,7 @@ public class DAOVehiculosBD implements IDAOVehiculos {
 			{if(ve instanceof Comun)
 			{
 				PreparedStatement ps3;
-				update= cons.insertarComun();
+				update= cons.insertarPesquero();
 				ps3= con.getConnection().prepareStatement(update);
 				ps3.setInt(1, ve.getId());
 				ps3.setInt(2, ((Pesquero) ve).getVelocidadPesca());
@@ -77,7 +77,7 @@ public class DAOVehiculosBD implements IDAOVehiculos {
 				if (ve instanceof Oceanica)
 				{
 					PreparedStatement ps4;
-					update= cons.insertarOceanica();
+					update= cons.insertarPatrulla();
 					ps4=con.getConnection().prepareStatement(update);
 					ps4.setInt(1, ve.getId());
 					ps4.setInt(2, ((Oceanica) ve).getAlcanceRadar());
@@ -86,7 +86,7 @@ public class DAOVehiculosBD implements IDAOVehiculos {
 				}
 				else {
 					PreparedStatement ps5;
-					update= cons.insertarLigera();
+					update= cons.insertarPatrulla();
 					ps5=con.getConnection().prepareStatement(update);
 					ps5.setInt(1, ve.getId());
 					ps5.setInt(2, ((Ligera) ve).getAlcanceRadar());
@@ -105,7 +105,7 @@ public class DAOVehiculosBD implements IDAOVehiculos {
 
 	@Override
 	public boolean member(int idVehiculo, IConexion icon) throws PersistenciaException {
-		Boolean existe = false;;
+		Boolean existe = false;
 		Conexion con = (Conexion)icon;
 		
 		try {
@@ -129,18 +129,69 @@ public class DAOVehiculosBD implements IDAOVehiculos {
 
 	@Override
 	public Vehiculo find(int idVehiculo, IConexion icon) throws PersistenciaException {
+		
+		Vehiculo ve = null;
 		return null;
-		/*Vehiculo ve = null;
+		/*Conexion con= (Conexion)icon;
 		
 		try {
+			Consultas cons= new Consultas();
+			String query= cons.existeVehiculo();
 			
-			Conexion con = (Conexion) icon;
-			
-			PreparedStatement ps = con.getConnection().prepareStatement(Consultas.existeVehiculo());
+			PreparedStatement ps;
+			ps=con.getConnection().prepareStatement(query);
 			ps.setInt(1, idVehiculo);
 			ResultSet rs= ps.executeQuery();
 			
-			rs.next();
+			if (rs.next())
+			{
+				PreparedStatement ps2;
+				if(rs.getString("tipoVehiculo").equals("Fabrica"))
+				{
+					query = cons.buscarPesquero();
+					ps2= con.getConnection().prepareStatement(query);
+					ps2.setInt(1, idVehiculo);
+					ResultSet rs2= ps2.executeQuery();
+					
+					if(rs2.next())
+					{
+						ve= new Fabrica(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getInt(5), rs.getString(6), rs.getInt(7), rs.getInt(8), rs.getInt(9), rs.getInt(10), rs.getInt(11), rs.getBoolean(12));
+					}
+				}else 
+				{
+					if(rs.getString("tipoVehiculo").equals("Comun"))
+					{
+
+						query = cons.buscarPesquero();
+						ps2= con.getConnection().prepareStatement(query);
+						ps2.setInt(1, idVehiculo);
+						ResultSet rs2= ps2.executeQuery();
+						
+						if(rs2.next())
+						{
+							ve= new Comun(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getInt(5), rs.getString(6), rs.getInt(7), rs.getInt(8), rs.getInt(9), rs.getInt(10), rs.getInt(11), rs.getBoolean(12));
+						}
+						
+					}else
+					{
+						if(rs.getString("tipoVehiculo").equals("Oceanica"))
+						{
+							query = cons.buscarPatrulla();
+							ps2= con.getConnection().prepareStatement(query);
+							ps2.setInt(1, idVehiculo);
+							ResultSet rs2= ps2.executeQuery();
+							
+							if(rs2.next())
+							{
+								ve= new Oceanica(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getInt(5), rs.getString(6), rs.getInt(7), rs.getInt(8), null, null, null, null);
+								
+							}
+							
+						}
+					}
+				}
+				
+			}
 			
 			
 		}*/
