@@ -12,7 +12,8 @@ public class Partida {
 	
 	private int IdPartida;
 	private Date fechaHora;
-	private String clima;
+	private boolean tormenta;
+	private float tiempoPartida;
 	private Jugadores jugadores;
 	private IDAOJugadores daoJugadores;
 	
@@ -21,12 +22,12 @@ public class Partida {
 		super();
 	}
 
-	public Partida(int id, Date fh, String clim, Jugadores jug) throws PersistenciaException {
+	public Partida(int id, Date fh, boolean tormen, Jugadores jug) throws PersistenciaException {
 		
 		super();
 		this.setIdPartida(id);
 		this.setFechaHora(fh);
-		this.setClima(clim);
+		this.setTormenta(tormen);
 		this.setJugadores(jug);
 		
 		try {
@@ -75,13 +76,13 @@ public class Partida {
 	}
 
 
-	public String getClima() {
-		return clima;
+	public boolean getTormenta() {
+		return tormenta;
 	}
 
 
-	public void setClima(String clima) {
-		this.clima = clima;
+	public void setTormenta(Boolean tormenta) {
+		this.tormenta = tormenta;
 	}
 
 
@@ -100,6 +101,14 @@ public class Partida {
 
 	public void setDaoJugadores(IDAOJugadores daoJugadores) {
 		this.daoJugadores = daoJugadores;
+	}
+
+	public float getTiempoPartida() {
+		return tiempoPartida;
+	}
+
+	public void setTiempoPartida(float tiempoPartida) {
+		this.tiempoPartida = tiempoPartida;
 	}
 
 }

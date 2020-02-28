@@ -122,7 +122,7 @@ public class DAOJugadoresBD implements IDAOJugadores {
 				ResultSet rs2= ps2.executeQuery();
 				
 				while(rs2.next())
-				{
+				{				//obtengo el arraylist de vehiculos del jugador
 					listaVehiculos.add(j.getDaoVehiculos().find(rs2.getInt("IdVehiculo"), icon));
 				}
 				j.getVehiculos().setVehiculos(listaVehiculos);

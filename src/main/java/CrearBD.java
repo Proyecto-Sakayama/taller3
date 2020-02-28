@@ -55,6 +55,16 @@ public class CrearBD {
 					+ "foreign key (IdVehiculo) references vehiculos(IdVehiculo));";
 			st.executeUpdate(crearPesqueros);
 			
+			String crearArtilleria = "CREATE TABLE IF NOT EXISTS artilleria(IdArma int(8), tipoArma VARCHAR(20), rango int(8), danio int(8), cadencia int(8),"
+					+ "primary key (IdArma));";
+			st.executeUpdate(crearArtilleria);
+			
+			String Oceanica_Artilleria="CREATE TABLE IF NOT EXISTS oceanica_artilleria(IdVehiculo int(8), IdArma int(8),"
+					+ "primary key (IdVehiculo,IdArma),"
+					+ "foreign key (IdVehiculo) references vehiculos(IdVehiculo),"
+					+ "foreign key (IdArma) references artilleria(IdArma));";
+			st.executeUpdate(Oceanica_Artilleria);
+			
 			/*String crearOceanicas = "CREATE TABLE IF NOT EXISTS oceanicas(IdVehiculo int(8), Bote json NOT NULL, Helicoptero json NOT NULL, Canion json NOT NULL, Ametralladora json NOT NULL"
 					+ "foreign key (IdVehiculo) references vehiculos(IdVehiculo));";
 			st.executeUpdate(crearOceanicas);*/
