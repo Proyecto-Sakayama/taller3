@@ -26,7 +26,7 @@ var config = {
     width: 800,
     height: 600,
     physics: {
-        default: 'matter',
+        default: 'arcade',
         matter: {
             gravity: {
                 y: 0
@@ -36,13 +36,7 @@ var config = {
     scene: {
         preload: preload,
         create: create,
-        update: update,
-        extend: {
-            minimap: null,
-            bote1: null,
-            patrullero1: null,
-            cursors: null
-        }
+        update: update
     }
 };
 
@@ -52,17 +46,14 @@ var cursors;
 var bote1, patrullero1, jugador;
 
 //definicion de cual comando
-var manejo = "";
+
 var texto;
 var jugadorRemoto;
 
 var zoomOut, zoomIn;
 var self;
 var cursor;
-
-var line;
-var t = -1;
-var duration = 5000;
+var dict = {};
 
 function preload() {
 	
@@ -79,66 +70,49 @@ function create() {
 	self = this;
 	 //El "mundo" es de 4000 x 3000
 	cursor = this.add.image(0, 0, 'cursor').setVisible(false);
-	this.matter.world.setBounds(0, 0, 4000, 3000);
+	this.physics.world.setBounds(0, 0, 4000, 3000);
     this.cameras.main.setBounds(0, 0, 4000, 3000).setName('main');
 	
     this.add.image(2000, 1500, 'plataforma');
-    bote1 = this.matter.add.image(1600, 1600, 'bote1').setInteractive();
-    
-    bote1.setFrictionAir(0.15);
-    bote1.setMass(30);
-    bote1.setFixedRotation();
+    bote1 = this.physics.add.image(1600, 1600, 'bote1').setInteractive();
     bote1.setAngle(270);
-//     bote1.setBounce(1)
-    
     bote1.on('pointerdown', function(game){
         jugador = bote1;
-        manejo = "bote1"; 
+        jugador.nombre = "bote1";
 	});
+	dict['bote1'] = bote1;
     
-    patrullero1 = this.matter.add.image(1500, 1700, 'patrullero1').setInteractive();
-    
-    patrullero1.setFrictionAir(0.15);
-    patrullero1.setMass(30);
-    patrullero1.setFixedRotation();
+	
+    patrullero1 = this.physics.add.image(1500, 1700, 'patrullero1').setInteractive();
     patrullero1.setAngle(270);
-//     patrullero1.setBounce(1)
-    
     patrullero1.on('pointerdown', function(){
         jugador = patrullero1;
-        manejo = "patrullero1";
+        jugador.nombre = "patrullero1";
 	});
+    dict['patrullero1'] = patrullero1;
 
     websocket = new WebSocket('ws://localhost:8080/taller3/juego/');
     cursors = this.input.keyboard.createCursorKeys();
-    texto = this.add.text(0, 0, "Controla la patrulla:" + manejo, { font: "14px Arial", fill: "#ff0044"});
+    if(jugador!= null)
+    {
+    	
+    }
+    texto = this.add.text(0, 0, "Controla la patrulla:" , { font: "14px Arial", fill: "#ff0044"});
     zoomOut = this.input.keyboard.addKey('O'); 
     zoomIn = this.input.keyboard.addKey('I');  
-
-    
-	this.input.on('pointerdown', function(pointer){
-// 	    	destination = this.physics.add.image(pointer.worldX, pointer.worldY, 'transparente');
-// 	    	var angleToPointer = Phaser.Math.Angle.Between(jugador.x, jugador.y, destination.x, destination.y);
-// 			var angleDelta = Phaser.Math.Angle.Wrap(angleToPointer - jugador.rotation);
-// 			jugador.rotation = angleToPointer;
-// 			jugador.setAngularVelocity(0);
 	
-// 	    	this.physics.moveToObject(jugador, destination, 200);
-// 	        var collider = this.physics.add.overlap(jugador, destination, function (sourceOnDest)
-// 	        {
-// 	    		sourceOnDest.body.stop();
-// 				destination.setActive(false).setVisible(false);
-// 	            this.physics.world.removeCollider(collider);
-// 	        }, null, this); 
-		destination = this.matter.add.image(pointer.worldX, pointer.worldY, 'transparente');
-		line = new Phaser.Geom.Line(
-            jugador.x,
-            jugador.y,
-            destination.x,
-            destination.y
-        );
-		 t = 0;
-    }, this, jugador);
+	this.input.on('pointerdown', function(pointer){
+	    	//destination = this.physics.add.image(pointer.worldX, pointer.worldY, 'transparente');
+	    	var target = new Phaser.Math.Vector2();
+	    	target.x = pointer.worldX;
+        	target.y = pointer.worldY;
+	    	var angleToPointer = Phaser.Math.Angle.Between(dict[jugador.nombre].x, dict[jugador.nombre].y, target.x, target.y);
+			var angleDelta = Phaser.Math.Angle.Wrap(angleToPointer - dict[jugador.nombre].rotation);
+			dict[jugador.nombre].rotation = angleToPointer;
+			dict[jugador.nombre].setAngularVelocity(0);
+			dict[jugador.nombre].target = target;
+	    	this.physics.moveToObject(jugador, jugador.target, 200);
+    }, this);
 	
 	
 }
@@ -162,27 +136,33 @@ function keysPressed(self)
 	    }
 	}
 }
-function update(time, delta) {
-	if (t != -1)
-    {
-		t += delta;
 
-	    if (t >= duration)
-	    {
-	        //  Reached the end
-	        jugador.setVelocity(0, 0);
-	    }
-	    else
-	    {
-	        var d = (t / duration);
-
-	        var p = line.getPoint(d);
-
-	        jugador.setPosition(p.x, p.y);
-	    }
-    }
-
-    
+function stopBoatMovement()
+{
+	if(jugador != null && dict != null)
+	{
+		for (var key in dict) 
+		{
+		    if (dict.hasOwnProperty(key)) 
+		    {        
+		    	if(dict[key].target != null)
+		    	{
+		    		var distance = Phaser.Math.Distance.Between(dict[key].x, dict[key].y, dict[key].target.x, dict[key].target.y);
+					if (dict[key].body.speed > 0)
+				    {
+				       if (distance < 4)
+				       {
+				    	   dict[key].body.reset(dict[key].target.x, dict[key].target.y);
+				       }
+				    }
+		    	}	
+		    }
+		}
+	}
+}
+function update() {
+	stopBoatMovement();
+	
 	keysPressed(self);
 	websocket.onmessage = function(event) {
 	    if(event.data != null)
@@ -191,16 +171,20 @@ function update(time, delta) {
 	    	if(typeof jugador === 'undefined')
 	    	{
 	    		let nombre = JSON.parse(event.data);
-	    		manejo = nombre;
+	    		
 	    		if(nombre == 'bote1')
 	    		{
 	    			jugador = bote1;
+	    			jugador.nombre = nombre;
+	    			bote1.target = new Phaser.Math.Vector2();
 	    		}
 	    		else 
 	    		{
 	    			if(nombre == 'patrullero1')
 	    			{
 	    				jugador = patrullero1;
+	    				jugador.nombre = nombre;
+	    				patrullero1.target = new Phaser.Math.Vector2();
 	    			}
 	    			
 	    		}
@@ -217,7 +201,7 @@ function update(time, delta) {
 	  	    		}
 	  	    	}
 	  	    //actualizo rival
-	  	    	if(jugadorRemoto != null && !(typeof jugadorRemoto === 'undefined') &&  jugadorServer.nombre != manejo)
+	  	    	if(jugadorRemoto != null && !(typeof jugadorRemoto === 'undefined') &&  jugadorServer.nombre != jugador.nombre)
 	  	    	{
 	  	    		jugadorRemoto.x = jugadorServer.x;
 		  	    	jugadorRemoto.y = jugadorServer.y;
@@ -227,10 +211,11 @@ function update(time, delta) {
 	    }
   };
 //actualiza las imagenes cuando te vas moviendo
-    texto.setText("Controla la patrulla:" + manejo);
+   
     
 	if (jugador != null && !(typeof jugador === 'undefined'))
-    {		
+    {
+		texto.setText("Controla la patrulla:" + jugador.nombre);
 		if (cursors.left.isDown)
 	    {
 			jugador.setAngularVelocity(-0.1);
@@ -242,9 +227,9 @@ function update(time, delta) {
 	
 	    if (cursors.up.isDown)
 	    {
-	    	jugador.thrust(0.08);
+	    	jugador.speed(100);
 	    }
-        let jugadorServer = new JugadorServer(manejo, jugador.x, jugador.y, jugador.angle);
+        let jugadorServer = new JugadorServer(jugador.nombre, jugador.x, jugador.y, jugador.angle);
         enviarJSON(jugadorServer);
         
    		// Centro la camara en el jugador

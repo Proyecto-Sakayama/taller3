@@ -130,14 +130,18 @@ function create() {
 // 				destination.setActive(false).setVisible(false);
 // 	            this.physics.world.removeCollider(collider);
 // 	        }, null, this); 
-		destination = this.matter.add.image(pointer.worldX, pointer.worldY, 'transparente');
-		line = new Phaser.Geom.Line(
-            jugador.x,
-            jugador.y,
-            destination.x,
-            destination.y
-        );
-		 t = 0;
+// 		destination = this.matter.add.image(pointer.worldX, pointer.worldY, 'transparente');
+// 		line = new Phaser.Geom.Line(
+//             jugador.x,
+//             jugador.y,
+//             destination.x,
+//             destination.y
+//         );
+		var force = 10;
+		var deltaVector = this.matter.vector.sub(pointer.position, jugador.position);
+		var normalizedDelta = this.matter.vector.normalise(deltaVector);
+		var forceVector = this.matter.Vector.mult(normalizedDelta, force);
+		jugador.body.applyForce(jugador, jugador.position, forceVector);
     }, this, jugador);
 	
 	
@@ -162,27 +166,7 @@ function keysPressed(self)
 	    }
 	}
 }
-function update(time, delta) {
-	if (t != -1)
-    {
-		t += delta;
-
-	    if (t >= duration)
-	    {
-	        //  Reached the end
-	        jugador.setVelocity(0, 0);
-	    }
-	    else
-	    {
-	        var d = (t / duration);
-
-	        var p = line.getPoint(d);
-
-	        jugador.setPosition(p.x, p.y);
-	    }
-    }
-
-    
+function update() {
 	keysPressed(self);
 	websocket.onmessage = function(event) {
 	    if(event.data != null)
