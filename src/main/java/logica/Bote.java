@@ -1,6 +1,6 @@
 package logica;
 
-public class Bote extends Barco {
+public class Bote extends Vehiculo {
 	
 	private static final long serialVersionUID = 1L;
 	boolean habilitado; // variable booleana que nos indica si el bote está apto a navegar, en caso de tormenta será false
