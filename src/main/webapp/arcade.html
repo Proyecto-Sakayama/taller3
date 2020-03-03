@@ -60,7 +60,7 @@ var self;
 var cursor;
 var dict = {};
 
-var estaLloviendo = false; //Si llueve, bote1 no se ve ni se puede usar
+var estaLloviendo = false; //Si estaLloviendo, bote1 no se ve ni se puede usar
 
 function preload() {
 	
@@ -80,21 +80,24 @@ function create() {
 	
     this.add.image(2000, 1500, 'plataforma');
     
-    if(estaLloviendo == false){
-	    bote1 = this.physics.add.sprite(1600, 1600, 'bote1').setInteractive();
-	    
-	    bote1.on('pointerdown', function(game){
-	        jugador = bote1;
-	        jugador.nombre = "bote1";
-		});
-		dict['bote1'] = bote1;
-		bote1.setDamping(true);
-		bote1.setDrag(0.99);
-		bote1.setMaxVelocity(200);
-		bote1.setCollideWorldBounds(true);
-		bote1.movedByClick = 0;
-		bote1.setAngle(270);
-    }
+
+    bote1 = this.physics.add.sprite(1600, 1600, 'bote1').setInteractive();
+    
+    bote1.on('pointerdown', function(game){
+        jugador = bote1;
+        jugador.nombre = "bote1";
+	});
+	dict['bote1'] = bote1;
+	bote1.setDamping(true);
+	bote1.setDrag(0.99);
+	bote1.setMaxVelocity(200);
+	bote1.setCollideWorldBounds(true);
+	bote1.setAngle(270);
+	//PROPIEDADES CUSTOM
+	bote1.movedByClick = 0;
+	bote1.affectedByRain = true;
+	//*********
+		
     patrullero1 = this.physics.add.sprite(1500, 1700, 'patrullero1').setInteractive();
    
     patrullero1.on('pointerdown', function(){
@@ -106,8 +109,11 @@ function create() {
     patrullero1.setDrag(0.99);
     patrullero1.setMaxVelocity(200);
 	patrullero1.setCollideWorldBounds(true);
-	patrullero1.movedByClick = 0;
 	patrullero1.setAngle(270);
+	//*********PROPIEDADES CUSTOM
+	patrullero1.movedByClick = 0;
+	patrullero1.affectedByRain = false;
+	//*********
 	
     websocket = new WebSocket('ws://localhost:8080/taller3/juego/');
     websocketAcciones = new WebSocket('ws://localhost:8080/taller3/acciones/');
@@ -134,17 +140,15 @@ function create() {
 	    	this.physics.moveToObject(jugador, jugador.target, 200);
     }, this);
 	
-	if(estaLloviendo == false)
-		{
-		this.physics.add.collider(
-			patrullero1, 
-			bote1,
-	        function (_patrullero1, _bote1)
-	        {
-				_patrullero1.setDrag(0.99);
-				_bote1.setDrag(0.99);
-	        });
-		}
+
+	this.physics.add.collider(
+		patrullero1, 
+		bote1,
+        function (_patrullero1, _bote1)
+        {
+			_patrullero1.setDrag(0.99);
+			_bote1.setDrag(0.99);
+        });
 }
 
 function enviarJSON(objeto) {
@@ -172,14 +176,20 @@ function keysPressed(self)
 	}
 }
 
-function stopBoatMovement()
+function checkBoatStatus()
 {
 	if(jugador != null && dict != null)
 	{
 		for (var key in dict) 
 		{
 		    if (dict.hasOwnProperty(key)) 
-		    {        
+		    {
+		    	//CONTROLO LLUVIA
+		    	if(dict[key].affectedByRain && estaLloviendo)
+		    	{
+		    		dict[key].setVisible(false);
+		    		dict[key].body.setEnable(false);
+		    	}
 		    	if(dict[key].target != null)
 		    	{
 		    		var distance = Phaser.Math.Distance.Between(dict[key].x, dict[key].y, dict[key].target.x, dict[key].target.y);
@@ -198,7 +208,8 @@ function stopBoatMovement()
 	}
 }
 function update() {
-	stopBoatMovement();
+	
+	checkBoatStatus();
 	
 	keysPressed(self);
 	websocket.onmessage = function(event) {
