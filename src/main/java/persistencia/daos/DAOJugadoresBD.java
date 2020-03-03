@@ -6,8 +6,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import logica.Bote;
 import logica.Comun;
 import logica.Fabrica;
+import logica.Helicoptero;
 import logica.Jugador;
 import logica.Jugadores;
 import logica.Ligera;
@@ -78,6 +80,10 @@ public class DAOJugadoresBD implements IDAOJugadores {
 					v= new Fabrica(vehic.getId(), vehic.getCoordX(), vehic.getCoordY(),vehic.getOrientacion(), vehic.getCantCombustible(),vehic.getTipoVehiculo(),vehic.getVelocidad(),((Fabrica)vehic).getVelocidadPesca(),((Fabrica) vehic).getResistencia(),((Fabrica) vehic).getCantidadPescada(),((Fabrica) vehic).getDanio(), ((Fabrica) vehic).getAtrapado());
 				}else {
 					v= new Comun(vehic.getId(), vehic.getCoordX(), vehic.getCoordY(),vehic.getOrientacion(), vehic.getCantCombustible(),vehic.getTipoVehiculo(),vehic.getVelocidad(),((Comun)vehic).getVelocidadPesca(),((Comun) vehic).getResistencia(),((Comun) vehic).getCantidadPescada(),((Comun) vehic).getDanio(), ((Comun) vehic).getAtrapado());
+				}if (vehic instanceof Helicoptero) {
+					v= new Helicoptero(vehic.getId(), vehic.getCoordX(), vehic.getCoordY(), vehic.getOrientacion(), vehic.getCantCombustible(), vehic.getVelocidad(), vehic.getTipoVehiculo());
+				}else {
+					v = new Bote (vehic.getId(), vehic.getCoordX(), vehic.getCoordY(), vehic.getOrientacion(), vehic.getCantCombustible(), vehic.getTipoVehiculo(), vehic.getVelocidad(), ((Bote)vehic).getHabilitado());
 				}
 					
 				}

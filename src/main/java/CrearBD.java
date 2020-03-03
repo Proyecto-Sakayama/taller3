@@ -2,8 +2,14 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 import com.google.gson.*;
 
@@ -81,7 +87,7 @@ public class CrearBD {
 					+ "foreign key (IdVehiculo) references vehiculos(IdVehiculo));";
 			st.executeUpdate(crearComun);*/
 			
-			String crearPartidas= "CREATE TABLE IF NOT EXISTS partidas(IdPartida int(8), fechaHora timestamp, clima VARCHAR(20),"
+			String crearPartidas= "CREATE TABLE IF NOT EXISTS partidas(IdPartida int(8), tormenta bool, tiempoPartida float (8),"
 					+ "primary key(IdPartida));";
 			st.executeUpdate(crearPartidas);
 			
@@ -97,7 +103,21 @@ public class CrearBD {
 					+ "foreign key(IdVehiculo) references vehiculos(IdVehiculo));";
 			st.execute(crearJugadoresyVehiculos);
 			
+			String insertarjugador= "insert into milla200.jugadores (IdJugador, nickName) VALUES (?,?)";
+			PreparedStatement ps= con.prepareStatement(insertarjugador);
+			ps.setInt(1, 1);
+			ps.setString(2, "jugador1");
+			ps.executeUpdate();
 			
+			
+			/*
+			String insertarpartida= "insert into milla200.partidas (IdPartida,tormenta, tiempoPartida) VALUES (?,?,?)";
+			ps= con.prepareStatement(insertarpartida);
+			ps.setInt(1, 1);
+			ps.setFloat(3, 2);
+			ps.setBoolean(2, false);
+			ps.executeUpdate();
+			*/
 			System.out.println("Base creada correctamente");
 			
 			

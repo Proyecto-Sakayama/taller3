@@ -11,7 +11,6 @@ import persistencia.fabricas.FabricaAbstracta;
 public class Partida {
 	
 	private int IdPartida;
-	private Date fechaHora;
 	private boolean tormenta;
 	private float tiempoPartida;
 	private Jugadores jugadores;
@@ -22,12 +21,12 @@ public class Partida {
 		super();
 	}
 
-	public Partida(int id, Date fh, boolean tormen, Jugadores jug) throws PersistenciaException {
+	public Partida(int id, boolean tormen, float tiempoPart, Jugadores jug) throws PersistenciaException {
 		
 		super();
 		this.setIdPartida(id);
-		this.setFechaHora(fh);
 		this.setTormenta(tormen);
+		this.tiempoPartida=tiempoPart;
 		this.setJugadores(jug);
 		
 		try {
@@ -63,16 +62,6 @@ public class Partida {
 
 	public void setIdPartida(int idPartida) {
 		this.IdPartida = idPartida;
-	}
-
-
-	public Date getFechaHora() {
-		return fechaHora;
-	}
-
-
-	public void setFechaHora(Date fechaHora) {
-		this.fechaHora = fechaHora;
 	}
 
 
