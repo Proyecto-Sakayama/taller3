@@ -21,6 +21,7 @@ function JugadorServer(nombre, x, y, angle)
 	this.y = y;
 	this.angle = angle;
 }
+
 var config = {
     type: Phaser.AUTO,
     width: 800,
@@ -59,6 +60,8 @@ var self;
 var cursor;
 var dict = {};
 
+var estaLloviendo = false; //Si llueve, bote1 no se ve ni se puede usar
+
 function preload() {
 	
     //carga las imagenes al juegoç
@@ -77,20 +80,21 @@ function create() {
 	
     this.add.image(2000, 1500, 'plataforma');
     
-    bote1 = this.physics.add.sprite(1600, 1600, 'bote1').setInteractive();
-    
-    bote1.on('pointerdown', function(game){
-        jugador = bote1;
-        jugador.nombre = "bote1";
-	});
-	dict['bote1'] = bote1;
-	bote1.setDamping(true);
-	bote1.setDrag(0.99);
-	bote1.setMaxVelocity(200);
-	bote1.setCollideWorldBounds(true);
-	bote1.movedByClick = 0;
-	bote1.setAngle(270);
-	
+    if(estaLloviendo == false){
+	    bote1 = this.physics.add.sprite(1600, 1600, 'bote1').setInteractive();
+	    
+	    bote1.on('pointerdown', function(game){
+	        jugador = bote1;
+	        jugador.nombre = "bote1";
+		});
+		dict['bote1'] = bote1;
+		bote1.setDamping(true);
+		bote1.setDrag(0.99);
+		bote1.setMaxVelocity(200);
+		bote1.setCollideWorldBounds(true);
+		bote1.movedByClick = 0;
+		bote1.setAngle(270);
+    }
     patrullero1 = this.physics.add.sprite(1500, 1700, 'patrullero1').setInteractive();
    
     patrullero1.on('pointerdown', function(){
@@ -130,7 +134,9 @@ function create() {
 	    	this.physics.moveToObject(jugador, jugador.target, 200);
     }, this);
 	
-	this.physics.add.collider(
+	if(estaLloviendo == false)
+		{
+		this.physics.add.collider(
 			patrullero1, 
 			bote1,
 	        function (_patrullero1, _bote1)
@@ -138,7 +144,7 @@ function create() {
 				_patrullero1.setDrag(0.99);
 				_bote1.setDrag(0.99);
 	        });
-
+		}
 }
 
 function enviarJSON(objeto) {
