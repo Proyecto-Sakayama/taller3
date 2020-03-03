@@ -60,14 +60,14 @@ public class Test {
 		//se prueba clase Partida
 		
 		Partida part = new Partida();
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		Date date = new Date();
 		part.setIdPartida(1);
-		part.setFechaHora(date);
+		part.setTiempoPartida(5);
 		part.setTormenta(false);
 		
-		System.out.println(part.getFechaHora());
+		System.out.println(part.getIdPartida());
+		System.out.println(part.getTiempoPartida());
 		System.out.println(part.getTormenta());
+		
 		
 		//Creo arraylist de jugadores
 		
@@ -81,6 +81,8 @@ public class Test {
 		// consulto cuantos jugadores hay en la partida
 		int cantjug= part.getJugadores().CantJugadores();
 		System.out.println(cantjug);
+		
+	
 		
 		
 		

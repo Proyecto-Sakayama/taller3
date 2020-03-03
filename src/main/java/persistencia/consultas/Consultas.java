@@ -33,7 +33,7 @@ public class Consultas {
 	
 	public  String insertarJugador () {
 		
-		return "INSERT INTO Milla200.jugadores (idJugador, nickname) VALUES  (?,?)";
+		return "INSERT INTO Milla200.jugadores (IdJugador, nickname) VALUES  (?,?)";
 	}
 	
 	public String existeJugador(){
@@ -50,7 +50,7 @@ public class Consultas {
 	}
 	
 	public  String listarPartidas() {
-		return "select * from Milla200.Partidas order by idPartida";
+		return "select * from Milla200.Partidas order by IdPartida";
 	}
 	
 	public  String cantPartida() {
@@ -62,7 +62,7 @@ public class Consultas {
 	}
 	
 	public String ingresarPartida() {
-		return "INSERT INTO Milla200.partidas (IdPartida, fechaHora, clima) VALUES (?,?,?)";
+		return "INSERT INTO Milla200.partidas (IdPartida, tormenta, tiempoPartida) VALUES (?,?,?)";
 	}
 	
 	public String ingresarJugadorEnPartida() {
