@@ -46,7 +46,7 @@ var config = {
 //definiciones de phaser
 var game = new Phaser.Game(config);
 var cursors;
-var bote1, patrullero1, jugador;
+var bote1, patrullero1, jugador, milla200;
 
 //definicion de cual comando
 var mensaje = "{ \"accion\" : \"tiempo\", \"tiempoRestante\" : \" " + 0 + " \"}";
@@ -68,6 +68,7 @@ function preload() {
     this.load.image('plataforma', 'assets/sky_big.png');
     this.load.image('bote1', 'assets/bote1_h.png');
     this.load.image('patrullero1', 'assets/patrullero1_h.png');
+    this.load.image('milla200', 'assets/milla200.png');
 
 }
 
@@ -79,13 +80,13 @@ function create() {
     this.cameras.main.setBounds(0, 0, 4000, 3000).setName('main');
 	
     this.add.image(2000, 1500, 'plataforma');
-    
+    milla200 = this.physics.add.staticImage(2000, 1500, 'milla200');
 
     bote1 = this.physics.add.sprite(1600, 1600, 'bote1').setInteractive();
     
     bote1.on('pointerdown', function(game){
         jugador = bote1;
-        jugador.nombre = "bote1";
+        jugador.name = "bote1";
 	});
 	dict['bote1'] = bote1;
 	bote1.setDamping(true);
@@ -94,15 +95,15 @@ function create() {
 	bote1.setCollideWorldBounds(true);
 	bote1.setAngle(270);
 	//PROPIEDADES CUSTOM
-	bote1.movedByClick = 0;
+	bote1.movedByClick = false;
 	bote1.affectedByRain = true;
 	//*********
 		
-    patrullero1 = this.physics.add.sprite(1500, 1700, 'patrullero1').setInteractive();
+    patrullero1 = this.physics.add.sprite(2500, 1700, 'patrullero1').setInteractive();
    
     patrullero1.on('pointerdown', function(){
         jugador = patrullero1;
-        jugador.nombre = "patrullero1";
+        jugador.name = "patrullero1";
 	});
     dict['patrullero1'] = patrullero1;
     patrullero1.setDamping(true);
@@ -111,7 +112,7 @@ function create() {
 	patrullero1.setCollideWorldBounds(true);
 	patrullero1.setAngle(270);
 	//*********PROPIEDADES CUSTOM
-	patrullero1.movedByClick = 0;
+	patrullero1.movedByClick = false;
 	patrullero1.affectedByRain = false;
 	//*********
 	
@@ -130,15 +131,24 @@ function create() {
 	    	var target = new Phaser.Math.Vector2();
 	    	target.x = pointer.worldX;
         	target.y = pointer.worldY;
-	    	var angleToPointer = Phaser.Math.Angle.Between(dict[jugador.nombre].x, dict[jugador.nombre].y, target.x, target.y);
-			var angleDelta = Phaser.Math.Angle.Wrap(angleToPointer - dict[jugador.nombre].rotation);
-			dict[jugador.nombre].rotation = angleToPointer;
-			dict[jugador.nombre].setAngularVelocity(0);
-			dict[jugador.nombre].target = target;
-			dict[jugador.nombre].movedByClick = 1;
-			dict[jugador.nombre].setDrag(1);
+	    	var angleToPointer = Phaser.Math.Angle.Between(dict[jugador.name].x, dict[jugador.name].y, target.x, target.y);
+			var angleDelta = Phaser.Math.Angle.Wrap(angleToPointer - dict[jugador.name].rotation);
+			dict[jugador.name].rotation = angleToPointer;
+			dict[jugador.name].setAngularVelocity(0);
+			dict[jugador.name].target = target;
+			dict[jugador.name].movedByClick = true;
+			dict[jugador.name].setDrag(1);
 	    	this.physics.moveToObject(jugador, jugador.target, 200);
     }, this);
+
+	this.physics.add.collider(
+		bote1, 
+		milla200,
+    	function (_bote1, _milla200)
+	    {
+			_bote1.movedByClick = false;
+			_bote1.setDrag(0.99);
+     	});
 	
 
 	this.physics.add.collider(
@@ -146,9 +156,13 @@ function create() {
 		bote1,
         function (_patrullero1, _bote1)
         {
+			_patrullero1.movedByClick = false;
 			_patrullero1.setDrag(0.99);
+			_bote1.movedByClick = false;
 			_bote1.setDrag(0.99);
         });
+
+
 }
 
 function enviarJSON(objeto) {
@@ -198,7 +212,7 @@ function checkBoatStatus()
 				       if (distance < 4)
 				       {
 				    	   dict[key].body.reset(dict[key].target.x, dict[key].target.y);
-				    	   dict[key].movedByClick = 0;
+				    	   dict[key].movedByClick = false;
 				    	   dict[key].setDrag(0.99);
 				       }
 				    }
@@ -222,17 +236,17 @@ function update() {
 	    		
 	    		if(nombre == 'bote1')
 	    		{
-	    			jugador = bote1;
-	    			jugador.nombre = nombre;
+	    			bote1.name = nombre;
 	    			bote1.target = new Phaser.Math.Vector2();
+	    			jugador = bote1;
 	    		}
 	    		else 
 	    		{
 	    			if(nombre == 'patrullero1')
 	    			{
-	    				jugador = patrullero1;
-	    				jugador.nombre = nombre;
+	    				patrullero1.name = nombre;
 	    				patrullero1.target = new Phaser.Math.Vector2();
+	    				jugador = patrullero1;
 	    			}
 	    			
 	    		}
@@ -249,7 +263,7 @@ function update() {
 	  	    		}
 	  	    	}
 	  	    //actualizo rival
-	  	    	if(jugadorRemoto != null && !(typeof jugadorRemoto === 'undefined') &&  jugadorServer.nombre != jugador.nombre)
+	  	    	if(jugadorRemoto != null && !(typeof jugadorRemoto === 'undefined') &&  jugadorServer.nombre != jugador.name)
 	  	    	{
 	  	    		jugadorRemoto.x = jugadorServer.x;
 		  	    	jugadorRemoto.y = jugadorServer.y;
@@ -263,18 +277,18 @@ function update() {
     
 	if (jugador != null && !(typeof jugador === 'undefined'))
     {
-		texto.setText("Controla la patrulla:" + jugador.nombre);
+		texto.setText("Controla la patrulla:" + jugador.name);
 		if (cursors.up.isDown)
 	    {
-			jugador = dict[jugador.nombre];
-			jugador.target = new Phaser.Math.Vector2();
+			jugador = dict[jugador.name];
+			//jugador.target = new Phaser.Math.Vector2();
 	    	this.physics.velocityFromRotation(jugador.rotation, 200, jugador.body.acceleration);
-	    	jugador.movedByClick = 0;
+	    	jugador.movedByClick = false;
 	    	jugador.setDrag(0.99);
 	    }
 	    else
     	{
-	    	if(jugador.movedByClick == 0)
+	    	if(!jugador.movedByClick)
 	    	{	
 	    		jugador.setAcceleration(0);
 	    	}
@@ -291,7 +305,7 @@ function update() {
 	    {
 	    	jugador.setAngularVelocity(0);
 	    }
-        let jugadorServer = new JugadorServer(jugador.nombre, jugador.x, jugador.y, jugador.angle);
+        let jugadorServer = new JugadorServer(jugador.name, jugador.x, jugador.y, jugador.angle);
         enviarJSON(jugadorServer);
         
    		// Centro la camara en el jugador
