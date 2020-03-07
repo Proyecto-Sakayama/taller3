@@ -237,7 +237,8 @@ var DroneViewState = new Phaser.Class({
             acoplado: true,
             sprite: helicopter,
             combustible: 100,
-            activo: false
+            activo: false,
+            regresando: false
         }
 
         var boteOb = {
@@ -278,7 +279,29 @@ var DroneViewState = new Phaser.Class({
         partida.Patrulleros.Barcos.push(barcoPatrullero2);
         partida.Pesqueros.Barcos.push(barcoPesquero);
         partida.Pesqueros.Barcos.push(barcoPesquero2);
+        
+        //COLLISSIONS
+        //Todos excepto el helicóptero colisionan con los pesqueros
+        var colisionesConPesqueros = this.matter.world.nextCategory();
+        barcoPesquero.sprite.setCollisionCategory(colisionesConPesqueros);
+        barcoPesquero2.sprite.setCollisionCategory(colisionesConPesqueros);
+        
+        //Todos excepto el helicóptero colisionan con los patrullero 2
+        var colisionesConPatrulleroLiviano = this.matter.world.nextCategory();
+        barcoPatrullero.sprite.setCollisionCategory(colisionesConPatrulleroLiviano);
+        
+        //Todos excepto el helicóptero y bote colisionan con los patrullero pesado
+        var colisionesConPatrulleroPesado = this.matter.world.nextCategory();
+        barcoPatrullero2.sprite.setCollisionCategory(colisionesConPatrulleroPesado);
+        boteOb.sprite.setCollisionCategory(colisionesConPatrulleroPesado);
 
+
+        barcoPesquero.sprite.setCollidesWith([colisionesConPesqueros, colisionesConPatrulleroLiviano, colisionesConPatrulleroPesado]);
+        barcoPesquero2.sprite.setCollidesWith([colisionesConPesqueros, colisionesConPatrulleroLiviano, colisionesConPatrulleroPesado]);
+        barcoPatrullero.sprite.setCollidesWith([colisionesConPesqueros, colisionesConPatrulleroPesado]);
+        boteOb.sprite.setCollidesWith([colisionesConPesqueros, colisionesConPatrulleroLiviano]);
+        barcoPatrullero2.sprite.setCollidesWith([colisionesConPesqueros, colisionesConPatrulleroLiviano]);
+        
         console.log('create success');
 
     },
@@ -523,11 +546,17 @@ var DroneViewState = new Phaser.Class({
 
 
 
-        if(vahiculoActivo.type == "H" && !vahiculoActivo.acoplado && !isMoving){
-            consumirCombustible(vahiculoActivo);
-        }
-
-
+        if(vahiculoActivo.type == "H")
+    	{
+        	if(vahiculoActivo.regresando)
+        	{
+        		moveAutomatically(vahiculoActivo);
+        	}
+        	if(!vahiculoActivo.acoplado && !isMoving){
+                consumirCombustible(vahiculoActivo);
+            }
+    	}
+        
 
         if (globalDroneVariables.avisarPesquero.isDown){
             if (globalDroneVariables.equipo == "Patrullero"){
@@ -535,8 +564,6 @@ var DroneViewState = new Phaser.Class({
                 	
 
                 }
-
-
             }
         }
 
@@ -570,9 +597,6 @@ var DroneViewState = new Phaser.Class({
             }
 
         };
-
-
-
 
     }
 
@@ -614,7 +638,7 @@ function setMovement(boat, sprite) {
 
 function consumirCombustible(vehiculo){
 
-    let baseConsumo = 0.05; //Barco Pesado
+    let baseConsumo = 0.01; //Barco Pesado
     if(vehiculo.combustible > 0){
         switch (vehiculo.type){
             case "B":
@@ -626,10 +650,56 @@ function consumirCombustible(vehiculo){
                 break;
             case "H":
                 vehiculo.combustible -= (baseConsumo * 2);
+                if(vehiculo.combustible < 80)
+                {
+                	vehiculo.regresando = true;
+                	var boatWithHelicopter = partida.Patrulleros.Barcos.find(function (input) {
+                        return typeof input.helicoptero !== "undefined";
+                    });
+                	
+                	var target = new Phaser.Math.Vector2();
+                	target.x = boatWithHelicopter.sprite.x;
+                	target.y = boatWithHelicopter.sprite.y;
+                	var angleToPointer = Phaser.Math.Angle.Between(vehiculo.sprite.x, vehiculo.sprite.y, target.x, target.y);
+            		var angleDelta = Phaser.Math.Angle.Wrap(angleToPointer - vehiculo.sprite.rotation);
+            		vehiculo.sprite.rotation = angleToPointer;
+            		vehiculo.sprite.setAngularVelocity(0);
+            		vehiculo.sprite.target = target;
+            		vehiculo.sprite.thrust(0);
+            		vehiculo.sprite.thrust(0.004);
+                }
                 break;
             case "L":
                 vehiculo.combustible -= (baseConsumo / 4);
                 break;
         }
     }
+}
+
+function moveAutomatically(vehicle)
+{
+	if(vehicle.sprite.target != null)
+	{
+		var distance = Phaser.Math.Distance.Between(vehicle.sprite.x, vehicle.sprite.y, vehicle.sprite.target.x, vehicle.sprite.target.y);
+		if (vehicle.sprite.body.speed > 0 && vehicle.regresando)
+	    {
+	       if (distance < 2)
+	       {
+	    	   var boatWithHelicopter = partida.Patrulleros.Barcos.find(function (input) {
+                   return typeof input.helicoptero !== "undefined";
+               });
+	    	   vehicle.sprite.thrust(0);
+	    	   vehicle.regresando = false;
+	    	   vehicle.acoplado = true;
+	    	   vehicle.combustible = 100;
+	    	   vehicle.activo = false;
+	    	   vehicle.sprite.x = boatWithHelicopter.sprite.x;
+	    	   vehicle.sprite.y = boatWithHelicopter.sprite.y;
+	    	   vehicle.sprite.rotation = boatWithHelicopter.sprite.rotation;
+	    	   vehicle.sprite.mass = boatWithHelicopter.sprite.mass;
+	    	   boatWithHelicopter.activo = true;
+	    	   boatWithHelicopter.helicoptero = vehicle;
+	       }
+	    }
+	}	
 }
