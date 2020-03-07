@@ -10,9 +10,9 @@ import persistencia.fabricas.FabricaAbstracta;
 
 public class Partida {
 	
-	private int IdPartida;
-	private boolean tormenta;
-	private float tiempoPartida;
+	private int idPartida;
+	private Date fechaHora;
+	private String clima;
 	private Jugadores jugadores;
 	private IDAOJugadores daoJugadores;
 	
@@ -21,12 +21,12 @@ public class Partida {
 		super();
 	}
 
-	public Partida(int id, boolean tormen, float tiempoPart, Jugadores jug) throws PersistenciaException {
+	public Partida(int id, Date fh, String clim, Jugadores jug) throws PersistenciaException {
 		
 		super();
 		this.setIdPartida(id);
-		this.setTormenta(tormen);
-		this.tiempoPartida=tiempoPart;
+		this.setFechaHora(fh);
+		this.setClima(clim);
 		this.setJugadores(jug);
 		
 		try {
@@ -56,22 +56,32 @@ public class Partida {
 
 
 	public int getIdPartida() {
-		return IdPartida;
+		return idPartida;
 	}
 
 
 	public void setIdPartida(int idPartida) {
-		this.IdPartida = idPartida;
+		this.idPartida = idPartida;
 	}
 
 
-	public boolean getTormenta() {
-		return tormenta;
+	public Date getFechaHora() {
+		return fechaHora;
 	}
 
 
-	public void setTormenta(Boolean tormenta) {
-		this.tormenta = tormenta;
+	public void setFechaHora(Date fechaHora) {
+		this.fechaHora = fechaHora;
+	}
+
+
+	public String getClima() {
+		return clima;
+	}
+
+
+	public void setClima(String clima) {
+		this.clima = clima;
 	}
 
 
@@ -90,14 +100,6 @@ public class Partida {
 
 	public void setDaoJugadores(IDAOJugadores daoJugadores) {
 		this.daoJugadores = daoJugadores;
-	}
-
-	public float getTiempoPartida() {
-		return tiempoPartida;
-	}
-
-	public void setTiempoPartida(float tiempoPartida) {
-		this.tiempoPartida = tiempoPartida;
 	}
 
 }

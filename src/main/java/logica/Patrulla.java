@@ -1,6 +1,6 @@
 package logica;
 
-public abstract class Patrulla extends Vehiculo {
+public abstract class Patrulla extends Barco {
 	
 
 	private static final long serialVersionUID = 1L;

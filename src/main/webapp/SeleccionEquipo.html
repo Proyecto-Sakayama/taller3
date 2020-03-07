@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<TITLE>Test Input </TITLE>
+<SCRIPT LANGUAGE="JavaScript">
+function readText (form) {
+    TestVar =form.inputbox.value;
+    alert ("You typed: " + TestVar);
+}
+function writeText (form) {
+    form.inputbox.value = "Have a nice day!"
+}
+</SCRIPT>
+</HEAD>
+</head>
+<body>
+<FORM NAME="myform" ACTION="" METHOD="GET">
+Enter something in the box: <BR>
+<INPUT TYPE="text" NAME="inputbox" VALUE=""><P>
+<INPUT TYPE="button" NAME="button1" Value="Read" onClick="readText(this.form)">
+<INPUT TYPE="button" NAME="button2" Value="Write" onClick="writeText(this.form)">
+</FORM>
+</body>
+</html>
+
+

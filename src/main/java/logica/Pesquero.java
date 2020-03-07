@@ -1,6 +1,6 @@
 package logica;
 
-public abstract class Pesquero extends Vehiculo {
+public abstract class Pesquero extends Barco {
 	
 
 	private static final long serialVersionUID = 1L;
@@ -43,7 +43,7 @@ public abstract class Pesquero extends Vehiculo {
 		this.cantidadPescada = cantidadPescada;
 	}
 
-	public boolean getAtrapado() {
+	public boolean isAtrapado() {
 		return atrapado;
 	}
 

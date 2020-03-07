@@ -19,14 +19,20 @@ import com.google.gson.Gson;
 @ServerEndpoint(value = "/acciones/")
 public class EndpointAcciones {
 	private Session session;
-	private static final Set<EndpointAcciones> endpointsPartida = new CopyOnWriteArraySet<>();
+	private static final EndpointAcciones[] endpointsPartida = new EndpointAcciones[2];
 	private static int seconds = 300;
 
 	@OnOpen
 	public void onOpen(Session session) throws IOException, EncodeException {
 
 		this.session = session;
-        endpointsPartida.add(this);
+		if (endpointsPartida[0] == null) {
+			endpointsPartida[0] = this;
+		
+		} else {
+			endpointsPartida[1] = this;
+		
+		}
         
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
@@ -87,16 +93,18 @@ public class EndpointAcciones {
 	    
 	    private static void broadcast(String json) throws IOException, EncodeException {
 
-	        endpointsPartida.forEach(endpoint -> {
-	            synchronized (endpoint) {
-	                try {
-	                    endpoint.session.getBasicRemote()
-	                            .sendText(json);
-	                } catch (IOException e) {
-	                    e.printStackTrace();
-	                }
-	            }
-	        });
+	    	for (int i = 0; i < 2; i++) {
+
+				if (endpointsPartida[i] != null) {
+					synchronized (endpointsPartida[i]) {
+						try {
+							endpointsPartida[i].session.getBasicRemote().sendText(json);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
 	    } 
 
 

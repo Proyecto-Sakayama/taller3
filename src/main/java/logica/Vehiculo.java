@@ -10,17 +10,15 @@ public abstract class Vehiculo implements Serializable{
 	private int coordY;
 	private int orientacion;
 	private int cantCombustible;
-	private int velocidad;
 	private String tipoVehiculo;
 	
 	
-	public Vehiculo (int id, int coordX, int coordY, int orientacion, int cantComb, String tipoVehiculo, int vel) {
+	public Vehiculo (int id, int coordX, int coordY, int orientacion, int cantComb, String tipoVehiculo) {
 		
 		this.setId(id);
 		this.setCoordX(coordX);
 		this.setCoordY(coordY);
 		this.setOrientacion(orientacion);
-		this.setVelocidad(vel);
 		this.setCantCombustible(cantComb);
 		this.setTipoVehiculo(tipoVehiculo);
 	}
@@ -83,16 +81,6 @@ public abstract class Vehiculo implements Serializable{
 
 	public void setTipoVehiculo(String tipoVehiculo) {
 		this.tipoVehiculo = tipoVehiculo;
-	}
-
-
-	public int getVelocidad() {
-		return velocidad;
-	}
-
-
-	public void setVelocidad(int velocidad) {
-		this.velocidad = velocidad;
 	}
 
 }

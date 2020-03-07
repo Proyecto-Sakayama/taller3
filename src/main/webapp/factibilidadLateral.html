@@ -45,7 +45,7 @@ var config = {
 //definiciones de phaser
 var game = new Phaser.Game(config);
 var cursors;
-var bote1, patrullero1, jugador, bote2;
+var bote1, patrullero1, jugador;
 
 //definicion de cual comando
 var manejo = "";
@@ -63,37 +63,23 @@ function preload() {
 	
     //carga las imagenes al juegoç
     this.load.image('sky', 'assets/sky.png');
-    this.load.image('bote1', 'assets/bote1_h.png');
+    this.load.image('bote1', 'assets/barcofrente.png');
     this.load.image('patrullero1', 'assets/patrullero1_h.png');
     this.load.image('botonBote1', 'assets/btn_bote.png');
     this.load.image('botonPatrullero1', 'assets/btn_patrullero.png');	
 }
 
 
-function getUrlVars() {
-    var vars = {};
-    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-        vars[key] = value;
-    });
-    return vars;
-}
-
-var equipo = getUrlVars()["equipo"];
-
 
 function create() {
-    
     cursors = this.input.keyboard.createCursorKeys();
     this.add.image(400, 300, 'sky');
       bote1 = this.matter.add.image(100, 200, 'bote1');
-       
       
       bote1.setFrictionAir(0.15);
       bote1.setMass(30);
       bote1.setFixedRotation();
       bote1.setAngle(270);
-      
-       
       
       patrullero1 = this.matter.add.image(200, 300, 'patrullero1');
       
@@ -103,38 +89,29 @@ function create() {
       patrullero1.setAngle(270);
       
       this.matter.world.setBounds(0, 0, 800, 600);
-      //var test = "Pesquero";
-      websocket = new WebSocket('ws://localhost:8080/taller3/juego/' + equipo);
+      websocket = new WebSocket('ws://localhost:8080/taller3/juego/');
       
-      //websocketAcciones = new WebSocket('ws://localhost:8080/taller3/acciones/');
+      websocketAcciones = new WebSocket('ws://localhost:8080/taller3/acciones/');
 
       texto = this.add.text(550, 580, "Controla la patrulla:" + manejo, { font: "14px Arial", fill: "#ff0044"});
 
-//textoTiempo = this.add.text(32, 32, 'Tiempo restante de partida: ' + time);
+textoTiempo = this.add.text(32, 32, 'Tiempo restante de partida: ' + time);
 
-	//bote2.inputEnabled = true;
-	//bote2.events.onInputDown.add(listenerBote2, this);
-	
-	
-	
+
 }
-
-
 
 function enviarJSON(objeto) {
     let json = JSON.stringify(objeto);
     websocket.send(json);
 }
-/*
+
 function enviarJSONAcciones(objeto) {
     let json = JSON.stringify(objeto);
     websocketAcciones.send(json);
 }
-*/
+
 
 function update() {
-	
-	
 	
 	// LOGICA PARA MOVIMIENTOS
 	
@@ -188,27 +165,41 @@ function update() {
     {		
 		if (cursors.left.isDown)
 	    {
-			jugador.setAngularVelocity(-0.1);
+			jugador.x = jugador.x - 2;
 	    }
 	    else if (cursors.right.isDown)
 	    {
-	    	jugador.setAngularVelocity(0.1);
+			jugador.x = jugador.x + 2;
 	    }
 	
 	    if (cursors.up.isDown)
 	    {
-	    	jugador.thrust(0.08);
+	    	if(jugador.displayWidth > 1){
+	    		console.log(jugador.displayWidth);
+		    	jugador.displayWidth = jugador.displayWidth - 1;
+		    	jugador.displayHeight = jugador.displayHeight - 1;
+	    	}else{
+	    		jugador.visible = false;
+	    	}
 	    }
+	    
+	    if (cursors.down.isDown)
+	    {
+	    	if(jugador.displayWidth < 20){
+	    		jugador.visible = true;
+	    		console.log(jugador.displayWidth);
+	    		jugador.displayWidth = jugador.displayWidth + 1;
+	    		jugador.displayHeight = jugador.displayHeight + 1;
+	    	}
+	    this.game.state.start('Preloader');
+	    }
+	    
         let jugadorServer = new JugadorServer(manejo, jugador.x, jugador.y, jugador.angle);
         enviarJSON(jugadorServer);
         
     }
     
-    
-    
-    
-    
-/*
+
 	// LOGICA PARA MANEJO DE ACCIONES
 	
 	websocketAcciones.onmessage = function(event) {
@@ -238,7 +229,7 @@ function update() {
 	    		
   	};
 
-*/
+
 
 }
 

@@ -22,13 +22,14 @@ function JugadorServer(nombre, x, y, angle)
 	this.angle = angle;
 }
 var config = {
-    type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    type: Phaser.WEBGL,
+    width: 525,
+    height: 700,
     physics: {
         default: 'matter',
         matter: {
             gravity: {
+                x: 0,
                 y: 0
             }
         }
@@ -54,93 +55,60 @@ var bote1, patrullero1, jugador;
 //definicion de cual comando
 var manejo = "";
 var texto;
+var jugador;
 var jugadorRemoto;
 
-var zoomOut, zoomIn;
-var self;
-var cursor;
+var selBoton1,selBoton2;
+var jugadorServerRecibido, jugadorServerEnviado;
 
-var line;
-var t = -1;
-var duration = 5000;
+var zoomOut, zoomIn;
+
 
 function preload() {
 	
     //carga las imagenes al juegoç
-    this.load.image('plataforma', 'assets/sky_big.png');
+    this.load.image('plataforma', 'assets/plataforma.png');
     this.load.image('bote1', 'assets/bote1_h.png');
     this.load.image('patrullero1', 'assets/patrullero1_h.png');
     this.load.image('botonBote1', 'assets/btn_bote.png');
     this.load.image('botonPatrullero1', 'assets/btn_patrullero.png');	
-    this.load.image('transparente', 'assets/transparente.png');	
 }
 
+
+
 function create() {
-	self = this;
-	 //El "mundo" es de 4000 x 3000
-	cursor = this.add.image(0, 0, 'cursor').setVisible(false);
-	this.matter.world.setBounds(0, 0, 4000, 3000);
-    this.cameras.main.setBounds(0, 0, 4000, 3000).setName('main');
+	 //El "mundo" es de 3000 x 4000
+	this.matter.world.setBounds(0, 0, 3000, 4000);
+    this.cameras.main.setBounds(0, 0, 3000, 4000).setName('main');
+
+    //  La camara es de 400 px, entonces podemos ver todo el mundo con un zoom de 0.1
+//     this.minimap = this.cameras.add(600, 0, 300, 400).setZoom(0.1).setName('mini');
+//     this.minimap.setBackgroundColor(0x002244);
+//     this.minimap.scrollX = 2000;
+//     this.minimap.scrollY = 1500;
 	
-    this.add.image(2000, 1500, 'plataforma');
-    bote1 = this.matter.add.image(1600, 1600, 'bote1').setInteractive();
+    this.add.image(1500, 2000, 'plataforma');
+    bote1 = this.matter.add.image(1600, 1600, 'bote1');
     
     bote1.setFrictionAir(0.15);
     bote1.setMass(30);
     bote1.setFixedRotation();
     bote1.setAngle(270);
-//     bote1.setBounce(1)
     
-    bote1.on('pointerdown', function(game){
-        jugador = bote1;
-        manejo = "bote1"; 
-	});
-    
-    patrullero1 = this.matter.add.image(1500, 1700, 'patrullero1').setInteractive();
+    patrullero1 = this.matter.add.image(1500, 1700, 'patrullero1');
     
     patrullero1.setFrictionAir(0.15);
     patrullero1.setMass(30);
     patrullero1.setFixedRotation();
     patrullero1.setAngle(270);
-//     patrullero1.setBounce(1)
     
-    patrullero1.on('pointerdown', function(){
-        jugador = patrullero1;
-        manejo = "patrullero1";
-	});
 
     websocket = new WebSocket('ws://localhost:8080/taller3/juego/');
     cursors = this.input.keyboard.createCursorKeys();
-    texto = this.add.text(0, 0, "Controla la patrulla:" + manejo, { font: "14px Arial", fill: "#ff0044"});
+    texto = this.add.text(550, 580, "Controla la patrulla:" + manejo, { font: "14px Arial", fill: "#ff0044"});
     zoomOut = this.input.keyboard.addKey('O'); 
     zoomIn = this.input.keyboard.addKey('I');  
-
-    
-	this.input.on('pointerdown', function(pointer){
-// 	    	destination = this.physics.add.image(pointer.worldX, pointer.worldY, 'transparente');
-// 	    	var angleToPointer = Phaser.Math.Angle.Between(jugador.x, jugador.y, destination.x, destination.y);
-// 			var angleDelta = Phaser.Math.Angle.Wrap(angleToPointer - jugador.rotation);
-// 			jugador.rotation = angleToPointer;
-// 			jugador.setAngularVelocity(0);
-	
-// 	    	this.physics.moveToObject(jugador, destination, 200);
-// 	        var collider = this.physics.add.overlap(jugador, destination, function (sourceOnDest)
-// 	        {
-// 	    		sourceOnDest.body.stop();
-// 				destination.setActive(false).setVisible(false);
-// 	            this.physics.world.removeCollider(collider);
-// 	        }, null, this); 
-		destination = this.matter.add.image(pointer.worldX, pointer.worldY, 'transparente');
-		line = new Phaser.Geom.Line(
-            jugador.x,
-            jugador.y,
-            destination.x,
-            destination.y
-        );
-		 t = 0;
-    }, this, jugador);
-	
-	
+   
 }
 
 function enviarJSON(objeto) {
@@ -149,41 +117,17 @@ function enviarJSON(objeto) {
     websocket.send(json);
 }
 
-function keysPressed(self)
-{
+function update() {
 	if (Phaser.Input.Keyboard.JustDown(zoomOut))
     {
-		self.cameras.main.setZoom(0.2);
+		this.cameras.main.setZoom(0.175);
     }
 	else{
 		if (Phaser.Input.Keyboard.JustDown(zoomIn))
 	    {
-			self.cameras.main.setZoom(1);
+			this.cameras.main.setZoom(1);
 	    }
 	}
-}
-function update(time, delta) {
-	if (t != -1)
-    {
-		t += delta;
-
-	    if (t >= duration)
-	    {
-	        //  Reached the end
-	        jugador.setVelocity(0, 0);
-	    }
-	    else
-	    {
-	        var d = (t / duration);
-
-	        var p = line.getPoint(d);
-
-	        jugador.setPosition(p.x, p.y);
-	    }
-    }
-
-    
-	keysPressed(self);
 	websocket.onmessage = function(event) {
 	    if(event.data != null)
 	    {
@@ -228,6 +172,7 @@ function update(time, delta) {
   };
 //actualiza las imagenes cuando te vas moviendo
     texto.setText("Controla la patrulla:" + manejo);
+	this.add.text(550, 0, "envia al servidor", { font: "14px Arial", fill: "#ff0044"});
     
 	if (jugador != null && !(typeof jugador === 'undefined'))
     {		
@@ -249,14 +194,12 @@ function update(time, delta) {
         
    		// Centro la camara en el jugador
         // -400 porque el ancho es 800
-        this.cameras.main.scrollX = jugador.x - 400;
-        this.cameras.main.scrollY = jugador.y - 300;
+        this.cameras.main.scrollX = jugador.x - 262;
+        this.cameras.main.scrollY = jugador.y - 350;
         
         //  Como esta camara es de 400px de ancho, centro resto 200
 //         this.minimap.scrollX = Phaser.Math.Clamp(jugador.x - 200, 800, 2000);
     }
-	
-	
 	
 
 }
