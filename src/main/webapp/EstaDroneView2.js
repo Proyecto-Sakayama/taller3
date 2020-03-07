@@ -5,6 +5,8 @@ var globalDroneVariables = {
     websocketTime: null,
     equipo: null,
     barcosCargados: 0,
+    spotlight: null,
+    distanciaAviso: 150,
 
     //Messages
     texto: null,
@@ -59,7 +61,7 @@ var DroneViewState = new Phaser.Class({
 
     preload: function () {
         //carga las imagenes al juego
-        this.load.image('sky', 'assets/water.jpg');
+        this.load.image('water', 'assets/water.jpg');
         this.load.image('bote1', 'assets/bote1_h.png');
         this.load.image('heli', 'assets/heli1.png');
         this.load.image('patrullero1', 'assets/patrullero1_2.png');
@@ -87,10 +89,17 @@ var DroneViewState = new Phaser.Class({
 
 
         this.matter.world.setBounds(0, 0, 1200, 650);
-        var map = this.add.image(600, 325, 'sky');
+        var map = this.add.image(600, 325, 'water');
         var panel = this.add.image(1432, 325, 'panel');
 
-
+        globalDroneVariables.spotlight = this.make.sprite({
+    	    x: 200,
+    	    y: 150,
+    	    key: 'mask',
+    	    add: false
+    	});
+        //map.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
+    	
 
         //PESQUEROS
         var pesquero = this.matter.add.image(100, 200, 'bote1');
@@ -98,13 +107,14 @@ var DroneViewState = new Phaser.Class({
         pesquero.setMass(45);
         pesquero.setFixedRotation();
         pesquero.setAngle(270);
-
+        pesquero.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
+        
         var pesquero2 = this.matter.add.image(200, 300, 'patrullero1');
         pesquero2.setFrictionAir(0.15);
         pesquero2.setMass(90);
         pesquero2.setFixedRotation();
         pesquero2.setAngle(270);
-
+        pesquero2.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
 
         //PATRULLEROS
@@ -113,125 +123,28 @@ var DroneViewState = new Phaser.Class({
         patrullero.setMass(45);
         patrullero.setFixedRotation();
         patrullero.setAngle(270);
+        patrullero.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
-
-
-
-
-        this.light = null
-        this.renderTexture = null
-
-
-        var x = 400
-        var y = 300
-
-        var reveal = this.add.image(x, y, 'map')
-        this.cover = this.add.image(x, y, 'map')
-        this.cover.setTint(0x004c99)
-
-        var width = this.cover.width
-        var height = this.cover.height
-
-        var rt = this.make.renderTexture({
-            width: null,
-            height: null,
-            add: false
-        })
-
-        var maskImage = this.make.image({
-            x: null,
-            y: null,
-            key: rt.texture.key,
-            add: false
-        })
-
-        this.cover.mask = new Phaser.Display.Masks.BitmapMask(this, maskImage)
-        this.cover.mask.invertAlpha = true
-
-        reveal.mask = new Phaser.Display.Masks.BitmapMask(this, maskImage)
-
-        this.light = this.add.circle(0, 0, 30, 0x000000, 1)
-        this.light.visible = false
-
-        this.input.on(Phaser.Input.Events.POINTER_MOVE, this.handlePointerMove, this)
-
-        this.renderTexture = rt
-
-
-        handlePointerMove(pointer)
-        {
-            var x = pointer.x - this.cover.x + this.cover.width * 0.5
-            var y = pointer.y - this.cover.y + this.cover.height * 0.5
-
-            this.renderTexture.clear()
-            this.renderTexture.draw(this.light, x, y)
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        /*
-        var spotlight = this.make.sprite({
-            x: 400,
-            y: 300,
-            key: 'mask',
-            add: false
-        });
-
-        map.mask = new Phaser.Display.Masks.BitmapMask(this, spotlight);
-
-
-        this.input.on('pointermove', function (pointer) {
-
-            spotlight.x = pointer.x;
-            spotlight.y = pointer.y;
-
-
-        });
-
-
-        this.tweens.add({
-            targets: spotlight,
-            alpha: 0,
-            duration: 2000,
-            ease: 'Sine.easeInOut',
-            loop: 0,
-            yoyo: true
-        });
-*/
         var patrullero2 = this.matter.add.image(400, 300, 'patrullero1');
         patrullero2.setFrictionAir(0.15);
         patrullero2.setMass(90);
         patrullero2.setFixedRotation();
         patrullero2.setAngle(270);
-
+        patrullero2.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
+        
         var helicopter = this.matter.add.image(400, 300, 'heli');
         helicopter.setFrictionAir(0.15);
         helicopter.setMass(90);
         helicopter.setFixedRotation();
         helicopter.setAngle(270);
+        helicopter.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
         var boteSprite = this.matter.add.image(400, 300, 'bote1');
         boteSprite.setFrictionAir(0.15);
         boteSprite.setMass(90);
         boteSprite.setFixedRotation();
         boteSprite.setAngle(270);
-
+        boteSprite.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
         //CONEXION JUEGO
         globalDroneVariables.websocket = new WebSocket('ws://localhost:8080/taller3/juego/' + globalDroneVariables.equipo);
@@ -309,7 +222,8 @@ var DroneViewState = new Phaser.Class({
             armas: {
                 ametralladora: {
                     cadencia: 2,
-                    nivelDanio: 5
+                    nivelDanio: 5,
+                    alcance: 75
                 }
             },
             combustible: 100,
@@ -345,11 +259,13 @@ var DroneViewState = new Phaser.Class({
             armas: {
                 ametralladora: {
                     cadencia: 2,
-                    nivelDanio: 5
+                    nivelDanio: 5,
+                    alcance: 75
                 },
                 canion: {
                     cadencia: 1,
-                    nivelDanio: 10
+                    nivelDanio: 10,
+                    alcance: 150
                 }
             },
             combustible: 100,
@@ -541,6 +457,8 @@ var DroneViewState = new Phaser.Class({
             isMoving = true;
         }
 
+		globalDroneVariables.spotlight.x = vahiculoActivo.sprite.x;
+		globalDroneVariables.spotlight.y = vahiculoActivo.sprite.y;
 
         //is shooting
         var isShooting = false;
@@ -614,7 +532,7 @@ var DroneViewState = new Phaser.Class({
         if (globalDroneVariables.avisarPesquero.isDown){
             if (globalDroneVariables.equipo == "Patrullero"){
                 if(vahiculoActivo.type == "B"){
-
+                	
 
                 }
 

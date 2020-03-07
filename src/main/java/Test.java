@@ -61,14 +61,14 @@ public class Test {
 		
 		Partida part = new Partida();
 		part.setIdPartida(1);
-		part.setTiempoPartida(5);
-		part.setTormenta(false);
-		
-		System.out.println(part.getIdPartida());
-		System.out.println(part.getTiempoPartida());
-		System.out.println(part.getTormenta());
-		
-		
+//		part.setTiempoPartida(5);
+//		part.setTormenta(false);
+//		
+//		System.out.println(part.getIdPartida());
+//		System.out.println(part.getTiempoPartida());
+//		System.out.println(part.getTormenta());
+//		
+//		
 		//Creo arraylist de jugadores
 		
 		Jugadores jugs = new Jugadores();
