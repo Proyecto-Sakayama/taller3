@@ -1,3 +1,12 @@
+var parameters = {
+    velocidadRotacion: 0.07, //0.007
+    aceleracion: 0.04, // 0.004
+    distanciaAviso: 150,
+    tiempoEntreAvisos: 3 //seconds
+};
+
+
+
 var globalDroneVariables = {
 
     //Game
@@ -6,7 +15,7 @@ var globalDroneVariables = {
     equipo: null,
     barcosCargados: 0,
     spotlight: null,
-    distanciaAviso: 150,
+    enemigoActivo: null,
 
     //Messages
     texto: null,
@@ -17,7 +26,8 @@ var globalDroneVariables = {
     moverIzquierda: null,
     moverDerecha: null,
 
-    cambiarBarcoActivo: null,
+    seleccionarBarcoPesado: null,
+    seleccionarBarcoLiviano: null,
     desacoplarHelicoptero: null,
     desacoplarBote: null,
     avisarPesquero: null,
@@ -26,19 +36,19 @@ var globalDroneVariables = {
     inmovilizarPesquero: null,
     iniciarTormenta: null,
 
+    avisarPesqueroJustPressed: false,
+
     //Info vehiculos
     InfoVehiculo_Info1: null,
     InfoVehiculo_Info2: null,
     InfoVehiculo_Info3: null,
     InfoVehiculo_Info4: null,
     InfoVehiculo_Info5: null,
-    InfoVehiculo_Info6: null,
     InfoVehiculo_Info1T: null,
     InfoVehiculo_Info2T: null,
     InfoVehiculo_Info3T: null,
     InfoVehiculo_Info4T: null,
-    InfoVehiculo_Info5T: null,
-    InfoVehiculo_Info6T: null
+    InfoVehiculo_Info5T: null
 };
 
 var partida = {
@@ -81,7 +91,8 @@ var DroneViewState = new Phaser.Class({
         globalDroneVariables.dispararCanion = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
         globalDroneVariables.inmovilizarPesquero = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.I);
         globalDroneVariables.iniciarTormenta = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.T);
-        globalDroneVariables.cambiarBarcoActivo = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
+        globalDroneVariables.cambiarBarcoPropio = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
+        globalDroneVariables.cambiarBarcoEnemigo = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL);
 
         globalDroneVariables.moverArriba = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         globalDroneVariables.moverIzquierda = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
@@ -93,13 +104,13 @@ var DroneViewState = new Phaser.Class({
         var panel = this.add.image(1432, 325, 'panel');
 
         globalDroneVariables.spotlight = this.make.sprite({
-    	    x: 200,
-    	    y: 150,
-    	    key: 'mask',
-    	    add: false
-    	});
+            x: 200,
+            y: 150,
+            key: 'mask',
+            add: false
+        });
         //map.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
-    	
+
 
         //PESQUEROS
         var pesquero = this.matter.add.image(100, 200, 'bote1');
@@ -108,7 +119,7 @@ var DroneViewState = new Phaser.Class({
         pesquero.setFixedRotation();
         pesquero.setAngle(270);
         pesquero.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
-        
+
         var pesquero2 = this.matter.add.image(200, 300, 'patrullero1');
         pesquero2.setFrictionAir(0.15);
         pesquero2.setMass(90);
@@ -131,7 +142,7 @@ var DroneViewState = new Phaser.Class({
         patrullero2.setFixedRotation();
         patrullero2.setAngle(270);
         patrullero2.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
-        
+
         var helicopter = this.matter.add.image(400, 300, 'heli');
         helicopter.setFrictionAir(0.15);
         helicopter.setMass(90);
@@ -169,22 +180,21 @@ var DroneViewState = new Phaser.Class({
         globalDroneVariables.InfoVehiculo_Info4 = this.add.text(1220, 270, ' ');
         globalDroneVariables.InfoVehiculo_Info5T = this.add.text(1220, 300, ' ');
         globalDroneVariables.InfoVehiculo_Info5 = this.add.text(1220, 320, ' ');
-        globalDroneVariables.InfoVehiculo_Info5T = this.add.text(1220, 350, ' ');
-        globalDroneVariables.InfoVehiculo_Info5 = this.add.text(1220, 370, ' ');
 
         this.add.text(1220, 390, 'CONTROLES');
         this.add.text(1220, 430, 'CURSORES: ');
         this.add.text(1220, 450, 'Mover barco');
         this.add.text(1220, 470, 'SHIFT: Cambiar');
-        this.add.text(1220, 490, 'de barco');
-
+        this.add.text(1220, 490, 'barco propio'); 
 
         if(globalDroneVariables.equipo == "Patrullero"){      
-            this.add.text(1220, 510, 'H: Helicoptero');
-            this.add.text(1220, 530, 'B: Bote');
-            this.add.text(1220, 550, 'A: Aviso');
-            this.add.text(1220, 570, 'Z: Metralleta');
-            this.add.text(1220, 590, 'X: Canion');
+            this.add.text(1220, 510, 'CTRL: Cambiar');
+            this.add.text(1220, 530, 'enemigo');
+            this.add.text(1220, 550, 'H: Helicoptero');
+            this.add.text(1220, 570, 'B: Bote');
+            this.add.text(1220, 590, 'A: Aviso');
+            this.add.text(1220, 610, 'Z: Metralleta');
+            this.add.text(1220, 630, 'X: Canion');
         }
 
         //DEFINICION DE OBJETOS
@@ -197,6 +207,7 @@ var DroneViewState = new Phaser.Class({
             cantidadPesca: 0,
             combustible: 100000,
             contadorAvisos: 0,
+            ultimoAvisoRecibido: null,
             vida: 100,
             activo: globalDroneVariables.equipo == "Pesquero"
         }
@@ -209,6 +220,7 @@ var DroneViewState = new Phaser.Class({
             cantidadPesca: 0,
             combustible: 100000,
             contadorAvisos: 0,
+            ultimoAvisoRecibido: null,
             vida: 100,
             activo: false
         }
@@ -315,6 +327,34 @@ var DroneViewState = new Phaser.Class({
         }
 
 
+
+
+        if(globalDroneVariables.equipo == "Patrullero"){
+
+            var barcosEnemigosEnRango = [];
+
+            partida.Pesqueros.Barcos.forEach(function(item){
+                var distance = Phaser.Math.Distance.Between(vahiculoActivo.sprite.x, vahiculoActivo.sprite.y, item.sprite.x, item.sprite.y);
+
+                if(distance <= parameters.distanciaAviso){
+                    barcosEnemigosEnRango.push(item);
+                }
+            });
+
+            if(!barcosEnemigosEnRango.length){
+                globalDroneVariables.enemigoActivo = null;
+            }else if(globalDroneVariables.enemigoActivo == null){
+                globalDroneVariables.enemigoActivo = barcosEnemigosEnRango[0];
+
+            }
+
+        }
+
+
+
+
+
+
         //Actualizacion en pantalla del panel derecho de informacion
 
         switch (vahiculoActivo.type){
@@ -327,6 +367,10 @@ var DroneViewState = new Phaser.Class({
                     globalDroneVariables.InfoVehiculo_Info2.setText(vahiculoActivo.size.toUpperCase());                   
                     globalDroneVariables.InfoVehiculo_Info3T.setText('Combustible:');
                     globalDroneVariables.InfoVehiculo_Info3.setText(Math.round(vahiculoActivo.combustible));
+                    globalDroneVariables.InfoVehiculo_Info4T.setText('Enemigo en mira:');
+                    globalDroneVariables.InfoVehiculo_Info4.setText('PESQUERO ' + globalDroneVariables.enemigoActivo.size.toUpperCase);
+                    globalDroneVariables.InfoVehiculo_Info4T.addColor('#ff0000', 50);
+                    globalDroneVariables.InfoVehiculo_Info4T.addColor('#ff0000', 50);
                 }else{
                     globalDroneVariables.InfoVehiculo_Info1T.setText('Tipo:');
                     globalDroneVariables.InfoVehiculo_Info1.setText('PESQUERO');
@@ -334,10 +378,10 @@ var DroneViewState = new Phaser.Class({
                     globalDroneVariables.InfoVehiculo_Info2.setText(vahiculoActivo.size.toUpperCase()); 
                     globalDroneVariables.InfoVehiculo_Info3T.setText('Vida:');
                     globalDroneVariables.InfoVehiculo_Info3.setText(vahiculoActivo.vida);
-                    globalDroneVariables.InfoVehiculo_Info4T.setText('Avisos:');
-                    globalDroneVariables.InfoVehiculo_Info4.setText(vahiculoActivo.contadorAvisos);
-                    globalDroneVariables.InfoVehiculo_Info5T.setText('Pesca:');
-                    globalDroneVariables.InfoVehiculo_Info5.setText(vahiculoActivo.cantidadPesca);
+                    globalDroneVariables.InfoVehiculo_Info4T.setText('Pesca:');
+                    globalDroneVariables.InfoVehiculo_Info4.setText(vahiculoActivo.cantidadPesca);
+                    globalDroneVariables.InfoVehiculo_Info5T.setText('Avisos:');
+                    globalDroneVariables.InfoVehiculo_Info5.setText(vahiculoActivo.contadorAvisos);
                 }
                 break;
             case "H": 
@@ -403,6 +447,7 @@ var DroneViewState = new Phaser.Class({
                     });
 
                     setMovement(boat, boteServer.sprite);
+                    boat.contadorAvisos = boteServer.contadorAvisos;
                     //}                      
 
                 });
@@ -417,14 +462,14 @@ var DroneViewState = new Phaser.Class({
         var isMoving = false;
         if (globalDroneVariables.moverIzquierda.isDown && vahiculoActivo.combustible > 0) {
             //vahiculoActivo.sprite.setAngularVelocity(-0.09);
-            vahiculoActivo.sprite.rotation -= 0.007;
+            vahiculoActivo.sprite.rotation -= parameters.velocidadRotacion;
             if(vahiculoActivo.helicoptero !== undefined && vahiculoActivo.helicoptero.acoplado){
                 //vahiculoActivo.helicoptero.sprite.setAngularVelocity(-0.09);
-                vahiculoActivo.helicoptero.sprite.rotation -= 0.007;
+                vahiculoActivo.helicoptero.sprite.rotation -= parameters.velocidadRotacion;
             }
             if(vahiculoActivo.bote !== undefined && vahiculoActivo.bote.acoplado){
                 //vahiculoActivo.bote.sprite.setAngularVelocity(-0.09);
-                vahiculoActivo.bote.sprite.rotation -= 0.007;
+                vahiculoActivo.bote.sprite.rotation -= parameters.velocidadRotacion;
             }
             consumirCombustible(vahiculoActivo);
 
@@ -432,33 +477,33 @@ var DroneViewState = new Phaser.Class({
         }
         else if (globalDroneVariables.moverDerecha.isDown && vahiculoActivo.combustible > 0) { //if (globalDroneVariables.cursors.right.isDown) {
             //vahiculoActivo.sprite.setAngularVelocity(0.09);
-            vahiculoActivo.sprite.rotation += 0.007;
+            vahiculoActivo.sprite.rotation += parameters.velocidadRotacion;
             if(vahiculoActivo.helicoptero !== undefined && vahiculoActivo.helicoptero.acoplado){
                 //vahiculoActivo.helicoptero.sprite.setAngularVelocity(0.09);
-                vahiculoActivo.helicoptero.sprite.rotation += 0.007;
+                vahiculoActivo.helicoptero.sprite.rotation += parameters.velocidadRotacion;
             }
             if(vahiculoActivo.bote !== undefined && vahiculoActivo.bote.acoplado){
                 //vahiculoActivo.bote.sprite.setAngularVelocity(0.09);
-                vahiculoActivo.bote.sprite.rotation += 0.007;
+                vahiculoActivo.bote.sprite.rotation += parameters.velocidadRotacion;
             }
             consumirCombustible(vahiculoActivo);
             isMoving = true;
         }
 
         if (globalDroneVariables.moverArriba.isDown && vahiculoActivo.combustible > 0) {
-            vahiculoActivo.sprite.thrust(0.004);
+            vahiculoActivo.sprite.thrust(parameters.aceleracion);
             if(vahiculoActivo.helicoptero !== undefined && vahiculoActivo.helicoptero.acoplado){
-                vahiculoActivo.helicoptero.sprite.thrust(0.004);
+                vahiculoActivo.helicoptero.sprite.thrust(parameters.aceleracion);
             }
             if(vahiculoActivo.bote !== undefined && vahiculoActivo.bote.acoplado){
-                vahiculoActivo.bote.sprite.thrust(0.004);
+                vahiculoActivo.bote.sprite.thrust(parameters.aceleracion);
             }
             consumirCombustible(vahiculoActivo);
             isMoving = true;
         }
 
-		globalDroneVariables.spotlight.x = vahiculoActivo.sprite.x;
-		globalDroneVariables.spotlight.y = vahiculoActivo.sprite.y;
+        globalDroneVariables.spotlight.x = vahiculoActivo.sprite.x;
+        globalDroneVariables.spotlight.y = vahiculoActivo.sprite.y;
 
         //is shooting
         var isShooting = false;
@@ -470,25 +515,24 @@ var DroneViewState = new Phaser.Class({
 */
 
 
-        if (isMoving || isShooting){
-            enviarJSON(partida);
-        }
+
 
         //Change active boat
-        var newAcvtiveBoat = null;
-        if (globalDroneVariables.cambiarBarcoActivo.isDown)
+        var newAcvtiveBoat = null; 
+        if (Phaser.Input.Keyboard.JustDown(globalDroneVariables.cambiarBarcoPropio))
         {
             if (globalDroneVariables.equipo == "Pesquero") {
                 newAcvtiveBoat = partida.Pesqueros.Barcos.find(function (input) {
-                    return input.id == (vahiculoActivo.id == 1 ? 2 : 1);
+                    return !input.activo; 
                 });
             }
             else {
                 newAcvtiveBoat = partida.Patrulleros.Barcos.find(function (input) {
-                    return input.id == (vahiculoActivo.id == 3 ? 4 : 3);
+                    return !input.activo; 
                 });
             }
         }      
+
 
         if (newAcvtiveBoat != null) {
             vahiculoActivo.activo = false;
@@ -529,11 +573,57 @@ var DroneViewState = new Phaser.Class({
 
 
 
-        if (globalDroneVariables.avisarPesquero.isDown){
+        //////////////////////////////////////////////////////////////////
+        if (Phaser.Input.Keyboard.JustDown(globalDroneVariables.cambiarBarcoEnemigo))
+        {
+            if (globalDroneVariables.equipo == "Patrullero") {
+                newEnemyBoat = barcosEnemigosEnRango.find(function (input) {
+                    return input.id != globalDroneVariables.enemigoActivo.id;
+                });
+                globalDroneVariables.enemigoActivo = newEnemyBoat;
+            }
+        }          
+
+
+
+        var isAlerting = false;
+        if( Phaser.Input.Keyboard.JustDown(globalDroneVariables.avisarPesquero)){
+
             if (globalDroneVariables.equipo == "Patrullero"){
                 if(vahiculoActivo.type == "B"){
-                	
 
+                    if(barcosEnemigosEnRango && barcosEnemigosEnRango.length && globalDroneVariables.enemigoActivo !== null){
+                        isAlerting = true;
+
+                        var barcoEnemigoAAvisar = partida.Pesqueros.Barcos.find(function(item){
+                            return item.id == globalDroneVariables.enemigoActivo.id;
+
+                        });
+
+                        barcoEnemigoAAvisar.contadorAvisos ++;
+
+                        /*
+                        barcosEnemigosEnRango.forEach(function(item){
+
+                            var barcoEnemigoAAvisar = partida.Pesqueros.Barcos.find(function(item2){
+                                return item.id == item2.id;
+
+                            });
+
+                            barcoEnemigoAAvisar.contadorAvisos ++;
+
+                        });
+                        */
+                    }
+
+
+                    /* if(true//Distancia de vahiculoActivo y enemigoSeleccionado es menor a parameters.distanciaAviso y enemigoSeleccionado.avisos menor a 2 y diferencia entre tiempo de partida y enemigoSeleccionado.ultimoAviso es mayor o igual a parameters.tiempoEntreAvisos)
+                      ){
+                        //enemigoSeleccionado.avisos += 1;
+                        //enemigoSeleccionado.ultimoAviso = globaldronevariables.tiemporestantepartida
+
+                    }
+                    */
                 }
 
 
@@ -541,6 +631,9 @@ var DroneViewState = new Phaser.Class({
         }
 
 
+        if (isMoving || isShooting || isAlerting){
+            enviarJSON(partida);
+        }
 
         //TIEMPO
 
@@ -603,6 +696,11 @@ function formatTime(seconds){
     minutes = Math.floor(seconds / 60);
     seconds = seconds % 60;
     return ("0" + minutes).slice(-2) + ":" + ("0" + seconds).slice(-2);
+}
+
+function formatSeconds(time){
+    seconds = (time.substr(0,2) * 60) + time.substr(3,5);
+    return seconds;
 }
 
 function setMovement(boat, sprite) {
