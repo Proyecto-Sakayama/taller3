@@ -209,7 +209,7 @@ function checkBoatStatus()
 		    		var distance = Phaser.Math.Distance.Between(dict[key].x, dict[key].y, dict[key].target.x, dict[key].target.y);
 					if (dict[key].body.speed > 0)
 				    {
-				       if (distance < 4)
+				       if (distance < 4 && dict[key].movedByClick)
 				       {
 				    	   dict[key].body.reset(dict[key].target.x, dict[key].target.y);
 				    	   dict[key].movedByClick = false;
