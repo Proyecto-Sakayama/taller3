@@ -2,9 +2,14 @@ var parameters = {
     velocidadRotacion: 0.07, //0.007
     aceleracion: 0.04, // 0.004
     distanciaAviso: 150,
-    tiempoEntreAvisos: 3 //seconds
+    tiempoEntreAvisos: 3, //seconds
+    baseConsumoCombustible: 0.05,  //Barcos pesados
+    cantidadAvisosParaDisparar: 2,
+    masaBarcosPesados: 90,
+    masaBarcosLivianos: 45,
+    masaHelicoptero: 22,
+    masaBote: 32
 };
-
 
 
 var globalDroneVariables = {
@@ -69,6 +74,12 @@ var DroneViewState = new Phaser.Class({
         Phaser.Scene.call(this, { key: "DroneView" });
     },
 
+    /************************************************************************************************************************************************
+
+                                                                        PRELOAD
+
+    *************************************************************************************************************************************************/
+
     preload: function () {
         //carga las imagenes al juego
         this.load.image('water', 'assets/water.jpg');
@@ -79,6 +90,13 @@ var DroneViewState = new Phaser.Class({
         this.load.image('panel', 'assets/panel.png');
     },
 
+
+
+    /************************************************************************************************************************************************
+
+                                                                        CREATE
+
+    *************************************************************************************************************************************************/
 
     create: function () {
 
@@ -115,14 +133,14 @@ var DroneViewState = new Phaser.Class({
         //PESQUEROS
         var pesquero = this.matter.add.image(100, 200, 'bote1');
         pesquero.setFrictionAir(0.15);
-        pesquero.setMass(45);
+        pesquero.setMass(parameters.masaBarcosLivianos);
         pesquero.setFixedRotation();
         pesquero.setAngle(270);
         pesquero.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
         var pesquero2 = this.matter.add.image(200, 300, 'patrullero1');
         pesquero2.setFrictionAir(0.15);
-        pesquero2.setMass(90);
+        pesquero2.setMass(parameters.masaBarcosPesados);
         pesquero2.setFixedRotation();
         pesquero2.setAngle(270);
         pesquero2.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
@@ -131,28 +149,28 @@ var DroneViewState = new Phaser.Class({
         //PATRULLEROS
         var patrullero = this.matter.add.image(300, 300, 'bote1');
         patrullero.setFrictionAir(0.15);
-        patrullero.setMass(45);
+        patrullero.setMass(parameters.masaBarcosLivianos);
         patrullero.setFixedRotation();
         patrullero.setAngle(270);
         patrullero.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
         var patrullero2 = this.matter.add.image(400, 300, 'patrullero1');
         patrullero2.setFrictionAir(0.15);
-        patrullero2.setMass(90);
+        patrullero2.setMass(parameters.masaBarcosPesados);
         patrullero2.setFixedRotation();
         patrullero2.setAngle(270);
         patrullero2.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
         var helicopter = this.matter.add.image(400, 300, 'heli');
         helicopter.setFrictionAir(0.15);
-        helicopter.setMass(90);
+        helicopter.setMass(parameters.masaBarcosPesados);
         helicopter.setFixedRotation();
         helicopter.setAngle(270);
         helicopter.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
         var boteSprite = this.matter.add.image(400, 300, 'bote1');
         boteSprite.setFrictionAir(0.15);
-        boteSprite.setMass(90);
+        boteSprite.setMass(parameters.masaBarcosPesados);
         boteSprite.setFixedRotation();
         boteSprite.setAngle(270);
         boteSprite.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
@@ -295,11 +313,26 @@ var DroneViewState = new Phaser.Class({
 
     },
 
+
+    /************************************************************************************************************************************************
+
+                                                                        UPDATE
+
+    *************************************************************************************************************************************************/
+
+
     update: function () {
 
         var change = false;
 
-        //Se obtiene el bote activo que es controlado por el usuario (solo uno en cada momento)
+
+        /***********************************************
+
+        SELECCION DE VEHICULO ACTIVO
+
+        ************************************************/
+
+
         var vahiculoActivo = null;
         if (globalDroneVariables.equipo == "Patrullero") {
             vahiculoActivo = partida.Patrulleros.Barcos.find(function (input) {
@@ -328,6 +361,13 @@ var DroneViewState = new Phaser.Class({
 
 
 
+        /***********************************************
+
+        IDENTIFICACION DE ENEMIGOS EN RANGO Y SELECCION DE ACTIVO
+
+        ************************************************/
+
+
 
         if(globalDroneVariables.equipo == "Patrullero"){
 
@@ -354,8 +394,12 @@ var DroneViewState = new Phaser.Class({
 
 
 
+        /***********************************************
 
-        //Actualizacion en pantalla del panel derecho de informacion
+        ACTUALIZACION DE PANEL DE INFORMACION LATERAL
+
+        ************************************************/
+
 
         switch (vahiculoActivo.type){
 
@@ -367,10 +411,14 @@ var DroneViewState = new Phaser.Class({
                     globalDroneVariables.InfoVehiculo_Info2.setText(vahiculoActivo.size.toUpperCase());                   
                     globalDroneVariables.InfoVehiculo_Info3T.setText('Combustible:');
                     globalDroneVariables.InfoVehiculo_Info3.setText(Math.round(vahiculoActivo.combustible));
-                    globalDroneVariables.InfoVehiculo_Info4T.setText('Enemigo en mira:');
-                    globalDroneVariables.InfoVehiculo_Info4.setText('PESQUERO ' + globalDroneVariables.enemigoActivo.size.toUpperCase);
-                    globalDroneVariables.InfoVehiculo_Info4T.addColor('#ff0000', 50);
-                    globalDroneVariables.InfoVehiculo_Info4T.addColor('#ff0000', 50);
+                    globalDroneVariables.InfoVehiculo_Info4T.setText('Enemigo selec.:');
+
+                    var textEnemigoSelec = "NINGUNO";
+                    if(globalDroneVariables.enemigoActivo !== null){
+                        textEnemigoSelec =   'PESQUERO ' + globalDroneVariables.enemigoActivo.size.toUpperCase();                          
+                    }
+
+                    globalDroneVariables.InfoVehiculo_Info4.setText(textEnemigoSelec);
                 }else{
                     globalDroneVariables.InfoVehiculo_Info1T.setText('Tipo:');
                     globalDroneVariables.InfoVehiculo_Info1.setText('PESQUERO');
@@ -404,7 +452,13 @@ var DroneViewState = new Phaser.Class({
 
 
 
-        //UPDATE DE INFO DE VEHICULO ACTIVO
+
+        /***********************************************
+
+        PROCESAMIENTO DE MENSAJE RECIBIDO DESDE EL SERVIDOR Y ACTUALIZACION DE PARTIDA LOCAL
+
+        ************************************************/
+
 
         //get data from server
         globalDroneVariables.websocket.onmessage = function (event) {
@@ -458,7 +512,17 @@ var DroneViewState = new Phaser.Class({
 
         }
 
-        //Send Movement
+
+
+        /***********************************************
+
+        CAPTURA DE ACCIONES DEL USUARIO
+
+        ************************************************/
+
+
+        ////// MOVIMIENTO IZQUIERDA
+
         var isMoving = false;
         if (globalDroneVariables.moverIzquierda.isDown && vahiculoActivo.combustible > 0) {
             //vahiculoActivo.sprite.setAngularVelocity(-0.09);
@@ -475,6 +539,10 @@ var DroneViewState = new Phaser.Class({
 
             isMoving = true;
         }
+
+
+        ////// MOVIMIENTO DERECHA
+
         else if (globalDroneVariables.moverDerecha.isDown && vahiculoActivo.combustible > 0) { //if (globalDroneVariables.cursors.right.isDown) {
             //vahiculoActivo.sprite.setAngularVelocity(0.09);
             vahiculoActivo.sprite.rotation += parameters.velocidadRotacion;
@@ -490,6 +558,9 @@ var DroneViewState = new Phaser.Class({
             isMoving = true;
         }
 
+
+        ////// MOVIMIENTO ADELANTE
+
         if (globalDroneVariables.moverArriba.isDown && vahiculoActivo.combustible > 0) {
             vahiculoActivo.sprite.thrust(parameters.aceleracion);
             if(vahiculoActivo.helicoptero !== undefined && vahiculoActivo.helicoptero.acoplado){
@@ -502,22 +573,17 @@ var DroneViewState = new Phaser.Class({
             isMoving = true;
         }
 
+
+
+        ////// POSICION SPOTLIGHT
         globalDroneVariables.spotlight.x = vahiculoActivo.sprite.x;
         globalDroneVariables.spotlight.y = vahiculoActivo.sprite.y;
 
-        //is shooting
-        var isShooting = false;
-        /*
-        if (Phaser.Input.Keyboard.KeyCodes.SPACE) {
-            //TODO
-            //isShooting = true;
-        }
-*/
 
 
 
+        ////// SELECCION DE BARCOS
 
-        //Change active boat
         var newAcvtiveBoat = null; 
         if (Phaser.Input.Keyboard.JustDown(globalDroneVariables.cambiarBarcoPropio))
         {
@@ -534,10 +600,14 @@ var DroneViewState = new Phaser.Class({
         }      
 
 
+        //Actualizacion de Barco Activo
         if (newAcvtiveBoat != null) {
             vahiculoActivo.activo = false;
             newAcvtiveBoat.activo = true;
         }
+
+
+        ////// SELECCION DE HELICOPTERO
 
 
         if (globalDroneVariables.desacoplarHelicoptero.isDown){
@@ -548,9 +618,12 @@ var DroneViewState = new Phaser.Class({
                 vahiculoActivo.activo = false;        
                 boatWithHelicopter.helicoptero.activo = true;
                 boatWithHelicopter.helicoptero.acoplado = false;
-                boatWithHelicopter.helicoptero.sprite.setMass(22);
+                boatWithHelicopter.helicoptero.sprite.setMass(parameters.masaHelicoptero);
             }
         }
+
+
+        ////// SELECCION DE BOTE
 
         if (globalDroneVariables.desacoplarBote.isDown){
             if (globalDroneVariables.equipo == "Patrullero"){
@@ -560,11 +633,14 @@ var DroneViewState = new Phaser.Class({
                 vahiculoActivo.activo = false;        
                 boatWithBoat.bote.activo = true;
                 boatWithBoat.bote.acoplado = false;
-                boatWithBoat.bote.sprite.setMass(32);
+                boatWithBoat.bote.sprite.setMass(parameters.masaBote);
 
             }
         }
 
+
+
+        ////// CONSUMO DE COMBUSTIBLE HELICOPTERO MIENTRAS NO SE MUEVE
 
 
         if(vahiculoActivo.type == "H" && !vahiculoActivo.acoplado && !isMoving){
@@ -573,7 +649,9 @@ var DroneViewState = new Phaser.Class({
 
 
 
-        //////////////////////////////////////////////////////////////////
+        ////// SELECCION DE BARCO ENEMIGO DENTRO DE LOS QUE ESTAN EN RANGO  
+
+
         if (Phaser.Input.Keyboard.JustDown(globalDroneVariables.cambiarBarcoEnemigo))
         {
             if (globalDroneVariables.equipo == "Patrullero") {
@@ -584,6 +662,9 @@ var DroneViewState = new Phaser.Class({
             }
         }          
 
+
+
+        ////// ALERTA A BARCO PESQUERO
 
 
         var isAlerting = false;
@@ -600,42 +681,54 @@ var DroneViewState = new Phaser.Class({
 
                         });
 
-                        barcoEnemigoAAvisar.contadorAvisos ++;
 
-                        /*
-                        barcosEnemigosEnRango.forEach(function(item){
+                        if(barcoEnemigoAAvisar.contadorAvisos < parameters.cantidadAvisosParaDisparar) {
 
-                            var barcoEnemigoAAvisar = partida.Pesqueros.Barcos.find(function(item2){
-                                return item.id == item2.id;
+                            if(barcoEnemigoAAvisar.ultimoAvisoRecibido !== null){
 
-                            });
+                                if(tiempoUltimoAvisoCumplido(barcoEnemigoAAvisar.ultimoAvisoRecibido)){
+                                    barcoEnemigoAAvisar.contadorAvisos ++;
+                                    barcoEnemigoAAvisar.ultimoAvisoRecibido = partida.tiempoRestantePartida;
+                                }
+                            }else{
+                                barcoEnemigoAAvisar.contadorAvisos ++;
+                                barcoEnemigoAAvisar.ultimoAvisoRecibido = partida.tiempoRestantePartida;
 
-                            barcoEnemigoAAvisar.contadorAvisos ++;
+                            }
 
-                        });
-                        */
+                        }
                     }
-
-
-                    /* if(true//Distancia de vahiculoActivo y enemigoSeleccionado es menor a parameters.distanciaAviso y enemigoSeleccionado.avisos menor a 2 y diferencia entre tiempo de partida y enemigoSeleccionado.ultimoAviso es mayor o igual a parameters.tiempoEntreAvisos)
-                      ){
-                        //enemigoSeleccionado.avisos += 1;
-                        //enemigoSeleccionado.ultimoAviso = globaldronevariables.tiemporestantepartida
-
-                    }
-                    */
                 }
-
-
             }
         }
+
+
+
+
+        ////// DISPARO CANION
+
+        var isShooting = false;
+
+        /*
+        if (Phaser.Input.Keyboard.KeyCodes.SPACE) {
+            //TODO
+            //isShooting = true;
+        }
+*/
+
+
+
+        ////// SI HUBO ALGUN CAMBIO SE ENVIA AL SERVIDOR
 
 
         if (isMoving || isShooting || isAlerting){
             enviarJSON(partida);
         }
 
-        //TIEMPO
+
+
+        ////// TIEMPO DE PARTIDA
+
 
         globalDroneVariables.websocketTime.onmessage = function(event) {
             if(event.data != null) {
@@ -666,7 +759,6 @@ var DroneViewState = new Phaser.Class({
 
 
 
-
     }
 
 });
@@ -674,10 +766,17 @@ var DroneViewState = new Phaser.Class({
 myGame.scenes.push(DroneViewState);
 
 
-/**************************
-    AUXILIARY FUNCTIONS
-***************************/
 
+
+/************************************************************************************************************************************************
+
+                                                                AUXILIARY FUNCTIONS
+
+    *************************************************************************************************************************************************/
+
+
+
+////// OBTENER EQUIPO DESDE URL
 
 function getTeamFromUrl() {
     var vars = {};
@@ -687,10 +786,16 @@ function getTeamFromUrl() {
     return vars["equipo"];
 }
 
+
+////// CONVIERTE OBJETO A JSON Y ENVIA A SERVIDOR
+
 function enviarJSON(objeto) {
     let json = JSON.stringify(objeto);
     globalDroneVariables.websocket.send(json);
 }
+
+
+////// FORMATO DE TIEMPO PARA MOSTRAR EN PANTALLA (Segundos a mm:ss)
 
 function formatTime(seconds){
     minutes = Math.floor(seconds / 60);
@@ -698,10 +803,8 @@ function formatTime(seconds){
     return ("0" + minutes).slice(-2) + ":" + ("0" + seconds).slice(-2);
 }
 
-function formatSeconds(time){
-    seconds = (time.substr(0,2) * 60) + time.substr(3,5);
-    return seconds;
-}
+
+////// Asignacion de coordenadas para actualizacion de movimiento
 
 function setMovement(boat, sprite) {
     boat.sprite.x = sprite.x;
@@ -710,9 +813,12 @@ function setMovement(boat, sprite) {
     boat.sprite.rotation = sprite.rotation;
 }
 
+
+////// Consumo de combustible centralizado para todos los vehiculos
+
 function consumirCombustible(vehiculo){
 
-    let baseConsumo = 0.05; //Barco Pesado
+    let baseConsumo = parameters.baseConsumoCombustible; //Barco Pesado
     if(vehiculo.combustible > 0){
         switch (vehiculo.type){
             case "B":
@@ -730,4 +836,13 @@ function consumirCombustible(vehiculo){
                 break;
         }
     }
+}
+
+
+////// ESPERA DE SEGUNDOS ENTRE CADA AVISO Y LA SIGUIENTE ACCION DEL JUGADOR
+
+function tiempoUltimoAvisoCumplido(ultimoAviso){
+
+    return (ultimoAviso - partida.tiempoRestantePartida) >= parameters.tiempoEntreAvisos;
+
 }
