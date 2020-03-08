@@ -183,10 +183,10 @@ var DroneViewState = new Phaser.Class({
         boteSprite.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
         //CONEXION JUEGO
-        globalDroneVariables.websocket = new WebSocket('ws://localhost:8080/taller3/juego/' + globalDroneVariables.equipo);
+        globalDroneVariables.websocket = new WebSocket('ws://192.168.1.5:8080/taller3/juego/' + globalDroneVariables.equipo);
 
         //CONEXION TIMER
-        globalDroneVariables.websocketTime = new WebSocket('ws://localhost:8080/taller3/acciones/');
+        globalDroneVariables.websocketTime = new WebSocket('ws://192.168.1.5:8080/taller3/acciones/');
         globalDroneVariables.textoTiempo = this.add.text(1220, 32, 'Tiempo: ' + formatTime(partida.tiempoRestantePartida));
 
 
@@ -521,7 +521,7 @@ var DroneViewState = new Phaser.Class({
                     boat.ultimoAvisoRecibido = boteServer.ultimoAvisoRecibido;
 
 
-                    if(partidaFromServer.Disparo.existe && boat.id == partidaFromServer.Disparo.pesquero.id)    {
+                    if(partidaFromServer.Disparo.existe && partidaFromServer.Disparo.impacto && boat.id == partidaFromServer.Disparo.pesquero.id)    {
                         var barcoImpactado = partida.Pesqueros.Barcos.find(function(item){
                             return item.id == boat.id;
                         });

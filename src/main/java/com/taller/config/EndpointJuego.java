@@ -2,6 +2,7 @@ package com.taller.config;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -26,37 +27,60 @@ public class EndpointJuego {
 	public void onOpen(Session session, @PathParam("equipo") String equipo) throws IOException, EncodeException {
 		Gson gson = new Gson();
 		this.session = session;
-		//String nombre = "";
+		// String nombre = "";
 
-		//if (endpointsPartida[0] == null && endpointsPartida[1] == null) {
-			if (equipo.equals("Patrullero")) {
-				endpointsPartida[0] = this;
-			
-			} else {
-				endpointsPartida[1] = this;
-			
-			}
-/*
-		} else if (endpointsPartida[0] == null) {
+		// if (endpointsPartida[0] == null && endpointsPartida[1] == null) {
+		if (equipo.equals("Patrullero")) {
 			endpointsPartida[0] = this;
-		
 
-		} else if (endpointsPartida[1] == null) {
+		} else {
 			endpointsPartida[1] = this;
-			
-		}
-
-		if (endpointsPartida[0] != null && endpointsPartida[1] != null) {
-
-			System.out.println("El juego ya ha comenzado, pruebe a iniciar partida más tarde.");
 
 		}
-		*/
+		/*
+		 * } else if (endpointsPartida[0] == null) { endpointsPartida[0] = this;
+		 * 
+		 * 
+		 * } else if (endpointsPartida[1] == null) { endpointsPartida[1] = this;
+		 * 
+		 * }
+		 * 
+		 * if (endpointsPartida[0] != null && endpointsPartida[1] != null) {
+		 * 
+		 * System.out.
+		 * println("El juego ya ha comenzado, pruebe a iniciar partida más tarde.");
+		 * 
+		 * }
+		 */
 	}
 
 	@OnMessage
 	public void onMessage(Session session, String partida) throws IOException, EncodeException {
-		broadcast(partida);
+
+		String partidaEnviar = partida;
+
+		boolean existeDisparo = partida.contains("\"Disparo\":{\"existe\":true");
+
+		if (existeDisparo) {
+
+			int probImpactoHasta = 70;
+
+			Random r = new Random();
+			int minimo = 0;
+			int maximo = 100;
+			int probabilidadObtenida = r.nextInt(maximo - minimo) + minimo;
+
+			if (probabilidadObtenida <= probImpactoHasta) {
+				partidaEnviar = partida;
+			} else {
+				partidaEnviar = partida.replace("\"impacto\":true", "\"impacto\":false");
+			}
+
+			System.out.println(probabilidadObtenida);
+
+		}
+
+		broadcast(partidaEnviar);
 	}
 
 	@OnClose
