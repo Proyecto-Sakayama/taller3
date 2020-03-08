@@ -583,6 +583,8 @@ var DroneViewState = new Phaser.Class({
                     });
 
                     setMovement(boat, boteServer.sprite);
+                    boat.contadorAvisos = boteServer.contadorAvisos;
+                    boat.cantidadPesca=boteServer.cantidadPesca;
                     //}                      
 
                 });
