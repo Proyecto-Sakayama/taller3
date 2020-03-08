@@ -608,7 +608,28 @@ var DroneViewState = new Phaser.Class({
 
         }
 
+        /***********************************************
 
+        ACTUALIZO POSICION ELEMENTOS BARCO CON HELICOPTERO Y BOTE
+
+        ************************************************/
+        
+        if(getBoatWithHelicopter() !== "undefined")
+        {
+        	var helicoptero = getBoatWithHelicopter().helicoptero;
+        	var bote = getBoatWithHelicopter().bote;
+        	if(helicoptero.acoplado)
+        	{
+        		helicoptero.sprite.x = getBoatWithHelicopter().sprite.x;
+            	helicoptero.sprite.y = getBoatWithHelicopter().sprite.y;
+        	}
+        	if(bote.acoplado)
+        	{
+        		bote.sprite.x = getBoatWithHelicopter().sprite.x;
+            	bote.sprite.y = getBoatWithHelicopter().sprite.y;
+        	}
+        }
+        
 
         /***********************************************
 
@@ -626,6 +647,7 @@ var DroneViewState = new Phaser.Class({
             if(vehiculoActivo.helicoptero !== undefined && vehiculoActivo.helicoptero.acoplado){
                 //vehiculoActivo.helicoptero.sprite.setAngularVelocity(-0.09);
                 vehiculoActivo.helicoptero.sprite.rotation -= parameters.velocidadRotacion;
+            	
             }
             if(vehiculoActivo.bote !== undefined && vehiculoActivo.bote.acoplado){
                 //vehiculoActivo.bote.sprite.setAngularVelocity(-0.09);
@@ -978,19 +1000,19 @@ function moveAutomatically(vehicle)
 	    {
 	       if (distance < 4)
 	       {
-	    	   var boatWithHelicopter = partida.Patrulleros.Barcos.find(function (input) {
-                   return typeof input.helicoptero !== "undefined";
-               });
 	    	   vehicle.sprite.thrust(0);
+	    	   vehicle.sprite.body.speed = 0;
 	    	   vehicle.regresando = false;
 	    	   vehicle.acoplado = true;
 	    	   vehicle.combustible = 100;
 	    	   vehicle.activo = false;
-	    	   vehicle.sprite.x = boatWithHelicopter.sprite.x;
-	    	   vehicle.sprite.y = boatWithHelicopter.sprite.y;
-	    	   vehicle.sprite.setAngle(boatWithHelicopter.sprite.angle);
+	    	   vehicle.sprite.x = getBoatWithHelicopter().sprite.x;
+	    	   vehicle.sprite.y = getBoatWithHelicopter().sprite.y;
+	    	   vehicle.sprite.setAngle(getBoatWithHelicopter().sprite.angle);
 	    	   vehicle.sprite.setMass(parameters.masaBarcosPesados);
-	    	   boatWithHelicopter.activo = true;
+	    	   vehicle.sprite.rotation = getBoatWithHelicopter().sprite.rotation;
+	    	   vehicle.sprite.setFixedRotation();
+	    	   getBoatWithHelicopter().activo = true;
 	       }
 	    }
 	}	
@@ -1002,4 +1024,12 @@ function tiempoUltimoAvisoCumplido(ultimoAviso){
 
     return (ultimoAviso - partida.tiempoRestantePartida) >= parameters.tiempoEntreAvisos;
 
+}
+
+function getBoatWithHelicopter()
+{
+	var boatWithHelicopter = partida.Patrulleros.Barcos.find(function (input) {
+        return typeof input.helicoptero !== "undefined";
+    });
+	return boatWithHelicopter;
 }
