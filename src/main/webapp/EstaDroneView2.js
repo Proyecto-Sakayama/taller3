@@ -878,11 +878,11 @@ function consumirCombustible(vehiculo){
     }
 }
 
-function returnToShip(vehiculo)
+function returnToShip(vehicule)
 {
-	if(vehiculo.combustible < 50)
+	if(vehicule.combustible < 50)
     {
-    	vehiculo.regresando = true;
+    	vehicule.regresando = true;
     	var boatWithHelicopter = partida.Patrulleros.Barcos.find(function (input) {
             return typeof input.helicoptero !== "undefined";
         });
@@ -890,15 +890,16 @@ function returnToShip(vehiculo)
     	var target = new Phaser.Math.Vector2();
     	target.x = boatWithHelicopter.sprite.x;
     	target.y = boatWithHelicopter.sprite.y;
-    	var angleToPointer = Phaser.Math.Angle.Between(vehiculo.sprite.x, vehiculo.sprite.y, target.x, target.y);
-		var angleDelta = Phaser.Math.Angle.Wrap(angleToPointer - vehiculo.sprite.rotation);
-		vehiculo.sprite.rotation = angleToPointer;
-		vehiculo.sprite.setAngularVelocity(0);
-		vehiculo.sprite.target = target;
-		vehiculo.sprite.thrust(0);
-		vehiculo.sprite.thrust(parameters.aceleracion);
+    	var angleToPointer = Phaser.Math.Angle.Between(vehicule.sprite.x, vehicule.sprite.y, target.x, target.y);
+		var angleDelta = Phaser.Math.Angle.Wrap(angleToPointer - vehicule.sprite.rotation);
+		vehicule.sprite.rotation = angleToPointer;
+		vehicule.sprite.setAngularVelocity(0);
+		vehicule.sprite.target = target;
+		vehicule.sprite.thrust(0);
+		vehicule.sprite.thrust(parameters.aceleracion);
     }
 }
+
 function moveAutomatically(vehicle)
 {
 	if(vehicle.sprite.target != null)
