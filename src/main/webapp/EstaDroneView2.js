@@ -22,6 +22,11 @@ var globalDroneVariables = {
     spotlight: null,
     distanciaAviso: 150,
     enemigoActivo: null,
+    //Sprints
+    text:null,
+    fish: null,
+    pesquero: null,
+    
     
     //Messages
     texto: null,
@@ -65,6 +70,9 @@ var partida = {
     },
     Patrulleros: {
         Barcos: []
+    },
+    Pesca: {
+        BancoPeces: []
     }
 };
 
@@ -85,11 +93,16 @@ var DroneViewState = new Phaser.Class({
     preload: function () {
         //carga las imagenes al juego
         this.load.image('water', 'assets/water.jpg');
+        this.load.image('fishes', 'assets/fishes.png');
         this.load.image('bote1', 'assets/bote1_h.png');
         this.load.image('heli', 'assets/heli1.png');
         this.load.image('patrullero1', 'assets/patrullero1_2.png');
         this.load.image('mask', 'assets/mask.png');
         this.load.image('panel', 'assets/panel.png');
+        //////////
+       
+        
+        /////////
     },
 
 
@@ -101,7 +114,7 @@ var DroneViewState = new Phaser.Class({
     *************************************************************************************************************************************************/
 
     create: function () {
-
+    	
         globalDroneVariables.equipo = getTeamFromUrl();
 
         globalDroneVariables.desacoplarHelicoptero = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
@@ -130,15 +143,28 @@ var DroneViewState = new Phaser.Class({
             add: false
         });
         //map.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
+    	
+      //BANCO DE PECES
+        globalDroneVariables.fish = this.add.image(50, 50,'fishes');
+        globalDroneVariables.fish.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
+        //this.physics.add.overlap(pesquero, fish, null, null, this);
+        var fish2 = this.add.image(100, 350,'fishes');
+        fish2.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
+        
+        var fish3 = this.add.image(150, 650,'fishes');
+        fish3.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
+        
 
-
-        //PESQUEROS
-        var pesquero = this.matter.add.image(100, 200, 'bote1');
-        pesquero.setFrictionAir(0.15);
-        pesquero.setMass(parameters.masaBarcosLivianos);
-        pesquero.setFixedRotation();
-        pesquero.setAngle(270);
-        pesquero.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
+        //PESQUEROS       
+        globalDroneVariables.pesquero = this.matter.add.image(100, 200, 'bote1');
+        globalDroneVariables.pesquero.setFrictionAir(0.15);
+        globalDroneVariables.pesquero.setMass(parameters.masaBarcosLivianos);
+        globalDroneVariables.pesquero.setFixedRotation();
+        globalDroneVariables.pesquero.setAngle(270);
+        globalDroneVariables.pesquero.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
+        
+        
+        
 
         var pesquero2 = this.matter.add.image(200, 300, 'patrullero1');
         pesquero2.setFrictionAir(0.15);
@@ -176,7 +202,9 @@ var DroneViewState = new Phaser.Class({
         boteSprite.setFixedRotation();
         boteSprite.setAngle(270);
         boteSprite.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
-
+        
+        
+        
         //CONEXION JUEGO
         globalDroneVariables.websocket = new WebSocket('ws://localhost:8080/taller3/juego/' + globalDroneVariables.equipo);
 
@@ -223,7 +251,7 @@ var DroneViewState = new Phaser.Class({
             id: 1,
             type: "B",
             size: "Liviano",
-            sprite: pesquero,
+            sprite: globalDroneVariables.pesquero,
             cantidadPesca: 0,
             combustible: 100000,
             contadorAvisos: 0,
@@ -285,9 +313,7 @@ var DroneViewState = new Phaser.Class({
             activo: false,
             regresando: false
         }
-
-
-
+        
         var barcoPatrullero2 = {
             id: 4,
             type: "B",
@@ -310,7 +336,34 @@ var DroneViewState = new Phaser.Class({
             helicoptero: helicoptero,
             bote: boteOb
         }
+        
+        var bancoPeces1 = {
+                id: 8,
+                //type: "L",
+                activo: true,
+                sprite: globalDroneVariables.fish,
+                peces: 10,
+        }
 
+        var bancoPeces2 = {
+                id: 8,
+                //type: "L",
+                activo: true,
+                sprite: fish2,
+                peces: 10,
+        }
+
+        var bancoPeces3 = {
+                id: 8,
+                //type: "L",
+                activo: true,
+                sprite: fish3,
+                peces: 10,
+        }
+        partida.Pesca.BancoPeces.push(bancoPeces1);
+        partida.Pesca.BancoPeces.push(bancoPeces2);
+        partida.Pesca.BancoPeces.push(bancoPeces3);
+        
         partida.Patrulleros.Barcos.push(barcoPatrullero);
         partida.Patrulleros.Barcos.push(barcoPatrullero2);
         partida.Pesqueros.Barcos.push(barcoPesquero);
@@ -330,7 +383,7 @@ var DroneViewState = new Phaser.Class({
         var colisionesConPatrulleroPesado = this.matter.world.nextCategory();
         barcoPatrullero2.sprite.setCollisionCategory(colisionesConPatrulleroPesado);
         boteOb.sprite.setCollisionCategory(colisionesConPatrulleroPesado);
-
+        
 
         barcoPesquero.sprite.setCollidesWith([colisionesConPesqueros, colisionesConPatrulleroLiviano, colisionesConPatrulleroPesado]);
         barcoPesquero2.sprite.setCollidesWith([colisionesConPesqueros, colisionesConPatrulleroLiviano, colisionesConPatrulleroPesado]);
@@ -339,9 +392,9 @@ var DroneViewState = new Phaser.Class({
         barcoPatrullero2.sprite.setCollidesWith([colisionesConPesqueros, colisionesConPatrulleroLiviano]);
         
         console.log('create success');
-
+        
     },
-
+////////////////////////////////UPDATE///////////////////////////////////////////////////////
 
     /************************************************************************************************************************************************
 
@@ -351,7 +404,7 @@ var DroneViewState = new Phaser.Class({
 
 
     update: function () {
-
+    	
         var change = false;
 
 
@@ -530,7 +583,19 @@ var DroneViewState = new Phaser.Class({
                     });
 
                     setMovement(boat, boteServer.sprite);
-                    boat.contadorAvisos = boteServer.contadorAvisos;
+                    //}                      
+
+                });
+                	
+                partida.Pesca.BancoPeces.forEach(function(banco){
+                    //if (boat.id != vehiculoActivo.id){
+
+                    var bancoServer  = partidaFromServer.Pesca.BancoPeces.find(function(item){
+                        return item.id == banco.id;
+                    });
+
+                    banco.cantidadPesca=bancoServer.cantidadPesca;
+                    banco.activo=bancoServer.activo;
                     //}                      
 
                 });
@@ -566,6 +631,16 @@ var DroneViewState = new Phaser.Class({
             }
             consumirCombustible(vehiculoActivo);
 
+            //Pesca//////////////////////////////////////
+            partida.Pesca.BancoPeces.forEach(function(item){
+            	var distance = Phaser.Math.Distance.Between(vehiculoActivo.sprite.x, vehiculoActivo.sprite.y, item.sprite.x, item.sprite.y);
+            	if(distance<50 && item.activo){
+            		item.activo=false;
+            		vehiculoActivo.cantidadPesca+=item.peces;
+            		item.sprite.setVisible(false);
+            	}
+            });
+            ////////////////////////////////////////////////////////
             isMoving = true;
         }
 
@@ -803,14 +878,6 @@ var DroneViewState = new Phaser.Class({
 
 myGame.scenes.push(DroneViewState);
 
-
-
-
-/************************************************************************************************************************************************
-
-                                                                AUXILIARY FUNCTIONS
-
-    *************************************************************************************************************************************************/
 
 
 
