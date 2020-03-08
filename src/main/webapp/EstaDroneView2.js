@@ -23,7 +23,6 @@ var globalDroneVariables = {
     distanciaAviso: 150,
     enemigoActivo: null,
     //Sprints
-    text:null,
     fish: null,
     pesquero: null,
     
@@ -31,6 +30,7 @@ var globalDroneVariables = {
     //Messages
     texto: null,
     textoTiempo: null,
+    textoPesca: null,
 
     //Keyboard controls
     moverArriba: null,
@@ -339,23 +339,20 @@ var DroneViewState = new Phaser.Class({
         
         var bancoPeces1 = {
                 id: 8,
-                //type: "L",
                 activo: true,
                 sprite: globalDroneVariables.fish,
                 peces: 10,
         }
 
         var bancoPeces2 = {
-                id: 8,
-                //type: "L",
+                id: 9,
                 activo: true,
                 sprite: fish2,
                 peces: 10,
         }
 
         var bancoPeces3 = {
-                id: 8,
-                //type: "L",
+                id: 10,
                 activo: true,
                 sprite: fish3,
                 peces: 10,
@@ -394,7 +391,6 @@ var DroneViewState = new Phaser.Class({
         console.log('create success');
         
     },
-////////////////////////////////UPDATE///////////////////////////////////////////////////////
 
     /************************************************************************************************************************************************
 
@@ -634,6 +630,7 @@ var DroneViewState = new Phaser.Class({
             consumirCombustible(vehiculoActivo);
 
             //Pesca//////////////////////////////////////
+            if (globalDroneVariables.equipo == "Pesquero"){
             partida.Pesca.BancoPeces.forEach(function(item){
             	var distance = Phaser.Math.Distance.Between(vehiculoActivo.sprite.x, vehiculoActivo.sprite.y, item.sprite.x, item.sprite.y);
             	if(distance<50 && item.activo){
@@ -642,6 +639,7 @@ var DroneViewState = new Phaser.Class({
             		item.sprite.setVisible(false);
             	}
             });
+            }
             ////////////////////////////////////////////////////////
             isMoving = true;
         }
