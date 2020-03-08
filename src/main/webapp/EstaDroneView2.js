@@ -8,7 +8,8 @@ var parameters = {
     masaBarcosPesados: 90,
     masaBarcosLivianos: 45,
     masaHelicoptero: 22,
-    masaBote: 32
+    masaBote: 32,
+    milla200_distancia: 100,
 };
 
 
@@ -26,6 +27,7 @@ var globalDroneVariables = {
     text:null,
     fish: null,
     pesquero: null,
+    milla200: null,
     
     
     //Messages
@@ -136,6 +138,18 @@ var DroneViewState = new Phaser.Class({
         var map = this.add.image(600, 325, 'water');
         var panel = this.add.image(1432, 325, 'panel');
 
+        /***********************************************
+
+        MILLA 200
+
+        ************************************************/
+        var graphics = this.add.graphics();
+        globalDroneVariables.milla200 = new Phaser.Curves.Line(new Phaser.Math.Vector2(0, parameters.milla200_distancia), new Phaser.Math.Vector2(1200, parameters.milla200_distancia));
+        graphics.clear();
+        graphics.lineStyle(2, 0xffffff, 1);
+
+        globalDroneVariables.milla200.draw(graphics);
+        
         globalDroneVariables.spotlight = this.make.sprite({
             x: 200,
             y: 150,
