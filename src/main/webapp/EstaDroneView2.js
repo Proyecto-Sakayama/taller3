@@ -171,13 +171,13 @@ var DroneViewState = new Phaser.Class({
         //map.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
     	
       //BANCO DE PECES
-        globalDroneVariables.fish = this.add.image(50, 50,'fishes');
+        globalDroneVariables.fish = this.add.image(Phaser.Math.Between(0, 1200), Phaser.Math.Between(parameters.milla200_distancia, 650),'fishes');
         globalDroneVariables.fish.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
         //this.physics.add.overlap(pesquero, fish, null, null, this);
-        var fish2 = this.add.image(100, 350,'fishes');
+        var fish2 = this.add.image(Phaser.Math.Between(0, 1200), Phaser.Math.Between(parameters.milla200_distancia, 650),'fishes');
         fish2.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
         
-        var fish3 = this.add.image(150, 650,'fishes');
+        var fish3 = this.add.image(Phaser.Math.Between(0, 1200), Phaser.Math.Between(parameters.milla200_distancia, 650),'fishes');
         fish3.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
         
 
