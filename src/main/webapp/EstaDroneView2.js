@@ -1,6 +1,8 @@
+//VERSION FUNCIONANDO
 var parameters = {
-    //ipServidor: localhost,
-    ipServidor: "192.168.1.44",
+    //ipServidor: "localhost",
+    //ipServidor: "192.168.1.44", //Casa Guz
+    ipServidor: "192.168.1.8", //Casa Marce
     puertoServidor: "8080",
 
     velocidadRotacion: 0.07, //0.007
@@ -13,7 +15,8 @@ var parameters = {
     masaBarcosLivianos: 45,
     masaHelicoptero: 22,
     masaBote: 32,
-    milla200_distancia: 100
+    milla200_distancia: 100,
+    metaPesca: 200
 };
 
 
@@ -27,7 +30,7 @@ var globalDroneVariables = {
     spotlight: null,
     distanciaAviso: 150,
     enemigoActivo: null,
-    //Sprints
+    //Sprites
     fish: null,
     pesquero: null,
     milla200: null,
@@ -171,14 +174,33 @@ var DroneViewState = new Phaser.Class({
         //map.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
         //BANCO DE PECES
-        globalDroneVariables.fish = this.add.image(50, 50,'fishes');
-        globalDroneVariables.fish.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
-        //this.physics.add.overlap(pesquero, fish, null, null, this);
-        var fish2 = this.add.image(100, 350,'fishes');
+        var fish = this.add.image(600, 560,'fishes');
+        fish.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
+
+        var fish2 = this.add.image(300, 440,'fishes');
         fish2.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
-        var fish3 = this.add.image(150, 650,'fishes');
+        var fish3 = this.add.image(600, 440,'fishes');
         fish3.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
+
+        var fish4 = this.add.image(900, 440,'fishes');
+        fish4.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
+
+        var fish5 = this.add.image(Phaser.Math.Between(100, 1200), 320,'fishes');
+        fish5.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
+
+        var fish6 = this.add.image(Phaser.Math.Between(400, 1200), 320,'fishes');
+        fish6.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
+
+        var fish7 = this.add.image(Phaser.Math.Between(800, 1200), 320,'fishes');
+        fish7.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
+
+        var fish8 = this.add.image(Phaser.Math.Between(400, 1200), 200,'fishes');
+        fish8.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
+
+        var fish9 = this.add.image(Phaser.Math.Between(700, 1200), 200,'fishes');
+        fish9.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
+
 
 
         //PESQUEROS       
@@ -244,6 +266,7 @@ var DroneViewState = new Phaser.Class({
 
         this.add.text(1220, 72, 'INFO VEHICULO ');
 
+        globalDroneVariables.textoPesca= this.add.text(1220,50,' ');
         globalDroneVariables.InfoVehiculo_Info1T = this.add.text(1220, 100, ' ');
         globalDroneVariables.InfoVehiculo_Info1 = this.add.text(1220, 120, ' ');
         globalDroneVariables.InfoVehiculo_Info2T = this.add.text(1220, 150, ' ');
@@ -373,26 +396,80 @@ var DroneViewState = new Phaser.Class({
         var bancoPeces1 = {
             id: 8,
             activo: true,
-            sprite: globalDroneVariables.fish,
-            peces: 10,
+            sprite: fish,
+            peces: 40
         }
 
         var bancoPeces2 = {
             id: 9,
             activo: true,
             sprite: fish2,
-            peces: 10,
+            peces: 20
         }
 
         var bancoPeces3 = {
             id: 10,
             activo: true,
             sprite: fish3,
-            peces: 10,
+            peces: 20
+        }
+
+
+        var bancoPeces4 = {
+            id: 11,
+            activo: true,
+            sprite: fish4,
+            peces: 20
+        }
+
+
+        var bancoPeces5 = {
+            id: 12,
+            activo: true,
+            sprite: fish5,
+            peces: 10
+        }
+
+
+        var bancoPeces6 = {
+            id: 13,
+            activo: true,
+            sprite: fish6,
+            peces: 10
+        }
+
+
+        var bancoPeces7 = {
+            id: 14,
+            activo: true,
+            sprite: fish7,
+            peces: 10
+        }
+
+
+        var bancoPeces8 = {
+            id: 15,
+            activo: true,
+            sprite: fish8,
+            peces: 5
+        }
+
+
+        var bancoPeces9 = {
+            id: 16,
+            activo: true,
+            sprite: fish9,
+            peces: 5
         }
         partida.Pesca.BancoPeces.push(bancoPeces1);
         partida.Pesca.BancoPeces.push(bancoPeces2);
         partida.Pesca.BancoPeces.push(bancoPeces3);
+        partida.Pesca.BancoPeces.push(bancoPeces4);
+        partida.Pesca.BancoPeces.push(bancoPeces5);
+        partida.Pesca.BancoPeces.push(bancoPeces6);
+        partida.Pesca.BancoPeces.push(bancoPeces7);
+        partida.Pesca.BancoPeces.push(bancoPeces8);
+        partida.Pesca.BancoPeces.push(bancoPeces9);
 
         partida.Patrulleros.Barcos.push(barcoPatrullero);
         partida.Patrulleros.Barcos.push(barcoPatrullero2);
@@ -536,6 +613,7 @@ var DroneViewState = new Phaser.Class({
 
         ************************************************/
 
+        globalDroneVariables.textoPesca.setText('Pesca:'+ getPescaTotal() +'/'+parameters.metaPesca);
 
         switch (vehiculoActivo.type){
 
@@ -650,6 +728,8 @@ var DroneViewState = new Phaser.Class({
                     boat.vida = boteServer.vida;
                     boat.contadorAvisos = boteServer.contadorAvisos;
                     boat.ultimoAvisoRecibido = boteServer.ultimoAvisoRecibido;
+                    boat.cantidadPesca = boteServer.cantidadPesca;
+                    //boat.hundido = boteServer.hundido;
 
 
                     if(partidaFromServer.Disparo.existe && partidaFromServer.Disparo.impacto && boat.id == partidaFromServer.Disparo.pesquero.id)    {
@@ -690,6 +770,7 @@ var DroneViewState = new Phaser.Class({
 
                     banco.cantidadPesca=bancoServer.cantidadPesca;
                     banco.activo=bancoServer.activo;
+                    banco.sprite.setVisible(bancoServer.sprite.visible);
                     //}                      
 
                 });
@@ -1217,4 +1298,14 @@ function capturarBarco(barco){
     }
 
 
+}			 
+
+function getPescaTotal(){
+    var pesca=0;
+    partida.Pesqueros.Barcos.forEach(function(item){
+        pesca += item.cantidadPesca;
+    });
+    return pesca;
 }
+
+
