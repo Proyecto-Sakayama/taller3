@@ -1,4 +1,8 @@
 var parameters = {
+    //ipServidor: localhost,
+    ipServidor: "192.168.1.44",
+    puertoServidor: "8080",
+
     velocidadRotacion: 0.07, //0.007
     aceleracion: 0.04, // 0.004
     distanciaAviso: 150,
@@ -228,10 +232,10 @@ var DroneViewState = new Phaser.Class({
 
 
         //CONEXION JUEGO
-        globalDroneVariables.websocket = new WebSocket('ws://localhost:8080/taller3/juego/' + globalDroneVariables.equipo);
+        globalDroneVariables.websocket = new WebSocket('ws://' + parameters.ipServidor + ':' + parameters.puertoServidor + '/taller3/juego/' + globalDroneVariables.equipo);
 
         //CONEXION TIMER
-        globalDroneVariables.websocketTime = new WebSocket('ws://localhost:8080/taller3/acciones/');
+        globalDroneVariables.websocketTime = new WebSocket('ws://' + parameters.ipServidor + ':' + parameters.puertoServidor + '/taller3/acciones/');
         globalDroneVariables.textoTiempo = this.add.text(1220, 32, 'Tiempo: ' + formatTime(partida.tiempoRestantePartida));
 
 
@@ -281,7 +285,8 @@ var DroneViewState = new Phaser.Class({
             vida: 100,
             activo: globalDroneVariables.equipo == "Pesquero",
             hundido: false,
-            regresando: false
+            regresando: false,
+            capturado: false
         }
 
         var barcoPesquero2 = {
@@ -296,7 +301,8 @@ var DroneViewState = new Phaser.Class({
             vida: 100,
             activo: false,
             hundido: false,
-            regresando: false
+            regresando: false,
+            capturado: false
         }
 
 
@@ -415,6 +421,26 @@ var DroneViewState = new Phaser.Class({
         boteOb.sprite.setCollidesWith([colisionesConPesqueros, colisionesConPatrulleroLiviano]);
         barcoPatrullero2.sprite.setCollidesWith([colisionesConPesqueros, colisionesConPatrulleroLiviano]);
 
+
+
+
+        ////// CAPTURA DE PESQUERO LIVIANO POR BOTE
+        var pesqueroCaptura = globalDroneVariables.pesquero;
+
+        this.matter.world.on('collisionstart', function (event, boteSprite, pesqueroCaptura) {
+
+            if(vehiculoDentroMilla200(partida.Pesqueros.Barcos[0]) && vehiculoDentroMilla200(getBoatWithHelicopter().bote) ){
+
+                capturarBarco(partida.Pesqueros.Barcos[0]);
+
+            }
+
+
+        });
+
+
+
+
         console.log('create success');
 
     },
@@ -448,9 +474,9 @@ var DroneViewState = new Phaser.Class({
             vehiculoActivo = partida.Pesqueros.Barcos.find(function (input) {
                 return input.activo;
             });
-            if(vehiculoActivo.hundido){
+            if(vehiculoActivo.hundido || vehiculoActivo.capturado){
                 vehiculoActivo = partida.Pesqueros.Barcos.find(function (input) {
-                    return !input.hundido;
+                    return !input.hundido && !input.capturado;
                 });
             }
 
@@ -486,7 +512,7 @@ var DroneViewState = new Phaser.Class({
             partida.Pesqueros.Barcos.forEach(function(item){
                 var distance = Phaser.Math.Distance.Between(vehiculoActivo.sprite.x, vehiculoActivo.sprite.y, item.sprite.x, item.sprite.y);
 
-                if(distance <= parameters.distanciaAviso && !item.hundido && vehiculoDentroMilla200(item)){
+                if(distance <= parameters.distanciaAviso && !item.hundido && !item.capturado && vehiculoDentroMilla200(item)){
                     barcosEnemigosEnRango.push(item);
                 }
             });
@@ -582,7 +608,11 @@ var DroneViewState = new Phaser.Class({
                         return item.id == boat.id;
                     });
 
-                    setMovement(boat, boteServer.sprite);
+                    if(boteServer.id !== vehiculoActivo.id){
+
+                        setMovement(boat, boteServer.sprite);
+
+                    }
                     boat.combustible = boteServer.combustible;
 
                     if (typeof boteServer.helicoptero !== "undefined"){
@@ -610,7 +640,14 @@ var DroneViewState = new Phaser.Class({
                         return item.id == boat.id;
                     });
 
-                    setMovement(boat, boteServer.sprite);
+                    if(boteServer.id !== vehiculoActivo.id){
+
+                        setMovement(boat, boteServer.sprite);
+                    }
+
+                    boat.combustible = boteServer.combustible;
+                    boat.capturado = boteServer.capturado;
+                    boat.vida = boteServer.vida;
                     boat.contadorAvisos = boteServer.contadorAvisos;
                     boat.ultimoAvisoRecibido = boteServer.ultimoAvisoRecibido;
 
@@ -684,6 +721,8 @@ var DroneViewState = new Phaser.Class({
                 bote.sprite.y = getBoatWithHelicopter().sprite.y;
             }
         }
+
+
 
 
         /***********************************************
@@ -774,7 +813,7 @@ var DroneViewState = new Phaser.Class({
         {
             if (globalDroneVariables.equipo == "Pesquero") {
                 newAcvtiveBoat = partida.Pesqueros.Barcos.find(function (input) {
-                    return !input.activo && !input.hundido; 
+                    return !input.activo && !input.hundido && !input.capturado; 
                 });
 
 
@@ -964,10 +1003,28 @@ var DroneViewState = new Phaser.Class({
         }
 
 
+
+        ////// CAPTURA DE PESQUERO PESADO POR HELICOPTERO
+
+        var capturaPorHelicoptero = false;
+        if(!getBoatWithHelicopter().helicoptero.acoplado && vehiculoDentroMilla200(partida.Pesqueros.Barcos[1]) && vehiculoDentroMilla200(getBoatWithHelicopter().helicoptero)){
+
+            var distance = Phaser.Math.Distance.Between(getBoatWithHelicopter().helicoptero.sprite.x, getBoatWithHelicopter().helicoptero.sprite.y, partida.Pesqueros.Barcos[1].sprite.x, partida.Pesqueros.Barcos[1].sprite.y);
+
+            if(distance<25){
+                capturarBarco(partida.Pesqueros.Barcos[1]);
+                capturaPorHelicoptero = true;
+
+            }
+
+        }
+
+
+
         ////// SI HUBO ALGUN CAMBIO SE ENVIA AL SERVIDOR
 
 
-        if (isMoving || isShooting || isAlerting){
+        if (isMoving || isShooting || isAlerting || capturaPorHelicoptero){
             enviarJSON(partida);
         }
 
@@ -1144,5 +1201,20 @@ function getBoatWithHelicopter()
 function vehiculoDentroMilla200(barco){
 
     return barco.sprite.y > parameters.milla200_distancia;
+
+}
+
+
+function capturarBarco(barco){
+
+    if(barco.contadorAvisos == 2 && tiempoUltimoAvisoCumplido(barco.ultimoAvisoRecibido)){
+
+        barco.combustible = 0;
+        barco.vida = 0;
+        barco.capturado = true;
+
+
+    }
+
 
 }
