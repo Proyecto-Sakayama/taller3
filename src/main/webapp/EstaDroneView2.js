@@ -10,6 +10,7 @@ var parameters = {
     masaHelicoptero: 22,
     masaBote: 32,
     milla200_distancia: 100,
+    metaPesca:200,
 };
 
 
@@ -23,6 +24,7 @@ var globalDroneVariables = {
     spotlight: null,
     distanciaAviso: 150,
     enemigoActivo: null,
+    pescaTotal: 0,
     //Sprints
     fish: null,
     pesquero: null,
@@ -237,7 +239,7 @@ var DroneViewState = new Phaser.Class({
 
 
         //PANEL DERECHO - INICIALIZACION DE TEXTOS
-
+        globalDroneVariables.textoPesca= this.add.text(1220,50,'Pesca:'+globalDroneVariables.pescaTotal+'/'+parameters.metaPesca);
         this.add.text(1220, 72, 'INFO VEHICULO ');
 
         globalDroneVariables.InfoVehiculo_Info1T = this.add.text(1220, 100, ' ');
@@ -368,14 +370,14 @@ var DroneViewState = new Phaser.Class({
                 id: 8,
                 activo: true,
                 sprite: globalDroneVariables.fish,
-                peces: 10,
+                peces: 5,
         }
 
         var bancoPeces2 = {
                 id: 9,
                 activo: true,
                 sprite: fish2,
-                peces: 10,
+                peces: 5,
         }
 
         var bancoPeces3 = {
@@ -718,6 +720,8 @@ var DroneViewState = new Phaser.Class({
             		item.activo=false;
             		vehiculoActivo.cantidadPesca+=item.peces;
             		item.sprite.setVisible(false);
+            		globalDroneVariables.pescaTotal=getPescaTotal();
+            		globalDroneVariables.textoPesca.setText('Pesca:'+globalDroneVariables.pescaTotal+'/'+parameters.metaPesca);
             	}
             });
             }
@@ -1141,4 +1145,12 @@ function getBoatWithHelicopter()
         return typeof input.helicoptero !== "undefined";
     });
 	return boatWithHelicopter;
+}
+
+function getPescaTotal(){
+	var pesca=0;
+	partida.Pesqueros.Barcos.forEach(function(item){
+        pesca = pesca+item.cantidadPesca;
+    });
+	return pesca;
 }
