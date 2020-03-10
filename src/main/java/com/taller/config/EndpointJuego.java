@@ -76,7 +76,6 @@ public class EndpointJuego {
 				partidaEnviar = partida.replace("\"impacto\":true", "\"impacto\":false");
 			}
 
-			System.out.println(probabilidadObtenida);
 
 		}
 
@@ -86,12 +85,12 @@ public class EndpointJuego {
 	@OnClose
 	public void onClose(Session session) throws IOException, EncodeException {
 
-		if (endpointsPartida[0] != null) {
+	/*	if (endpointsPartida[0] != null) {
 			endpointsPartida[0] = null;
 		} else {
 			endpointsPartida[1] = null;
 		}
-
+*/
 	}
 
 	@OnError

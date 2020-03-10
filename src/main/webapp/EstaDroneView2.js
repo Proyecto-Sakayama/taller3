@@ -1,8 +1,8 @@
 //VERSION FUNCIONANDO
 var parameters = {
-    //ipServidor: "localhost",
+    ipServidor: "localhost",
     //ipServidor: "192.168.1.44", //Casa Guz
-    ipServidor: "192.168.1.8", //Casa Marce
+    //ipServidor: "192.168.1.8", //Casa Marce
     puertoServidor: "8080",
 
     velocidadRotacion: 0.07, //0.007
@@ -202,7 +202,8 @@ var DroneViewState = new Phaser.Class({
         fish9.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
 
-
+        
+        
         //PESQUEROS       
         globalDroneVariables.pesquero = this.matter.add.image(100, 200, 'bote1');
         globalDroneVariables.pesquero.setFrictionAir(0.15);
@@ -672,7 +673,7 @@ var DroneViewState = new Phaser.Class({
         PROCESAMIENTO DE MENSAJE RECIBIDO DESDE EL SERVIDOR Y ACTUALIZACION DE PARTIDA LOCAL
 
         ************************************************/
-
+        var barcoFueImpactado = false;
 
         //get data from server
         globalDroneVariables.websocket.onmessage = function (event) {
@@ -755,7 +756,7 @@ var DroneViewState = new Phaser.Class({
                             barcoImpactado.sprite.x = 1300;
                             barcoImpactado.sprite.setVisible(false);
                         }
-
+                        barcoFueImpactado = true;
 
 
                     }               
@@ -830,18 +831,6 @@ var DroneViewState = new Phaser.Class({
             }
             consumirCombustible(vehiculoActivo);
 
-            //Pesca//////////////////////////////////////
-            if (globalDroneVariables.equipo == "Pesquero"){
-                partida.Pesca.BancoPeces.forEach(function(item){
-                    var distance = Phaser.Math.Distance.Between(vehiculoActivo.sprite.x, vehiculoActivo.sprite.y, item.sprite.x, item.sprite.y);
-                    if(distance<50 && item.activo){
-                        item.activo=false;
-                        vehiculoActivo.cantidadPesca+=item.peces;
-                        item.sprite.setVisible(false);
-                    }
-                });
-            }
-            ////////////////////////////////////////////////////////
             isMoving = true;
         }
 
@@ -879,11 +868,23 @@ var DroneViewState = new Phaser.Class({
         }
 
 
-
         ////// POSICION SPOTLIGHT
         globalDroneVariables.spotlight.x = vehiculoActivo.sprite.x;
         globalDroneVariables.spotlight.y = vehiculoActivo.sprite.y;
 
+
+        ////// PESCA
+
+        if (globalDroneVariables.equipo == "Pesquero" && isMoving){
+            partida.Pesca.BancoPeces.forEach(function(item){
+                var distance = Phaser.Math.Distance.Between(vehiculoActivo.sprite.x, vehiculoActivo.sprite.y, item.sprite.x, item.sprite.y);
+                if(distance<50 && item.activo){
+                    item.activo=false;
+                    vehiculoActivo.cantidadPesca+=item.peces;
+                    item.sprite.setVisible(false);
+                }
+            });
+        }
 
 
 
@@ -1105,7 +1106,7 @@ var DroneViewState = new Phaser.Class({
         ////// SI HUBO ALGUN CAMBIO SE ENVIA AL SERVIDOR
 
 
-        if (isMoving || isShooting || isAlerting || capturaPorHelicoptero){
+        if (isMoving || isShooting || isAlerting || capturaPorHelicoptero || barcoFueImpactado){
             enviarJSON(partida);
         }
 
