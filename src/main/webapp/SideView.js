@@ -31,7 +31,7 @@ var SideViewState = new Phaser.Class({
     
 
         this.matter.world.setBounds(0, 550, 1200, 650);
-        var sideMap = this.add.image(600, 725, 'sideWater');
+        var sideMap = this.add.image(600, 300, 'sideWater');
      
 
         
