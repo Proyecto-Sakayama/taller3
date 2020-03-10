@@ -20,7 +20,7 @@ import com.google.gson.Gson;
 public class EndpointAcciones {
 	private Session session;
 	private static final EndpointAcciones[] endpointsPartida = new EndpointAcciones[2];
-	private static int seconds = 30000;
+	private static int seconds = 240;
 
 	@OnOpen
 	public void onOpen(Session session) throws IOException, EncodeException {

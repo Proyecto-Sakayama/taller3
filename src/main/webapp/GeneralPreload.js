@@ -16,6 +16,7 @@ var preloadState = new Phaser.Class({
         
         console.log("Preload and create");
         game.scene.start("DroneView");
+        game.scene.start("SideView");
     }
     
     
