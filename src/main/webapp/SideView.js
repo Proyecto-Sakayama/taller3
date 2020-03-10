@@ -28,13 +28,13 @@ var SideViewState = new Phaser.Class({
 
     create: function () {
 
-    
+
 
         this.matter.world.setBounds(0, 550, 1200, 650);
         var sideMap = this.add.image(600, 300, 'sideWater');
-     
+        //sideMap.setScale(2); 
 
-        
+
         console.log('create success');
 
     },
@@ -48,7 +48,7 @@ var SideViewState = new Phaser.Class({
 
     update: function () {
 
-     
+
     }
 
 
