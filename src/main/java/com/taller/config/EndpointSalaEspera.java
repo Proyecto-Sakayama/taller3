@@ -30,18 +30,21 @@ public class EndpointSalaEspera {
 		Gson gson = new Gson();
 		this.session = session;
 				
-		if (equipo == "")
+		if (equipo == "EMPTY")
 		{
 			if (endpointsPartida.length == 0)
 			{
 				endpointsPartida[0] = this;
 				session.getBasicRemote().sendText("0");
+				System.out.println("0");
 			} else  
 			{
+				System.out.println("1");
 				endpointsPartida[1] = this;
 				String newTeam = "";
 				if (firstTeam != "")
 				{
+					System.out.println("2");
 					if (firstTeam == "Patrullero")
 					{
 						newTeam = "Pesquero";
@@ -51,10 +54,12 @@ public class EndpointSalaEspera {
 						newTeam = "Patrullero";
 					}
 				}
+				System.out.println("3" + newTeam);
 				session.getBasicRemote().sendText(newTeam);
 			}		
 		} else
 		{
+			System.out.println("4");
 			endpointsPartida[0] = this;
 			firstTeam = equipo;
 			session.getBasicRemote().sendText(firstTeam);
