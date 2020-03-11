@@ -23,146 +23,63 @@ import com.taller.model.Jugador;
 public class EndpointSalaEspera {
 	private Session session;
 	private static final EndpointSalaEspera[] endpointsPartida = new EndpointSalaEspera[2];
-    private String firstTeam = "";
-	
+	private String firstTeam = "";
+
 	@OnOpen
 	public void onOpen(Session session, @PathParam("equipo") String equipo) throws IOException, EncodeException {
 		Gson gson = new Gson();
 		this.session = session;
-				
-		if (equipo == "EMPTY")
-		{
-			if (endpointsPartida.length == 0)
-			{
+
+		if (equipo.equals("EMPTY")) {
+			if (endpointsPartida[0] == null && endpointsPartida[1] == null) {
 				endpointsPartida[0] = this;
 				session.getBasicRemote().sendText("0");
 				System.out.println("0");
-			} else  
-			{
+			} else {
 				System.out.println("1");
 				endpointsPartida[1] = this;
 				String newTeam = "";
-				if (firstTeam != "")
-				{
+				if (!firstTeam.equals("")) {
 					System.out.println("2");
-					if (firstTeam == "Patrullero")
-					{
+					if (firstTeam.equals("Patrullero")) {
 						newTeam = "Pesquero";
-					}				
-					else
-					{
+					} else {
 						newTeam = "Patrullero";
 					}
-				}
-				System.out.println("3" + newTeam);
-				session.getBasicRemote().sendText(newTeam);
-			}		
-		} else
-		{
-			System.out.println("4");
-			endpointsPartida[0] = this;
-			firstTeam = equipo;
-			session.getBasicRemote().sendText(firstTeam);
-		}
-		
-		
-		
-		
-		/*
-		
-		
-		
-		String nombre = "";
-		int cant = 0;
-
-		if (!equipo.equals("CONSULTA")) {
-
-			if (endpointsPartida[0] == null && endpointsPartida[1] == null) {
-				if (equipo.equals("Patrullero")) {
-					endpointsPartida[0] = this;
-					nombre = "patrullero1";
-
+					System.out.println("3" + newTeam);
+					session.getBasicRemote().sendText(newTeam);
 				} else {
-					endpointsPartida[1] = this;
-					nombre = "bote1";
+					System.out.println("4");
+					session.getBasicRemote().sendText("1");
 				}
 
-				String json = gson.toJson(nombre);
-				session.getBasicRemote().sendText(json);
-
-			} else if (endpointsPartida[0] == null) {
-				endpointsPartida[0] = this;
-				nombre = "patrullero1";
-
-				String json = gson.toJson(nombre);
-				session.getBasicRemote().sendText(json);
-
-			} else if (endpointsPartida[1] == null) {
-				endpointsPartida[1] = this;
-				nombre = "bote1";
-
-				String json = gson.toJson(nombre);
-				session.getBasicRemote().sendText(json);
 			}
 		} else {
-			String elqueesta = "NINGUNO";
-			if (endpointsPartida[0] != null || endpointsPartida[1] != null) {
-				if (endpointsPartida[0] != null) {
 
-					elqueesta = "Patrullero";
+			if (equipo.equals("start")) {
+				System.out.println("5");
+				broadcast("2");
 
-				} else {
-					elqueesta = "Pesquero";
-				}
+			} else {
+				System.out.println("6");
+				endpointsPartida[0] = this;
+				firstTeam = equipo;
+				broadcast(firstTeam);
 			}
-			String json = gson.toJson(elqueesta);
-			session.getBasicRemote().sendText(elqueesta);
 
 		}
 
-		Timer timer = new Timer();
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-
-				// System.out.println(seconds);
-
-				try {
-					broadcastStatus(endpointsPartida);
-
-				} catch (Exception e) {
-				}
-
-			}
-		}, 0, 1000);
-
-		if (endpointsPartida[0] != null && endpointsPartida[1] != null) {
-
-			System.out.println("El juego ya ha comenzado, pruebe a iniciar partida más tarde.");
-
-		}
-		
-		
-		*/
+	
 	}
 
 	@OnMessage
 	public void onMessage(Session session, String start) throws IOException, EncodeException {
-		
-		if (start == "start")
-		{
-			broadcast("2");
-		}
 
 	}
 
 	@OnClose
 	public void onClose(Session session) throws IOException, EncodeException {
-		Gson gson = new Gson();
-		String json = gson.toJson(Integer.toString(0));
-		session.getBasicRemote().sendText(json);
-		endpointsPartida[0] = null;
-		this.session = null;
+		
 	}
 
 	@OnError
@@ -171,7 +88,7 @@ public class EndpointSalaEspera {
 	}
 
 	public void broadcast(String start) {
-	
+
 		try {
 			endpointsPartida[0].session.getBasicRemote().sendText(start);
 			endpointsPartida[1].session.getBasicRemote().sendText(start);

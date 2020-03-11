@@ -1,5 +1,5 @@
 var websocket;
-var equipo = "";
+var equipo = "EMPTY";
 var ready = false;
 /*var mensaje = "Patrullero";
 var entro = false;*/
@@ -9,7 +9,7 @@ window.onload = function() {
     try 
     {
 
-        saladeespera();
+        saladeespera(equipo);
 
 
     } catch (error) {
@@ -23,18 +23,28 @@ $('#buttonNuevaPartida').click(function() {
     let b = document.getElementById("selectBarcoNuevo");
     equipo = b.options[b.selectedIndex].value;
 
-    if (isEmpty(equipo)) {
+    if (equipo == "EMPTY") {
         mostrarError("Debe seleccionar un equipo para comenzar.");
     } else {
         $('#selectBarcoNuevo').hide();
         $('#buttonNuevaPartida').hide();
         $('#loading').show();
-        saladeespera();	
+        saladeespera(equipo);	
     }
+
 });
 
-function saladeespera(){
-    websocket = new WebSocket('ws://localhost:8080/taller3/salaespera/' + equipo);
+
+
+$('#unirseAPartida').click(function() {
+
+  saladeespera("start");
+
+});   
+
+function saladeespera(team){
+    websocket = new WebSocket('ws://localhost:8080/taller3/salaespera/' + team);
+
     websocket.onmessage = function(event) {
         var serverTeam = event.data;
 
@@ -59,8 +69,8 @@ function saladeespera(){
 
             case "Patrullero":
 
-                if(equipo == null){
-                    equipo = "Patrullero";
+                if(equipo == "EMPTY"){
+                    equipo = "Pesquero";
                     ready = true;
                 }
 
@@ -69,15 +79,15 @@ function saladeespera(){
 
             case "Pesquero":
 
-                if(equipo == null){
-                    equipo = "Pesquero";
+                if(equipo == "EMPTY"){
+                    equipo = "Patrullero";
                     ready = true;
                 }
 
                 break;
 
             case "2":
-                
+
                 window.location.href = 'esteIndex.html?equipo=' + equipo;
 
                 break;
@@ -94,37 +104,11 @@ function saladeespera(){
 
         }
 
-
-        $('#unirseAPartida').click(function() {
-
-            websocket.send("start");	
-        });   
-
-
-
-        // window.location.href = url;
-        /*console.log(mensaje);
-		console.log(entro);
-		if (!entro && isEqual(mensaje, equipo)) {
-			console.log("Esperando al segundo jugador.");
-			entro = true;
-		} else if (isEqual(mensaje, "NINGUNO")) {
-			console.log("Esperando jugador 2");
-		}  else if (isEqual(mensaje, "Patrullero")) {
-			console.log("Llegó el segundo jugador, comenzando partida.");
-			window.location.href = 'factibilidad.html?equipo=Pesquero';
-		} else if (isEqual(mensaje, "Pesquero")) {
-			console.log("Llegó el segundo jugador, comenzando partida.");
-			window.location.href = 'factibilidad.html?equipo=Patrullero';
-		}
-		console.log("LLEGA" + mensaje);
-		if (isEqual(mensaje, "Los2")) {
-			console.log("Llegó el segundo jugador, comenzando partida.");
-			window.location.href = 'factibilidad.html?equipo=' + equipo;
-		} */
     };
 
 }
+
+
 
 function mostrarError(mensaje) {
     $("#error").html(mensaje);

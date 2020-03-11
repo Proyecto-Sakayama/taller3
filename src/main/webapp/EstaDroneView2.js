@@ -261,7 +261,7 @@ var DroneViewState = new Phaser.Class({
         globalDroneVariables.websocket = new WebSocket('ws://' + parameters.ipServidor + ':' + parameters.puertoServidor + '/taller3/juego/' + globalDroneVariables.equipo);
 
         //CONEXION TIMER
-        globalDroneVariables.websocketTime = new WebSocket('ws://' + parameters.ipServidor + ':' + parameters.puertoServidor + '/taller3/acciones/');
+        globalDroneVariables.websocketTime = new WebSocket('ws://' + parameters.ipServidor + ':' + parameters.puertoServidor + '/taller3/acciones/' + globalDroneVariables.equipo);
         globalDroneVariables.textoTiempo = this.add.text(1220, 32, 'Tiempo: ' + formatTime(partida.tiempoRestantePartida));
 
         globalDroneVariables.textoTormenta = this.add.text(1220, 10, 'No hay tormenta');
@@ -1148,17 +1148,16 @@ var DroneViewState = new Phaser.Class({
                         // Actualizacion del timer
                         globalDroneVariables.textoTiempo.setText('Tiempo: ' + formatTime(partida.tiempoRestantePartida));
 
-                        if(evaluarPatrullerosGanadores()){
 
-                            window.location.replace('gameover.html?equipo=Patrullero');
+                        if(evaluarPatrullerosGanadores()){
                             globalDroneVariables.websocket.close();
                             globalDroneVariables.websocketTime.close();
+                            window.location.replace('gameover.html?equipoGanador=Patrullero');
 
                         }else if(evaluarPesquerosGanadores()){
-
-                            window.location.replace('gameover.html?equipo=Pesquero');
                             globalDroneVariables.websocket.close();
                             globalDroneVariables.websocketTime.close();
+                            window.location.replace('gameover.html?equipoGanador=Pesquero');
                         }
 
                         break;
