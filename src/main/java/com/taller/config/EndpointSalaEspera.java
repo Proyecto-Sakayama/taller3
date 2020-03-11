@@ -23,11 +23,50 @@ import com.taller.model.Jugador;
 public class EndpointSalaEspera {
 	private Session session;
 	private static final EndpointSalaEspera[] endpointsPartida = new EndpointSalaEspera[2];
-
+    private String firstTeam = "";
+	
 	@OnOpen
 	public void onOpen(Session session, @PathParam("equipo") String equipo) throws IOException, EncodeException {
 		Gson gson = new Gson();
 		this.session = session;
+				
+		if (equipo == "")
+		{
+			if (endpointsPartida.length == 0)
+			{
+				endpointsPartida[0] = this;
+				session.getBasicRemote().sendText("0");
+			} else  
+			{
+				endpointsPartida[1] = this;
+				String newTeam = "";
+				if (firstTeam != "")
+				{
+					if (firstTeam == "Patrullero")
+					{
+						newTeam = "Pesquero";
+					}				
+					else
+					{
+						newTeam = "Patrullero";
+					}
+				}
+				session.getBasicRemote().sendText(newTeam);
+			}		
+		} else
+		{
+			endpointsPartida[0] = this;
+			firstTeam = equipo;
+			session.getBasicRemote().sendText(firstTeam);
+		}
+		
+		
+		
+		
+		/*
+		
+		
+		
 		String nombre = "";
 		int cant = 0;
 
@@ -97,11 +136,19 @@ public class EndpointSalaEspera {
 			System.out.println("El juego ya ha comenzado, pruebe a iniciar partida más tarde.");
 
 		}
+		
+		
+		*/
 	}
 
 	@OnMessage
-	public void onMessage(Session session, String movimiento) throws IOException, EncodeException {
-		broadcastStatus(endpointsPartida);
+	public void onMessage(Session session, String start) throws IOException, EncodeException {
+		
+		if (start == "start")
+		{
+			broadcast("2");
+		}
+
 	}
 
 	@OnClose
@@ -118,24 +165,11 @@ public class EndpointSalaEspera {
 		throwable.printStackTrace();
 	}
 
-	public void broadcastStatus(EndpointSalaEspera[] endpointsPartida) {
-		int cant = 0;
-		String equipoQueEsta = "Ninguno";
-		if (endpointsPartida[0] != null) {
-			cant++;
-			equipoQueEsta = "Patrullero";
-		}
-		if (endpointsPartida[1] != null) {
-			cant++;
-			equipoQueEsta = "Pesquero";
-		}
-		if (cant == 1) {
-			equipoQueEsta = "Los2";
-		}
-
+	public void broadcast(String start) {
+	
 		try {
-			endpointsPartida[0].session.getBasicRemote().sendText(equipoQueEsta);
-			endpointsPartida[1].session.getBasicRemote().sendText(equipoQueEsta);
+			endpointsPartida[0].session.getBasicRemote().sendText(start);
+			endpointsPartida[1].session.getBasicRemote().sendText(start);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
