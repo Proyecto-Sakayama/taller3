@@ -263,7 +263,7 @@ var DroneViewState = new Phaser.Class({
 
         //CONEXION TIMER
         globalDroneVariables.websocketTime = new WebSocket('ws://' + parameters.ipServidor + ':' + parameters.puertoServidor + '/taller3/acciones/');
-        globalDroneVariables.textoTiempo = this.add.text(1220, 32, 'Tiempo: ' + formatTime(partida.tiempoRestantePartida));
+        globalDroneVariables.textoTiempo = this.add.text(1220, 30, 'Tiempo: ' + formatTime(partida.tiempoRestantePartida));
 
         globalDroneVariables.textoTormenta = this.add.text(1220, 10, 'No hay tormenta');
 
