@@ -207,10 +207,10 @@ var DroneViewState = new Phaser.Class({
         fish9.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
 
-        
-        
+
+
         //PESQUEROS       
-        globalDroneVariables.pesquero = this.matter.add.image(100, 200, 'bote1');
+        globalDroneVariables.pesquero = this.matter.add.image(400, 50, 'bote1');
         globalDroneVariables.pesquero.setFrictionAir(0.15);
         globalDroneVariables.pesquero.setMass(parameters.masaBarcosLivianos);
         globalDroneVariables.pesquero.setFixedRotation();
@@ -220,7 +220,7 @@ var DroneViewState = new Phaser.Class({
 
 
 
-        var pesquero2 = this.matter.add.image(200, 300, 'patrullero1');
+        var pesquero2 = this.matter.add.image(800, 50, 'patrullero1');
         pesquero2.setFrictionAir(0.15);
         pesquero2.setMass(parameters.masaBarcosPesados);
         pesquero2.setFixedRotation();
@@ -229,28 +229,28 @@ var DroneViewState = new Phaser.Class({
 
 
         //PATRULLEROS
-        var patrullero = this.matter.add.image(300, 300, 'bote1');
+        var patrullero = this.matter.add.image(200, 300, 'bote1');
         patrullero.setFrictionAir(0.15);
         patrullero.setMass(parameters.masaBarcosLivianos);
         patrullero.setFixedRotation();
         patrullero.setAngle(270);
         patrullero.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
-        var patrullero2 = this.matter.add.image(400, 300, 'patrullero1');
+        var patrullero2 = this.matter.add.image(1000, 300, 'patrullero1');
         patrullero2.setFrictionAir(0.15);
         patrullero2.setMass(parameters.masaBarcosPesados);
         patrullero2.setFixedRotation();
         patrullero2.setAngle(270);
         patrullero2.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
-        var helicopter = this.matter.add.image(400, 300, 'heli');
+        var helicopter = this.matter.add.image(1000, 300, 'heli');
         helicopter.setFrictionAir(0.15);
         helicopter.setMass(parameters.masaBarcosPesados);
         helicopter.setFixedRotation();
         helicopter.setAngle(270);
         helicopter.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
-        var boteSprite = this.matter.add.image(400, 300, 'bote1');
+        var boteSprite = this.matter.add.image(1000, 300, 'bote1');
         boteSprite.setFrictionAir(0.15);
         boteSprite.setMass(parameters.masaBarcosPesados);
         boteSprite.setFixedRotation();
@@ -263,7 +263,7 @@ var DroneViewState = new Phaser.Class({
         globalDroneVariables.websocket = new WebSocket('ws://' + parameters.ipServidor + ':' + parameters.puertoServidor + '/taller3/juego/' + globalDroneVariables.equipo);
 
         //CONEXION TIMER
-        globalDroneVariables.websocketTime = new WebSocket('ws://' + parameters.ipServidor + ':' + parameters.puertoServidor + '/taller3/acciones/');
+        globalDroneVariables.websocketTime = new WebSocket('ws://' + parameters.ipServidor + ':' + parameters.puertoServidor + '/taller3/acciones/' + globalDroneVariables.equipo);
         globalDroneVariables.textoTiempo = this.add.text(1220, 30, 'Tiempo: ' + formatTime(partida.tiempoRestantePartida));
 
         globalDroneVariables.textoTormenta = this.add.text(1220, 10, 'No hay tormenta');
@@ -541,22 +541,22 @@ var DroneViewState = new Phaser.Class({
 
         if(partida.ultimoChequeoTormenta == 0 || partida.ultimoChequeoTormenta == null)
         {
-        	partida.ultimoChequeoTormenta = partida.tiempoRestantePartida;
+            partida.ultimoChequeoTormenta = partida.tiempoRestantePartida;
         }
         if(partida.ultimoChequeoTormenta - partida.tiempoRestantePartida >= parameters.segundosChequeoTormenta)
         {
-        	partida.ultimoChequeoTormenta = partida.tiempoRestantePartida;
-        	var randomTormenta = Phaser.Math.Between(1, 10);
-        	if(randomTormenta < 5)
-        	{
-        		partida.hayTormenta = true;
-        		globalDroneVariables.textoTormenta.setText('Hay tormenta!!');
-        	}
-        	else
-        	{
-        		partida.hayTormenta = false;
-        		globalDroneVariables.textoTormenta.setText('No hay tormenta');
-        	}
+            partida.ultimoChequeoTormenta = partida.tiempoRestantePartida;
+            var randomTormenta = Phaser.Math.Between(1, 10);
+            if(randomTormenta < 5)
+            {
+                partida.hayTormenta = true;
+                globalDroneVariables.textoTormenta.setText('Hay tormenta!!');
+            }
+            else
+            {
+                partida.hayTormenta = false;
+                globalDroneVariables.textoTormenta.setText('No hay tormenta');
+            }
         }
         /***********************************************
 
@@ -1149,8 +1149,20 @@ var DroneViewState = new Phaser.Class({
                         partida.tiempoRestantePartida = mensaje.tiempoRestante;
                         // Actualizacion del timer
                         globalDroneVariables.textoTiempo.setText('Tiempo: ' + formatTime(partida.tiempoRestantePartida));
-                        break;
 
+
+                        if(evaluarPatrullerosGanadores()){
+                            globalDroneVariables.websocket.close();
+                            globalDroneVariables.websocketTime.close();
+                            window.location.replace('gameover.html?equipoGanador=Patrullero');
+
+                        }else if(evaluarPesquerosGanadores()){
+                            globalDroneVariables.websocket.close();
+                            globalDroneVariables.websocketTime.close();
+                            window.location.replace('gameover.html?equipoGanador=Pesquero');
+                        }
+
+                        break;
                     case 'estadoJuego':
                         if(mensaje.estadoActual == 'FINALIZADO'){
                             //Logica de finalizacion del juego
@@ -1160,6 +1172,7 @@ var DroneViewState = new Phaser.Class({
 
                     case 'disparo':
                         break;
+
                 }
             }
 
@@ -1332,6 +1345,29 @@ function getPescaTotal(){
         pesca += item.cantidadPesca;
     });
     return pesca;
+}
+
+
+function evaluarPesquerosGanadores(){
+
+    return getPescaTotal() >= parameters.metaPesca;
+
+}
+
+function evaluarPatrullerosGanadores(){
+
+    var barcosEliminados = 0;
+
+    partida.Pesqueros.Barcos.forEach(function(item){
+
+        if(item.capturado || item.hundido){
+            barcosEliminados ++;
+        }
+
+    });
+
+    return barcosEliminados == 2 || partida.tiempoRestantePartida == 0;
+
 }
 
 

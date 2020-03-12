@@ -37,21 +37,7 @@ public class EndpointJuego {
 			endpointsPartida[1] = this;
 
 		}
-		/*
-		 * } else if (endpointsPartida[0] == null) { endpointsPartida[0] = this;
-		 * 
-		 * 
-		 * } else if (endpointsPartida[1] == null) { endpointsPartida[1] = this;
-		 * 
-		 * }
-		 * 
-		 * if (endpointsPartida[0] != null && endpointsPartida[1] != null) {
-		 * 
-		 * System.out.
-		 * println("El juego ya ha comenzado, pruebe a iniciar partida más tarde.");
-		 * 
-		 * }
-		 */
+
 	}
 
 	@OnMessage
@@ -78,7 +64,6 @@ public class EndpointJuego {
 				partidaEnviar = partida.replace("\"impacto\":true", "\"impacto\":false");
 			}
 
-
 		}
 
 		broadcast(partidaEnviar);
@@ -87,12 +72,13 @@ public class EndpointJuego {
 	@OnClose
 	public void onClose(Session session) throws IOException, EncodeException {
 
-	/*	if (endpointsPartida[0] != null) {
-			endpointsPartida[0] = null;
-		} else {
-			endpointsPartida[1] = null;
+		try {
+			
+			
+			
+		} catch (Exception e) {
+
 		}
-*/
 	}
 
 	@OnError

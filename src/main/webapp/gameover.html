@@ -1,0 +1,35 @@
+
+<!doctype html> 
+<html lang="en"> 
+    <head> 
+        <meta charset="UTF-8" />
+        <title>Sakayama</title>
+
+        <style type="text/css">
+            body {
+                margin: 0;
+            }
+        </style>
+        <script>
+            function getWinner() {
+                var url_string = window.location.href;
+                var url = new URL(url_string);
+                var winner = url.searchParams.get("equipoGanador");
+
+                document.getElementById("winner").innerHTML = winner;
+            }
+        </script>
+    </head>
+    <body  onload="getWinner()">
+
+        <div>Fin de la partida. Equipo Ganador -- <span id="winner"></span>
+
+
+        </div>
+
+        <div class="card-footer text-muted">
+            <button onclick="window.location.href='/taller3/'">Volver a jugar</button>
+        </div>
+
+    </body>
+</html>
