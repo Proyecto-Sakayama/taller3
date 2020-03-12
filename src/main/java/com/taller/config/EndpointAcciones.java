@@ -21,7 +21,7 @@ import com.google.gson.Gson;
 public class EndpointAcciones {
 	private Session session;
 	private static final EndpointAcciones[] endpointsPartida = new EndpointAcciones[2];
-	private static int seconds = 10;
+	private static int seconds = 300;
 
 	@OnOpen
 	public void onOpen(Session session, @PathParam("equipo") String equipo) throws IOException, EncodeException {
