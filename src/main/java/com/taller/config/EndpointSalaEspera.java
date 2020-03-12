@@ -23,7 +23,7 @@ import com.taller.model.Jugador;
 public class EndpointSalaEspera {
 	private Session session;
 	private static final EndpointSalaEspera[] endpointsPartida = new EndpointSalaEspera[2];
-	private String firstTeam = "";
+	private static String firstTeam = "";
 
 	@OnOpen
 	public void onOpen(Session session, @PathParam("equipo") String equipo) throws IOException, EncodeException {
@@ -57,6 +57,7 @@ public class EndpointSalaEspera {
 		} else {
 
 			if (equipo.equals("start")) {
+				endpointsPartida[1] = this;
 				System.out.println("5");
 				broadcast("2");
 
