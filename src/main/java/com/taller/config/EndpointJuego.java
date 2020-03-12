@@ -60,6 +60,8 @@ public class EndpointJuego {
 		String partidaEnviar = partida;
 
 		boolean existeDisparo = partida.contains("\"Disparo\":{\"existe\":true");
+		
+		boolean guardarPartida = partida.contains("\"guardarPartida\":true");
 
 		if (existeDisparo) {
 

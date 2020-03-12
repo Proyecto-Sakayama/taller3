@@ -78,6 +78,7 @@ var partida = {
     tiempoRestantePartida: null,
     hayTormenta: false,
     ultimoChequeoTormenta: 0,
+    guardarPartida: true,
     Pesqueros: {
         Barcos: []
     },
