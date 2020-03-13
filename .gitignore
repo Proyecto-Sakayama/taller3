@@ -4,6 +4,5 @@ src/main/webapp/js/
 src/main/webapp/conf/OceanicPatrol.json
 src/main/webapp/conf/
 .settings/
-src/main/webapp/game.html
 src/main/webapp/game_old.html
 src/main/webapp/assets/transparente.png
