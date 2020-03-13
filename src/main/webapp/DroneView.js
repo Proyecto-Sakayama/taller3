@@ -1,4 +1,3 @@
-//VERSION FUNCIONANDO
 var parameters = {
     ipServidor: "localhost",
     //ipServidor: "192.168.1.44", //Casa Guz
@@ -121,6 +120,7 @@ var DroneViewState = new Phaser.Class({
     *************************************************************************************************************************************************/
 
     preload: function () {
+
         //carga las imagenes al juego
         this.load.image('water', 'assets/water.jpg');
         this.load.image('fishes', 'assets/fishes.png');
@@ -130,11 +130,6 @@ var DroneViewState = new Phaser.Class({
         this.load.image('mask', 'assets/mask.png');
         this.load.image('panel', 'assets/panel.png');
 
-        //this.load.spritesheet('rain', 'assets/rain.png', 17, 17);
-        //////////
-
-
-        /////////
     },
 
 
@@ -167,8 +162,6 @@ var DroneViewState = new Phaser.Class({
         this.matter.world.setBounds(0, 0, 1200, 650);
         var map = this.add.image(600, 325, 'water');
         var panel = this.add.image(1432, 325, 'panel');
-        //this.lights.enable().setAmbientColor(0x333333);
-        //globalDroneVariables.light = this.lights.addLight(180, 80, 200).setColor(0xffffff).setIntensity(2);
 
 
         /***********************************************
@@ -190,16 +183,6 @@ var DroneViewState = new Phaser.Class({
             add: false
         });
 
-        /*
-        globalDroneVariables.spotlight2 = this.make.sprite({
-            x: 800,
-            y: 50,
-            key: 'mask',
-            add: false
-        });
-        */
-
-        //map.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
         //BANCO DE PECES
         var fish = this.add.image(600, 560,'fishes');
@@ -240,16 +223,12 @@ var DroneViewState = new Phaser.Class({
         globalDroneVariables.pesquero.setAngle(270);
         globalDroneVariables.pesquero.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
-
-
-
         var pesquero2 = this.matter.add.image(800, 50, 'patrullero1');
         pesquero2.setFrictionAir(0.15);
         pesquero2.setMass(parameters.masaBarcosPesados);
         pesquero2.setFixedRotation();
         pesquero2.setAngle(270);
         pesquero2.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
-
 
         //PATRULLEROS
         var patrullero = this.matter.add.image(200, 300, 'bote1');
@@ -545,27 +524,6 @@ var DroneViewState = new Phaser.Class({
         });
 
 
-
-/*
-        var emitter = game.add.emitter(game.world.centerX, 0, 400);
-
-        emitter.width = game.world.width;
-        // emitter.angle = 30; // uncomment to set an angle for the rain.
-
-        emitter.makeParticles('rain');
-
-        emitter.minParticleScale = 0.1;
-        emitter.maxParticleScale = 0.5;
-
-        emitter.setYSpeed(300, 500);
-        emitter.setXSpeed(-5, 5);
-
-        emitter.minRotation = 0;
-        emitter.maxRotation = 0;
-
-        emitter.start(false, 1600, 5, 0);
-*/
-
         console.log('create success');
 
     },
@@ -810,7 +768,6 @@ var DroneViewState = new Phaser.Class({
                 });
 
                 partida.Pesqueros.Barcos.forEach(function(boat){
-                    //if (boat.id != vehiculoActivo.id){
 
                     var boteServer  = partidaFromServer.Pesqueros.Barcos.find(function(item){
                         return item.id == boat.id;
@@ -827,7 +784,6 @@ var DroneViewState = new Phaser.Class({
                     boat.contadorAvisos = boteServer.contadorAvisos;
                     boat.ultimoAvisoRecibido = boteServer.ultimoAvisoRecibido;
                     boat.cantidadPesca = boteServer.cantidadPesca;
-                    //boat.hundido = boteServer.hundido;
 
 
                     if(partidaFromServer.Disparo.existe && partidaFromServer.Disparo.impacto && boat.id == partidaFromServer.Disparo.pesquero.id)    {
@@ -860,7 +816,6 @@ var DroneViewState = new Phaser.Class({
 
                 });
                 partida.Pesca.BancoPeces.forEach(function(banco){
-                    //if (boat.id != vehiculoActivo.id){
 
                     var bancoServer  = partidaFromServer.Pesca.BancoPeces.find(function(item){
                         return item.id == banco.id;
@@ -869,7 +824,6 @@ var DroneViewState = new Phaser.Class({
                     banco.cantidadPesca=bancoServer.cantidadPesca;
                     banco.activo=bancoServer.activo;
                     banco.sprite.setVisible(bancoServer.sprite.visible);
-                    //}                      
 
                 });
 
@@ -893,15 +847,12 @@ var DroneViewState = new Phaser.Class({
 
         var isMoving = false;
         if (globalDroneVariables.moverIzquierda.isDown && vehiculoActivo.combustible > 0 && !vehiculoActivo.regresando) {
-            //vehiculoActivo.sprite.setAngularVelocity(-0.09);
             vehiculoActivo.sprite.rotation -= parameters.velocidadRotacion;
             if(vehiculoActivo.helicoptero !== undefined && vehiculoActivo.helicoptero.acoplado){
-                //vehiculoActivo.helicoptero.sprite.setAngularVelocity(-0.09);
                 vehiculoActivo.helicoptero.sprite.rotation -= parameters.velocidadRotacion;
 
             }
             if(vehiculoActivo.bote !== undefined && vehiculoActivo.bote.acoplado){
-                //vehiculoActivo.bote.sprite.setAngularVelocity(-0.09);
                 vehiculoActivo.bote.sprite.rotation -= parameters.velocidadRotacion;
             }
             isMoving = true;
@@ -910,15 +861,12 @@ var DroneViewState = new Phaser.Class({
 
         ////// MOVIMIENTO DERECHA
 
-        else if (globalDroneVariables.moverDerecha.isDown && vehiculoActivo.combustible > 0 && !vehiculoActivo.regresando) { //if (globalDroneVariables.cursors.right.isDown) {
-            //vehiculoActivo.sprite.setAngularVelocity(0.09);
+        else if (globalDroneVariables.moverDerecha.isDown && vehiculoActivo.combustible > 0 && !vehiculoActivo.regresando) { 
             vehiculoActivo.sprite.rotation += parameters.velocidadRotacion;
             if(vehiculoActivo.helicoptero !== undefined && vehiculoActivo.helicoptero.acoplado){
-                //vehiculoActivo.helicoptero.sprite.setAngularVelocity(0.09);
                 vehiculoActivo.helicoptero.sprite.rotation += parameters.velocidadRotacion;
             }
             if(vehiculoActivo.bote !== undefined && vehiculoActivo.bote.acoplado){
-                //vehiculoActivo.bote.sprite.setAngularVelocity(0.09);
                 vehiculoActivo.bote.sprite.rotation += parameters.velocidadRotacion;
             }
             isMoving = true;
@@ -942,8 +890,6 @@ var DroneViewState = new Phaser.Class({
         if(isMoving && vehiculoActivo.type != "H"){
             consumirCombustible(vehiculoActivo);
         }
-
-
 
 
 
@@ -974,25 +920,6 @@ var DroneViewState = new Phaser.Class({
         globalDroneVariables.spotlight.x = vehiculoActivo.sprite.x;
         globalDroneVariables.spotlight.y = vehiculoActivo.sprite.y;
 
-        /*
-        globalDroneVariables.light.x = vehiculoActivo.sprite.x;
-        globalDroneVariables.light.y = vehiculoActivo.sprite.y;
-
-
-        globalDroneVariables.spotlight2.x = function (){
-            var barcoTest = partida.Pesqueros.Barcos.find(function (item){
-                return !item.activo;
-            });
-            return barcoTest.sprite.x;
-        }
-
-        globalDroneVariables.spotlight2.y = function (){
-            var barcoTest = partida.Pesqueros.Barcos.find(function (item){
-                return !item.activo;
-            });
-            return barcoTest.sprite.y;
-        }
-        */
 
         ////// PESCA
 
@@ -1238,15 +1165,6 @@ var DroneViewState = new Phaser.Class({
                             window.location.replace('gameover.html?equipoGanador=Pesquero');
                         }
 
-                        break;
-                    case 'estadoJuego':
-                        if(mensaje.estadoActual == 'FINALIZADO'){
-                            //Logica de finalizacion del juego
-                            alert("Se ha terminado el tiempo, el juego finalizó.");
-                        }
-                        break;
-
-                    case 'disparo':
                         break;
 
                 }

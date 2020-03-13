@@ -494,7 +494,6 @@ var SideViewState = new Phaser.Class({
             globalSideVariables.spotlight.y = vehiculosSideView.Helicoptero.sprite.y;
         }
 
-
         definirOrientacionVehiculo(vehiculosSideView.Bote, partida.Patrulleros.Barcos[1].bote);
         asignarImagenSprite(vehiculosSideView.Bote);
         vehiculosSideView.Bote.sprite.x = partida.Patrulleros.Barcos[1].bote.sprite.x;
@@ -508,6 +507,7 @@ var SideViewState = new Phaser.Class({
         }
 
     }
+
 
 });
 
