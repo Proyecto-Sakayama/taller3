@@ -50,6 +50,7 @@ public class EndpointSalaEspera {
 					session.getBasicRemote().sendText(newTeam);
 				} else {
 					System.out.println("4");
+					endpointsPartida[1] = this;
 					session.getBasicRemote().sendText("1");
 				}
 

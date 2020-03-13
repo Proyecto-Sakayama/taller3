@@ -162,7 +162,7 @@ var SideViewState = new Phaser.Class({
     create: function () {
 
         //DEFINICION DE AREA DE JUEGO
-        this.matter.world.setBounds(0, 651, 1200, 751);
+        this.matter.world.setBounds(0, 651, 1200, 801);
         var sideMap = this.add.image(597, 700, 'sideWater');
 
 
@@ -298,7 +298,7 @@ var SideViewState = new Phaser.Class({
         globalSideVariables.spritePesqueroLivianoUR = this.matter.add.image(400, 50, 'pesqueroLivianoUR');
         globalSideVariables.spritePesqueroLivianoDL = this.matter.add.image(400, 50, 'pesqueroLivianoDL');
         globalSideVariables.spritePesqueroLivianoDR = this.matter.add.image(400, 50, 'pesqueroLivianoDR');
-        
+
         globalSideVariables.spritePesqueroLivianoU.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
         globalSideVariables.spritePesqueroLivianoD.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
         globalSideVariables.spritePesqueroLivianoL.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
@@ -326,7 +326,7 @@ var SideViewState = new Phaser.Class({
         globalSideVariables.spritePesqueroPesadoUR = this.matter.add.image(800, 50, 'pesqueroPesadoUR');
         globalSideVariables.spritePesqueroPesadoDL = this.matter.add.image(800, 50, 'pesqueroPesadoDL');
         globalSideVariables.spritePesqueroPesadoDR = this.matter.add.image(800, 50, 'pesqueroPesadoDR');
-        
+
         globalSideVariables.spritePesqueroPesadoU.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
         globalSideVariables.spritePesqueroPesadoD.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
         globalSideVariables.spritePesqueroPesadoL.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
@@ -438,7 +438,6 @@ var SideViewState = new Phaser.Class({
 
             if(globalDroneVariables.equipo == "Patrullero" && barcoFromServerSide.activo){
 
-
                 globalSideVariables.spotlight.x = barcoAActualizar.sprite.x;
                 globalSideVariables.spotlight.y = barcoAActualizar.sprite.y;
             }
@@ -468,7 +467,15 @@ var SideViewState = new Phaser.Class({
                 asignarImagenSprite(barcoAActualizar);
 
                 setMovementAndSize(barcoAActualizar, barcoFromServerSide);
+
+                if(globalDroneVariables.equipo == "Pesquero" && barcoFromServerSide.activo){
+
+                    globalSideVariables.spotlight.x = barcoAActualizar.sprite.x;
+                    globalSideVariables.spotlight.y = barcoAActualizar.sprite.y;
+                }
+
             }
+
 
 
         });
@@ -481,6 +488,11 @@ var SideViewState = new Phaser.Class({
         vehiculosSideView.Helicoptero.sprite.y = getSideHelicopterY(partida.Patrulleros.Barcos[1].helicoptero.sprite.y);
         vehiculosSideView.Helicoptero.sprite.setScale(scaleVehicule(vehiculosSideView.Helicoptero.sprite));
 
+        if(globalDroneVariables.equipo == "Patrullero" && partida.Patrulleros.Barcos[1].helicoptero.activo){
+
+            globalSideVariables.spotlight.x = vehiculosSideView.Helicoptero.sprite.x;
+            globalSideVariables.spotlight.y = vehiculosSideView.Helicoptero.sprite.y;
+        }
 
 
         definirOrientacionVehiculo(vehiculosSideView.Bote, partida.Patrulleros.Barcos[1].bote);
@@ -489,6 +501,11 @@ var SideViewState = new Phaser.Class({
         vehiculosSideView.Bote.sprite.y = getSideY(partida.Patrulleros.Barcos[1].bote.sprite.y);    
         vehiculosSideView.Bote.sprite.setScale(scaleVehicule(vehiculosSideView.Bote.sprite));
 
+        if(globalDroneVariables.equipo == "Patrullero" && partida.Patrulleros.Barcos[1].bote.activo){
+
+            globalSideVariables.spotlight.x = vehiculosSideView.Bote.sprite.x;
+            globalSideVariables.spotlight.y = vehiculosSideView.Bote.sprite.y;
+        }
 
     }
 
@@ -502,7 +519,7 @@ myGame.scenes.push(SideViewState);
 function getSideY(droneViewY){
 
     var maxDroneViewY = 650; // Tamaño 650 px
-    var maxSideViewY = 70; // Tamaño 100 px
+    var maxSideViewY = 120; // Tamaño 150 px
     var screenToJump = maxDroneViewY + 31; //Para que los barcos no circulen por el cielo
 
     var sideY = (droneViewY / (maxDroneViewY / maxSideViewY)) + screenToJump;
@@ -515,7 +532,7 @@ function getSideY(droneViewY){
 function getSideHelicopterY(droneViewY){
 
     var maxDroneViewY = 650; // Tamaño 650 px
-    var maxSideViewY = 70; // Tamaño 100 px
+    var maxSideViewY = 120; // Tamaño 150 px
     var screenToJump = maxDroneViewY + 11; // Para que el helicptero si circule por el cielo pero no llegue al borde
 
     var sideY = (droneViewY / (maxDroneViewY / maxSideViewY)) + screenToJump;

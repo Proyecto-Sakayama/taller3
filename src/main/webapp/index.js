@@ -38,7 +38,7 @@ $('#buttonNuevaPartida').click(function() {
 
 $('#unirseAPartida').click(function() {
 
-  saladeespera("start");
+    saladeespera("start");
 
 });   
 
@@ -101,6 +101,16 @@ function saladeespera(team){
             $('#buttonNuevaPartida').hide();
             $('#loading').hide();
             $('#unirseAPartida').show();
+
+
+
+            if(equipo == "Patrullero"){
+                $('#equipoPatrullero').show();
+            }else{
+                $('#equipoPesquero').show();
+            }
+
+
 
         }
 
