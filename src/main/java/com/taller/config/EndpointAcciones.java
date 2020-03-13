@@ -1,11 +1,8 @@
 package com.taller.config;
 
 import java.io.IOException;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.CopyOnWriteArraySet;
-
 import javax.websocket.EncodeException;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
@@ -14,8 +11,6 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-
-import com.google.gson.Gson;
 
 @ServerEndpoint(value = "/acciones/{equipo}")
 public class EndpointAcciones {

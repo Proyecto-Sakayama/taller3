@@ -1,6 +1,6 @@
 package logica.poolConexiones;
 
-import java.io.FileInputStream;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,7 +18,7 @@ public class PoolConexiones implements IPoolConexiones{
 	public PoolConexiones() throws PersistenciaException {
 		try {
 			Properties p = new Properties();
-			p.load(new FileInputStream("config/configPersistencia.properties"));
+			p.load(getClass().getClassLoader().getResourceAsStream("config.properties"));
 			
 			driver = p.getProperty("driver");
 			url = p.getProperty("url");

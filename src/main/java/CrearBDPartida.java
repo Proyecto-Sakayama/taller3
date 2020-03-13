@@ -2,16 +2,9 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Properties;
-import com.google.gson.*;
 
 public class CrearBDPartida {
 		
@@ -27,7 +20,7 @@ public class CrearBDPartida {
 			
 			String driver = p.getProperty("driver");
 			String url = p.getProperty("url");
-			String pass= p.getProperty("pass");
+			String pass= p.getProperty("pwd");
 			String user= p.getProperty("usr");
 			
 			Class.forName(driver);
@@ -43,8 +36,10 @@ public class CrearBDPartida {
 			String usarMilla200 = "USE Milla200";
 			st.executeUpdate(usarMilla200);
 			
-			String crearJugadores = "CREATE TABLE if not exists jugadores(IdJugador int(8), nickName VARCHAR(20),"
-					+ "primary key (IdJugador));";
+			String crearJugadores = "CREATE TABLE if not exists partidas"
+					+ "(idPartida int(8) NOT NULL AUTO_INCREMENT, "
+					+ "datosPartida TEXT,"
+					+ "primary key (idPartida));";
 			st.executeUpdate(crearJugadores);
 			
 			

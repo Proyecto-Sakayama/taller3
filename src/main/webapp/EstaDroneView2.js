@@ -58,6 +58,9 @@ var globalDroneVariables = {
     dispararCanion: null,
     inmovilizarPesquero: null,
     iniciarTormenta: null,
+    
+    teclaGuardarPartida: null,
+    teclaRestaurarPartida: null,
 
     avisarPesqueroJustPressed: false,
 
@@ -78,7 +81,8 @@ var partida = {
     tiempoRestantePartida: null,
     hayTormenta: false,
     ultimoChequeoTormenta: 0,
-    guardarPartida: true,
+    guardarPartida: false,
+    restaurarPartida: false,
     Pesqueros: {
         Barcos: []
     },
@@ -152,6 +156,9 @@ var DroneViewState = new Phaser.Class({
         globalDroneVariables.moverArriba = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
         globalDroneVariables.moverIzquierda = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         globalDroneVariables.moverDerecha = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);  
+        
+        globalDroneVariables.teclaGuardarPartida = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
+        globalDroneVariables.teclaRestaurarPartida = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
 
         this.matter.world.setBounds(0, 0, 1200, 650);
@@ -960,9 +967,11 @@ var DroneViewState = new Phaser.Class({
         }
 
 
-        ////// SELECCION DE HELICOPTERO
+        /***********************************************
 
+        SELECCION DE HELICOPTERO
 
+        ************************************************/
         if (globalDroneVariables.desacoplarHelicoptero.isDown){
             if (globalDroneVariables.equipo == "Patrullero"){
                 var boatWithHelicopter = partida.Patrulleros.Barcos.find(function (input) {
@@ -976,7 +985,11 @@ var DroneViewState = new Phaser.Class({
         }
 
 
-        ////// SELECCION DE BOTE
+        /***********************************************
+
+        SELECCION DE BOTE
+
+        ************************************************/
 
         if (globalDroneVariables.desacoplarBote.isDown){
             if (globalDroneVariables.equipo == "Patrullero" && !partida.hayTormenta){
@@ -1124,12 +1137,26 @@ var DroneViewState = new Phaser.Class({
             }
 
         }
+        
+        
+        /***********************************************
 
+        GUARDAR Y CARGAR PARTIDA
 
+        ************************************************/
+        if(Phaser.Input.Keyboard.JustDown(globalDroneVariables.teclaGuardarPartida))
+        {
+        	partida.guardarPartida = true;
+        }
+
+        if(Phaser.Input.Keyboard.JustDown(globalDroneVariables.teclaRestaurarPartida))
+        {
+        	partida.restaurarPartida = true;
+        }
 
         ////// SI HUBO ALGUN CAMBIO SE ENVIA AL SERVIDOR
         console.log(globalDroneVariables.vehiculoVolviendo);
-        if (isMoving || isShooting || isAlerting || capturaPorHelicoptero || barcoFueImpactado || globalDroneVariables.vehiculoVolviendo){
+        if (isMoving || isShooting || isAlerting || capturaPorHelicoptero || barcoFueImpactado || globalDroneVariables.vehiculoVolviendo || partida.guardarPartida || partida.restaurarPartida){
             enviarJSON(partida);
         }
 
@@ -1177,6 +1204,8 @@ var DroneViewState = new Phaser.Class({
             }
 
         };
+        partida.guardarPartida = false;
+        partida.restaurarPartida = false;
     }
 
 

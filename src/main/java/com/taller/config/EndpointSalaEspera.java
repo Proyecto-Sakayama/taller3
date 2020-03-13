@@ -1,12 +1,6 @@
 package com.taller.config;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.CopyOnWriteArraySet;
-
 import javax.websocket.EncodeException;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
@@ -16,9 +10,6 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
-import com.google.gson.Gson;
-import com.taller.model.Jugador;
-
 @ServerEndpoint(value = "/salaespera/{equipo}")
 public class EndpointSalaEspera {
 	private Session session;
@@ -27,7 +18,6 @@ public class EndpointSalaEspera {
 
 	@OnOpen
 	public void onOpen(Session session, @PathParam("equipo") String equipo) throws IOException, EncodeException {
-		Gson gson = new Gson();
 		this.session = session;
 
 		if (equipo.equals("EMPTY")) {

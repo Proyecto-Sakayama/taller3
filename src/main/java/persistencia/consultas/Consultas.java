@@ -2,34 +2,14 @@ package persistencia.consultas;
 
 public class Consultas {
 
-	public  String existeVehiculo() {
-		return "select * from Milla200.Vehiculos where idVehiculo = (?)";
-	}
 	
-	public  String insertarJugador () {
+	public static String insertarPartida() {
 		
-		return "INSERT INTO Milla200.Jugadores (idJugador,  idPartida, nickname) VALUES  (?,?,?)";
+		return "INSERT INTO Milla200.partidas(datosPartida) VALUES  (?)";
 	}
-	
-	public String existeJugador(){
-		return "SELECT * FROM Milla200.Jugadores WHERE IdJugador=(?) AND IdPartida=(?)";
-	}
-	
 
-	public  String listarPartidas() {
-		return "select * from Milla200.Partidas order by idPartida";
+	public static String listarPartidas() {
+		return "select * from Milla200.partidas order by idPartida desc";
 	}
-	
-	public  String cantPartida() {
-		return "select count(*) as cant from Milla200.Partidas";
-	}
-	
-	public  String existePartida() {
-		return "select * FROM Milla200.Partidas where idPartida=(?)";
-	}
-	
-	
-	
-	
 	
 }

@@ -9,21 +9,8 @@ public class FabricaBD implements FabricaAbstracta {
 	}
 
 	@Override
-	public IDAOJugadores crearIDAOJugadores() {
-		// TODO Auto-generated method stub
-		return new DAOJugadoresBD();
-	}
-
-	@Override
-	public IDAOVehiculos crearIDAOVehiculos() {
-		// TODO Auto-generated method stub
-		return new DAOVehiculosBD();
-	}
-
-	@Override
-	public IDAOPartidas crearIDAOPartidas() {
-		// TODO Auto-generated method stub
-		return new DAOPartidasBD();
+	public IDAOEstadoPartida crearIDAOEstadoPartida() {
+		return new DAOEstadoPartida();
 	}
 
 }
