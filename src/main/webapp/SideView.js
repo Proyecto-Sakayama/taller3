@@ -163,7 +163,7 @@ var SideViewState = new Phaser.Class({
 
         //DEFINICION DE AREA DE JUEGO
         this.matter.world.setBounds(0, 651, 1200, 801);
-        var sideMap = this.add.image(597, 700, 'sideWater');
+        var sideMap = this.add.image(597, 725, 'sideWater');
 
 
         globalSideVariables.spotlight = this.make.sprite({
@@ -519,8 +519,8 @@ myGame.scenes.push(SideViewState);
 function getSideY(droneViewY){
 
     var maxDroneViewY = 650; // Tamaño 650 px
-    var maxSideViewY = 120; // Tamaño 150 px
-    var screenToJump = maxDroneViewY + 31; //Para que los barcos no circulen por el cielo
+    var maxSideViewY = 95; // Tamaño 150 px
+    var screenToJump = maxDroneViewY + 56; //Para que los barcos no circulen por el cielo
 
     var sideY = (droneViewY / (maxDroneViewY / maxSideViewY)) + screenToJump;
 
@@ -544,9 +544,9 @@ function getSideHelicopterY(droneViewY){
 function scaleVehicule(vehiculoSprite){
 
     var sideY = vehiculoSprite.y - 650;
-    var minScale = 0.3; // Lo mas lejos reduce la imagen 2 tercios
-    var maxScale = 1.5; // Lo mas cerca amplia la imagen al 50%
-    var maxSideViewY = 70;
+    var minScale = 0.2; // Lo mas lejos reduce la imagen 2 tercios
+    var maxScale = 1.2; // Lo mas cerca amplia la imagen al 50%
+    var maxSideViewY = 120;
     var relacionTamanioImagen = 1; 
 
     var scale = ((sideY * maxScale) / maxSideViewY ) * relacionTamanioImagen;

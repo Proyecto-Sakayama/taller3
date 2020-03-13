@@ -37,6 +37,7 @@ var globalDroneVariables = {
     light: null,
     spotlight: null,
     spotlight2: null,
+    rain: null,
     distanciaAviso: 150,
     enemigoActivo: null,
     //Sprites
@@ -128,7 +129,7 @@ var DroneViewState = new Phaser.Class({
         this.load.image('patrullero1', 'assets/patrullero1_2.png');
         this.load.image('mask', 'assets/mask.png');
         this.load.image('panel', 'assets/panel.png');
-        
+
         //this.load.spritesheet('rain', 'assets/rain.png', 17, 17);
         //////////
 
@@ -544,6 +545,26 @@ var DroneViewState = new Phaser.Class({
         });
 
 
+
+/*
+        var emitter = game.add.emitter(game.world.centerX, 0, 400);
+
+        emitter.width = game.world.width;
+        // emitter.angle = 30; // uncomment to set an angle for the rain.
+
+        emitter.makeParticles('rain');
+
+        emitter.minParticleScale = 0.1;
+        emitter.maxParticleScale = 0.5;
+
+        emitter.setYSpeed(300, 500);
+        emitter.setXSpeed(-5, 5);
+
+        emitter.minRotation = 0;
+        emitter.maxRotation = 0;
+
+        emitter.start(false, 1600, 5, 0);
+*/
 
         console.log('create success');
 
