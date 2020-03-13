@@ -70,7 +70,7 @@ function saladeespera(team){
             case "Patrullero":
 
                 if(equipo == "EMPTY"){
-                    equipo = "Pesquero";
+                    equipo = "Patrullero";
                     ready = true;
                 }
 
@@ -80,7 +80,7 @@ function saladeespera(team){
             case "Pesquero":
 
                 if(equipo == "EMPTY"){
-                    equipo = "Patrullero";
+                    equipo = "Pesquero";
                     ready = true;
                 }
 
