@@ -391,7 +391,7 @@ var SideViewState = new Phaser.Class({
 
             setMovementAndSize(barcoAActualizar, barcoFromServerSide);
 
-            if(barcoFromServerSide.activo){
+            if(globalDroneVariables.equipo == "Patrullero" && barcoFromServerSide.activo){
 
 
                 globalSideVariables.spotlight.x = barcoAActualizar.sprite.x;
