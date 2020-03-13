@@ -87,7 +87,7 @@ var SideViewState = new Phaser.Class({
     preload: function () {
         //carga las imagenes al juego
         this.load.image('sideWater', 'assets/side/sidewater.png');
-        this.load.image('maskSide', 'assets/mask.png');
+        this.load.image('maskSide', 'assets/side/maskSide.png');
 
         //PATRULLERO LIVIANO DIRECCION
         this.load.image('patrulleroLivianoU', 'assets/side/livianoU.png');
@@ -215,6 +215,15 @@ var SideViewState = new Phaser.Class({
         globalSideVariables.spritePatrulleroPesadoDL = this.matter.add.image(1000, 300, 'patrulleroPesadoDL');
         globalSideVariables.spritePatrulleroPesadoDR = this.matter.add.image(1000, 300, 'patrulleroPesadoDR');
 
+        globalSideVariables.spritePatrulleroPesadoU.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spritePatrulleroPesadoD.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spritePatrulleroPesadoL.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spritePatrulleroPesadoR.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spritePatrulleroPesadoUL.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spritePatrulleroPesadoUR.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spritePatrulleroPesadoDL.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spritePatrulleroPesadoDR.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);     
+
         globalSideVariables.spritePatrulleroPesadoU.setVisible(false);
         globalSideVariables.spritePatrulleroPesadoD.setVisible(false);
         globalSideVariables.spritePatrulleroPesadoL.setVisible(false);
@@ -233,6 +242,15 @@ var SideViewState = new Phaser.Class({
         globalSideVariables.spriteHelicopteroUR = this.matter.add.image(1000, 300, 'heliSideUR');
         globalSideVariables.spriteHelicopteroDL = this.matter.add.image(1000, 300, 'heliSideDL');
         globalSideVariables.spriteHelicopteroDR = this.matter.add.image(1000, 300, 'heliSideDR');
+
+        globalSideVariables.spriteHelicopteroU.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spriteHelicopteroD.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spriteHelicopteroL.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spriteHelicopteroR.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spriteHelicopteroUL.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spriteHelicopteroUR.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spriteHelicopteroDL.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spriteHelicopteroDR.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);     
 
         globalSideVariables.spriteHelicopteroU.setVisible(false);
         globalSideVariables.spriteHelicopteroD.setVisible(false);
@@ -253,6 +271,15 @@ var SideViewState = new Phaser.Class({
         globalSideVariables.spriteBoteDL = this.matter.add.image(1000, 300, 'boatSideDL');
         globalSideVariables.spriteBoteDR = this.matter.add.image(1000, 300, 'boatSideDR');
 
+        globalSideVariables.spriteBoteU.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spriteBoteD.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spriteBoteL.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spriteBoteR.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spriteBoteUL.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spriteBoteUR.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spriteBoteDL.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spriteBoteDR.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);     
+
         globalSideVariables.spriteBoteU.setVisible(false);
         globalSideVariables.spriteBoteD.setVisible(false);
         globalSideVariables.spriteBoteL.setVisible(false);
@@ -271,6 +298,15 @@ var SideViewState = new Phaser.Class({
         globalSideVariables.spritePesqueroLivianoUR = this.matter.add.image(400, 50, 'pesqueroLivianoUR');
         globalSideVariables.spritePesqueroLivianoDL = this.matter.add.image(400, 50, 'pesqueroLivianoDL');
         globalSideVariables.spritePesqueroLivianoDR = this.matter.add.image(400, 50, 'pesqueroLivianoDR');
+        
+        globalSideVariables.spritePesqueroLivianoU.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spritePesqueroLivianoD.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spritePesqueroLivianoL.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spritePesqueroLivianoR.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spritePesqueroLivianoUL.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spritePesqueroLivianoUR.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spritePesqueroLivianoDL.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spritePesqueroLivianoDR.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);     
 
         globalSideVariables.spritePesqueroLivianoU.setVisible(false);
         globalSideVariables.spritePesqueroLivianoD.setVisible(false);
@@ -290,6 +326,15 @@ var SideViewState = new Phaser.Class({
         globalSideVariables.spritePesqueroPesadoUR = this.matter.add.image(800, 50, 'pesqueroPesadoUR');
         globalSideVariables.spritePesqueroPesadoDL = this.matter.add.image(800, 50, 'pesqueroPesadoDL');
         globalSideVariables.spritePesqueroPesadoDR = this.matter.add.image(800, 50, 'pesqueroPesadoDR');
+        
+        globalSideVariables.spritePesqueroPesadoU.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spritePesqueroPesadoD.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spritePesqueroPesadoL.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spritePesqueroPesadoR.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spritePesqueroPesadoUL.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spritePesqueroPesadoUR.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spritePesqueroPesadoDL.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);
+        globalSideVariables.spritePesqueroPesadoDR.mask = new Phaser.Display.Masks.BitmapMask(this, globalSideVariables.spotlight);     
 
         globalSideVariables.spritePesqueroPesadoU.setVisible(false);
         globalSideVariables.spritePesqueroPesadoD.setVisible(false);
