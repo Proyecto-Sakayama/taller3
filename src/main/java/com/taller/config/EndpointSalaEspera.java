@@ -40,6 +40,7 @@ public class EndpointSalaEspera {
 					session.getBasicRemote().sendText(newTeam);
 				} else {
 					System.out.println("4");
+					endpointsPartida[1] = this;
 					session.getBasicRemote().sendText("1");
 				}
 
@@ -60,7 +61,6 @@ public class EndpointSalaEspera {
 
 		}
 
-	
 	}
 
 	@OnMessage
@@ -70,7 +70,7 @@ public class EndpointSalaEspera {
 
 	@OnClose
 	public void onClose(Session session) throws IOException, EncodeException {
-		
+
 	}
 
 	@OnError
@@ -81,8 +81,13 @@ public class EndpointSalaEspera {
 	public void broadcast(String start) {
 
 		try {
-			endpointsPartida[0].session.getBasicRemote().sendText(start);
-			endpointsPartida[1].session.getBasicRemote().sendText(start);
+			if (endpointsPartida[0] != null) {
+				endpointsPartida[0].session.getBasicRemote().sendText(start);
+			}
+			if (endpointsPartida[1] != null) {
+				endpointsPartida[1].session.getBasicRemote().sendText(start);
+			}
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -29,6 +29,8 @@
                                             <option value="Pesquero">Pesquero</option>
                                         </select>
                                         <div id="loading" style="display:none;">LOADING...</div>
+                                        <div id="equipoPesquero" style="display:none;">SU EQUIPO: PESQUERO</div>
+                                        <div id="equipoPatrullero" style="display:none;">SU EQUIPO: PATRULLERO</div>
                                     </div>
                                     <div class="card-footer text-muted">
                                         <button type="button" class="btn btn-outline-light" id="buttonNuevaPartida">Buscar oponente</button>

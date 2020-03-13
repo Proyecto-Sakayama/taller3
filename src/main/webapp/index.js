@@ -1,9 +1,6 @@
 var websocket;
 var equipo = "EMPTY";
 var ready = false;
-/*var mensaje = "Patrullero";
-var entro = false;*/
-
 
 window.onload = function() {
     try 
@@ -38,7 +35,7 @@ $('#buttonNuevaPartida').click(function() {
 
 $('#unirseAPartida').click(function() {
 
-  saladeespera("start");
+    saladeespera("start");
 
 });   
 
@@ -70,7 +67,7 @@ function saladeespera(team){
             case "Patrullero":
 
                 if(equipo == "EMPTY"){
-                    equipo = "Pesquero";
+                    equipo = "Patrullero";
                     ready = true;
                 }
 
@@ -80,7 +77,7 @@ function saladeespera(team){
             case "Pesquero":
 
                 if(equipo == "EMPTY"){
-                    equipo = "Patrullero";
+                    equipo = "Pesquero";
                     ready = true;
                 }
 
@@ -88,7 +85,7 @@ function saladeespera(team){
 
             case "2":
 
-                window.location.href = 'esteIndex.html?equipo=' + equipo;
+                window.location.href = 'game.html?equipo=' + equipo;
 
                 break;
 
@@ -102,23 +99,18 @@ function saladeespera(team){
             $('#loading').hide();
             $('#unirseAPartida').show();
 
+
+
+            if(equipo == "Patrullero"){
+                $('#equipoPatrullero').show();
+            }else{
+                $('#equipoPesquero').show();
+            }
+
+
+
         }
 
     };
 
-}
-
-
-
-function mostrarError(mensaje) {
-    $("#error").html(mensaje);
-    $('#modalError').modal('show');
-}
-
-function isEmpty(str) {
-    return (!str || 0 === str.length);
-}
-
-function isEqual(str1, str2) {
-    return str1.toUpperCase() === str2.toUpperCase();
 }
