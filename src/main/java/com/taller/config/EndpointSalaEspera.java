@@ -54,9 +54,16 @@ public class EndpointSalaEspera {
 
 			} else {
 				System.out.println("6");
-				endpointsPartida[0] = this;
+				//endpointsPartida[0] = this;
 				firstTeam = equipo;
-				broadcast(firstTeam);
+				
+				String newTeam = "";
+				if (firstTeam.equals("Patrullero")) {
+					newTeam = "Pesquero";
+				} else {
+					newTeam = "Patrullero";
+				}
+				broadcast(newTeam);
 			}
 
 		}

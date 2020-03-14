@@ -850,6 +850,12 @@ var DroneViewState = new Phaser.Class({
             }
 
         }
+        
+        
+        
+        globalDroneVariables.websocket.onclose = function () {
+            alert('test');
+        };
 
 
 
