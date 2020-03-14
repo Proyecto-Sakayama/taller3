@@ -69,6 +69,7 @@ var globalDroneVariables = {
     
     teclaGuardarPartida: null,
     teclaRestaurarPartida: null,
+    teclaTormenta: null,
 
     avisarPesqueroJustPressed: false,
 
@@ -166,6 +167,8 @@ var DroneViewState = new Phaser.Class({
         
         globalDroneVariables.teclaGuardarPartida = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
         globalDroneVariables.teclaRestaurarPartida = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+        
+        globalDroneVariables.teclaTormenta = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.T);
 
 
         this.matter.world.setBounds(0, 0, 1200, 650);
@@ -578,6 +581,17 @@ var DroneViewState = new Phaser.Class({
                 partida.hayTormenta = false;
                 globalDroneVariables.textoTormenta.setText('No hay tormenta');
             }
+        }
+        
+        if(!partida.hayTormenta && Phaser.Input.Keyboard.JustDown(globalDroneVariables.teclaTormenta))
+        {
+            partida.hayTormenta = true;
+            globalDroneVariables.textoTormenta.setText('Hay tormenta!!');        	
+        }
+        if(partida.hayTormenta && Phaser.Input.Keyboard.JustDown(globalDroneVariables.teclaTormenta))
+        {
+        	partida.hayTormenta = false;
+            globalDroneVariables.textoTormenta.setText('No hay tormenta');	
         }
         /***********************************************
 
