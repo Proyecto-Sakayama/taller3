@@ -134,7 +134,8 @@ var DroneViewState = new Phaser.Class({
         this.load.image('patrullero1', 'assets/patrullero1_2.png');
         this.load.image('mask', 'assets/mask.png');
         this.load.image('panel', 'assets/panel.png');
-
+        this.load.image('horizontal', 'assets/horizontal.png');
+        this.load.image('vertical', 'assets/vertical.png');
     },
 
 
@@ -224,7 +225,9 @@ var DroneViewState = new Phaser.Class({
 
 
         //PESQUEROS       
-        globalDroneVariables.pesquero = this.matter.add.image(400, 50, 'bote1');
+        globalDroneVariables.pesquero = this.matter.add.image(400, 50, 'bote1',  {
+            isStatic: true
+        });
         globalDroneVariables.pesquero.setFrictionAir(0.15);
         globalDroneVariables.pesquero.setMass(parameters.masaBarcosLivianos);
         globalDroneVariables.pesquero.setFixedRotation();
@@ -492,6 +495,11 @@ var DroneViewState = new Phaser.Class({
         partida.Pesqueros.Barcos.push(barcoPesquero);
         partida.Pesqueros.Barcos.push(barcoPesquero2);
 
+        var piso = this.matter.add.image(600, 650, 'horizontal', null, { restitution: 0.4, isStatic: true });
+        var techo = this.matter.add.image(600, 0, 'horizontal', null, { restitution: 0.4, isStatic: true });
+        var izquierda = this.matter.add.image(0, 325, 'vertical', null, { restitution: 0.4, isStatic: true });
+        var derecha = this.matter.add.image(1200, 325, 'vertical', null, { restitution: 0.4, isStatic: true });
+        
         //COLLISSIONS
         //Todos excepto el helicóptero colisionan con los pesqueros
         var colisionesConPesqueros = this.matter.world.nextCategory();
@@ -506,13 +514,19 @@ var DroneViewState = new Phaser.Class({
         var colisionesConPatrulleroPesado = this.matter.world.nextCategory();
         barcoPatrullero2.sprite.setCollisionCategory(colisionesConPatrulleroPesado);
         boteOb.sprite.setCollisionCategory(colisionesConPatrulleroPesado);
+        
+        //Colision con límites
+        var colisionesConLimites = this.matter.world.nextCategory();
+        piso.setCollisionCategory(colisionesConLimites);
+        techo.setCollisionCategory(colisionesConLimites);
+        izquierda.setCollisionCategory(colisionesConLimites);
+        derecha.setCollisionCategory(colisionesConLimites);
 
-
-        barcoPesquero.sprite.setCollidesWith([colisionesConPesqueros, colisionesConPatrulleroLiviano, colisionesConPatrulleroPesado]);
-        barcoPesquero2.sprite.setCollidesWith([colisionesConPesqueros, colisionesConPatrulleroLiviano, colisionesConPatrulleroPesado]);
-        barcoPatrullero.sprite.setCollidesWith([colisionesConPesqueros, colisionesConPatrulleroPesado]);
-        boteOb.sprite.setCollidesWith([colisionesConPesqueros, colisionesConPatrulleroLiviano]);
-        barcoPatrullero2.sprite.setCollidesWith([colisionesConPesqueros, colisionesConPatrulleroLiviano]);
+        barcoPesquero.sprite.setCollidesWith([colisionesConPesqueros, colisionesConPatrulleroLiviano, colisionesConPatrulleroPesado, colisionesConLimites]);
+        barcoPesquero2.sprite.setCollidesWith([colisionesConPesqueros, colisionesConPatrulleroLiviano, colisionesConPatrulleroPesado, colisionesConLimites]);
+        barcoPatrullero.sprite.setCollidesWith([colisionesConPesqueros, colisionesConPatrulleroPesado, colisionesConLimites]);
+        boteOb.sprite.setCollidesWith([colisionesConPesqueros, colisionesConPatrulleroLiviano, colisionesConLimites]);
+        barcoPatrullero2.sprite.setCollidesWith([colisionesConPesqueros, colisionesConPatrulleroLiviano, colisionesConLimites]);
 
 
 
@@ -530,7 +544,6 @@ var DroneViewState = new Phaser.Class({
 
 
         });
-
 
         console.log('create success');
 
