@@ -90,64 +90,64 @@ var SideViewState = new Phaser.Class({
         this.load.image('maskSide', 'assets/side/maskSide.png');
 
         //PATRULLERO LIVIANO DIRECCION
-        this.load.image('patrulleroLivianoU', 'assets/side/livianoU.png');
-        this.load.image('patrulleroLivianoD', 'assets/side/livianoD.png');
-        this.load.image('patrulleroLivianoL', 'assets/side/livianoL.png');
-        this.load.image('patrulleroLivianoR', 'assets/side/livianoR.png');
-        this.load.image('patrulleroLivianoUL', 'assets/side/livianoU.png');
-        this.load.image('patrulleroLivianoUR', 'assets/side/livianoD.png');
-        this.load.image('patrulleroLivianoDL', 'assets/side/livianoL.png');
-        this.load.image('patrulleroLivianoDR', 'assets/side/livianoR.png');
+        this.load.image('patrulleroLivianoU', 'assets/side/patrulleroLivianoU.png');
+        this.load.image('patrulleroLivianoD', 'assets/side/patrulleroLivianoD.png');
+        this.load.image('patrulleroLivianoL', 'assets/side/patrulleroLivianoL.png');
+        this.load.image('patrulleroLivianoR', 'assets/side/patrulleroLivianoR.png');
+        this.load.image('patrulleroLivianoUL', 'assets/side/patrulleroLivianoUL.png');
+        this.load.image('patrulleroLivianoUR', 'assets/side/patrulleroLivianoUR.png');
+        this.load.image('patrulleroLivianoDL', 'assets/side/patrulleroLivianoDL.png');
+        this.load.image('patrulleroLivianoDR', 'assets/side/patrulleroLivianoDR.png');
 
         //PATRULLERO PESADO DIRECCION
-        this.load.image('patrulleroPesadoU', 'assets/side/pesadoU.png');
-        this.load.image('patrulleroPesadoD', 'assets/side/pesadoD.png');
-        this.load.image('patrulleroPesadoL', 'assets/side/pesadoL.png');
-        this.load.image('patrulleroPesadoR', 'assets/side/pesadoR.png');
-        this.load.image('patrulleroPesadoUL', 'assets/side/pesadoU.png');
-        this.load.image('patrulleroPesadoUR', 'assets/side/pesadoD.png');
-        this.load.image('patrulleroPesadoDL', 'assets/side/pesadoL.png');
-        this.load.image('patrulleroPesadoDR', 'assets/side/pesadoR.png');
+        this.load.image('patrulleroPesadoU', 'assets/side/patrulleroPesadoU.png');
+        this.load.image('patrulleroPesadoD', 'assets/side/patrulleroPesadoD.png');
+        this.load.image('patrulleroPesadoL', 'assets/side/patrulleroPesadoL.png');
+        this.load.image('patrulleroPesadoR', 'assets/side/patrulleroPesadoR.png');
+        this.load.image('patrulleroPesadoUL', 'assets/side/patrulleroPesadoUL.png');
+        this.load.image('patrulleroPesadoUR', 'assets/side/patrulleroPesadoUR.png');
+        this.load.image('patrulleroPesadoDL', 'assets/side/patrulleroPesadoDL.png');
+        this.load.image('patrulleroPesadoDR', 'assets/side/patrulleroPesadoDR.png');
 
         //PESQUERO LIVIANO DIRECCION
-        this.load.image('pesqueroLivianoU', 'assets/side/livianoU.png');
-        this.load.image('pesqueroLivianoD', 'assets/side/livianoD.png');
-        this.load.image('pesqueroLivianoL', 'assets/side/livianoL.png');
-        this.load.image('pesqueroLivianoR', 'assets/side/livianoR.png');
-        this.load.image('pesqueroLivianoUL', 'assets/side/livianoU.png');
-        this.load.image('pesqueroLivianoUR', 'assets/side/livianoD.png');
-        this.load.image('pesqueroLivianoDL', 'assets/side/livianoL.png');
-        this.load.image('pesqueroLivianoDR', 'assets/side/livianoR.png');
+        this.load.image('pesqueroLivianoU', 'assets/side/pesqueroLivianoU.png');
+        this.load.image('pesqueroLivianoD', 'assets/side/pesqueroLivianoD.png');
+        this.load.image('pesqueroLivianoL', 'assets/side/pesqueroLivianoL.png');
+        this.load.image('pesqueroLivianoR', 'assets/side/pesqueroLivianoR.png');
+        this.load.image('pesqueroLivianoUL', 'assets/side/pesqueroLivianoUL.png');
+        this.load.image('pesqueroLivianoUR', 'assets/side/pesqueroLivianoUR.png');
+        this.load.image('pesqueroLivianoDL', 'assets/side/pesqueroLivianoDL.png');
+        this.load.image('pesqueroLivianoDR', 'assets/side/pesqueroLivianoDR.png');
 
         //PESQUERO PESADO DIRECCION
-        this.load.image('pesqueroPesadoU', 'assets/side/pesadoU.png');
-        this.load.image('pesqueroPesadoD', 'assets/side/pesadoD.png');
-        this.load.image('pesqueroPesadoL', 'assets/side/pesadoL.png');
-        this.load.image('pesqueroPesadoR', 'assets/side/pesadoR.png');
-        this.load.image('pesqueroPesadoUL', 'assets/side/pesadoU.png');
-        this.load.image('pesqueroPesadoUR', 'assets/side/pesadoD.png');
-        this.load.image('pesqueroPesadoDL', 'assets/side/pesadoL.png');
-        this.load.image('pesqueroPesadoDR', 'assets/side/pesadoR.png');
+        this.load.image('pesqueroPesadoU', 'assets/side/pesqueroPesadoU.png');
+        this.load.image('pesqueroPesadoD', 'assets/side/pesqueroPesadoD.png');
+        this.load.image('pesqueroPesadoL', 'assets/side/pesqueroPesadoL.png');
+        this.load.image('pesqueroPesadoR', 'assets/side/pesqueroPesadoR.png');
+        this.load.image('pesqueroPesadoUL', 'assets/side/pesqueroPesadoUL.png');
+        this.load.image('pesqueroPesadoUR', 'assets/side/pesqueroPesadoUR.png');
+        this.load.image('pesqueroPesadoDL', 'assets/side/pesqueroPesadoDL.png');
+        this.load.image('pesqueroPesadoDR', 'assets/side/pesqueroPesadoDR.png');
 
         //HELICOPTERO DIRECCION
-        this.load.image('heliSideU', 'assets/side/heliSideU.png');
-        this.load.image('heliSideD', 'assets/side/heliSideD.png');
-        this.load.image('heliSideL', 'assets/side/heliSideL.png');
-        this.load.image('heliSideR', 'assets/side/heliSideR.png');
-        this.load.image('heliSideUL', 'assets/side/heliSideU.png');
-        this.load.image('heliSideUR', 'assets/side/heliSideD.png');
-        this.load.image('heliSideDL', 'assets/side/heliSideL.png');
-        this.load.image('heliSideDR', 'assets/side/heliSideR.png');
+        this.load.image('heliSideU', 'assets/side/patrulleroHelicopteroU.png');
+        this.load.image('heliSideD', 'assets/side/patrulleroHelicopteroD.png');
+        this.load.image('heliSideL', 'assets/side/patrulleroHelicopteroL.png');
+        this.load.image('heliSideR', 'assets/side/patrulleroHelicopteroR.png');
+        this.load.image('heliSideUL', 'assets/side/patrulleroHelicopteroUL.png');
+        this.load.image('heliSideUR', 'assets/side/patrulleroHelicopteroUR.png');
+        this.load.image('heliSideDL', 'assets/side/patrulleroHelicopteroDL.png');
+        this.load.image('heliSideDR', 'assets/side/patrulleroHelicopteroDR.png');
 
         //BOTE DIRECCION
-        this.load.image('boatSideU', 'assets/side/boatSideU.png');
-        this.load.image('boatSideD', 'assets/side/boatSideD.png');
-        this.load.image('boatSideL', 'assets/side/boatSideL.png');
-        this.load.image('boatSideR', 'assets/side/boatSideR.png');
-        this.load.image('boatSideUL', 'assets/side/boatSideU.png');
-        this.load.image('boatSideUR', 'assets/side/boatSideD.png');
-        this.load.image('boatSideDL', 'assets/side/boatSideL.png');
-        this.load.image('boatSideDR', 'assets/side/boatSideR.png');
+        this.load.image('boatSideU', 'assets/side/patrulleroBoteU.png');
+        this.load.image('boatSideD', 'assets/side/patrulleroBoteD.png');
+        this.load.image('boatSideL', 'assets/side/patrulleroBoteL.png');
+        this.load.image('boatSideR', 'assets/side/patrulleroBoteR.png');
+        this.load.image('boatSideUL', 'assets/side/patrulleroBoteUL.png');
+        this.load.image('boatSideUR', 'assets/side/patrulleroBoteUR.png');
+        this.load.image('boatSideDL', 'assets/side/patrulleroBoteDL.png');
+        this.load.image('boatSideDR', 'assets/side/patrulleroBoteDR.png');
 
     },
 
