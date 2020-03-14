@@ -1,7 +1,7 @@
 var parameters = {
     ipServidor: "localhost",
     //ipServidor: "192.168.1.44", //Casa Guz
-    //ipServidor: "192.168.1.8", //Casa Marce
+    //ipServidor: "192.168.1.7", //Casa Marce
     puertoServidor: "8080",
 
     velocidadRotacion: 0.07, //0.007
