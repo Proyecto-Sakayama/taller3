@@ -125,6 +125,16 @@ var DroneViewState = new Phaser.Class({
     *************************************************************************************************************************************************/
 
     preload: function () {
+        
+        //Patrulleros
+        this.load.image('patrulleroLivianoTop', 'assets/patrulleroLivianoTop.png');
+        this.load.image('patrulleroPesadoTop', 'assets/patrulleroPesadoTop.png');
+        this.load.image('patrulleroHelicopteroTop', 'assets/patrulleroHelicopteroTop.png');
+        this.load.image('patrulleroBoteTop', 'assets/patrulleroBoteTop.png');
+        
+        //Pesqueros
+        this.load.image('pesqueroLivianoTop', 'assets/pesqueroLivianoTop.png');
+        this.load.image('pesqueroPesadoTop', 'assets/pesqueroPesadoTop.png');
 
         //carga las imagenes al juego
         this.load.image('water', 'assets/water.jpg');
@@ -224,14 +234,14 @@ var DroneViewState = new Phaser.Class({
 
 
         //PESQUEROS       
-        globalDroneVariables.pesquero = this.matter.add.image(400, 50, 'bote1');
+        globalDroneVariables.pesquero = this.matter.add.image(400, 50, 'pesqueroLivianoTop');
         globalDroneVariables.pesquero.setFrictionAir(0.15);
         globalDroneVariables.pesquero.setMass(parameters.masaBarcosLivianos);
         globalDroneVariables.pesquero.setFixedRotation();
         globalDroneVariables.pesquero.setAngle(270);
         globalDroneVariables.pesquero.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
-        var pesquero2 = this.matter.add.image(800, 50, 'patrullero1');
+        var pesquero2 = this.matter.add.image(800, 50, 'pesqueroPesadoTop');
         pesquero2.setFrictionAir(0.15);
         pesquero2.setMass(parameters.masaBarcosPesados);
         pesquero2.setFixedRotation();
@@ -239,28 +249,28 @@ var DroneViewState = new Phaser.Class({
         pesquero2.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
         //PATRULLEROS
-        var patrullero = this.matter.add.image(200, 300, 'bote1');
+        var patrullero = this.matter.add.image(200, 300, 'patrulleroLivianoTop');
         patrullero.setFrictionAir(0.15);
         patrullero.setMass(parameters.masaBarcosLivianos);
         patrullero.setFixedRotation();
         patrullero.setAngle(270);
         patrullero.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
-        var patrullero2 = this.matter.add.image(1000, 300, 'patrullero1');
+        var patrullero2 = this.matter.add.image(1000, 300, 'patrulleroPesadoTop');
         patrullero2.setFrictionAir(0.15);
         patrullero2.setMass(parameters.masaBarcosPesados);
         patrullero2.setFixedRotation();
         patrullero2.setAngle(270);
         patrullero2.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
-        var helicopter = this.matter.add.image(1000, 300, 'heli');
+        var helicopter = this.matter.add.image(1000, 300, 'patrulleroHelicopteroTop');
         helicopter.setFrictionAir(0.15);
         helicopter.setMass(parameters.masaBarcosPesados);
         helicopter.setFixedRotation();
         helicopter.setAngle(270);
         helicopter.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
-        var boteSprite = this.matter.add.image(1000, 300, 'bote1');
+        var boteSprite = this.matter.add.image(1000, 300, 'patrulleroBoteTop');
         boteSprite.setFrictionAir(0.15);
         boteSprite.setMass(parameters.masaBarcosPesados);
         boteSprite.setFixedRotation();
