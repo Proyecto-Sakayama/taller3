@@ -519,8 +519,8 @@ myGame.scenes.push(SideViewState);
 function getSideY(droneViewY){
 
     var maxDroneViewY = 650; // Tamaño 650 px
-    var maxSideViewY = 95; // Tamaño 150 px
-    var screenToJump = maxDroneViewY + 56; //Para que los barcos no circulen por el cielo
+    var maxSideViewY = 80; // Tamaño 150 px
+    var screenToJump = maxDroneViewY + 50; //Para que los barcos no circulen por el cielo
 
     var sideY = (droneViewY / (maxDroneViewY / maxSideViewY)) + screenToJump;
 
