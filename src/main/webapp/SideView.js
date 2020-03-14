@@ -545,7 +545,7 @@ function scaleVehicule(vehiculoSprite){
 
     var sideY = vehiculoSprite.y - 650;
     var minScale = 0.2; // Lo mas lejos reduce la imagen 2 tercios
-    var maxScale = 1.2; // Lo mas cerca amplia la imagen al 50%
+    var maxScale = 1; // Lo mas cerca amplia la imagen al 50%
     var maxSideViewY = 120;
     var relacionTamanioImagen = 1; 
 
