@@ -83,38 +83,32 @@
             }
 
         </style>
+        <script>
+            function getWinner() {
+                var url_string = window.location.href;
+                var url = new URL(url_string);
+                var eqAbandono = url.searchParams.get("equipoAbandono");
+                document.getElementById("abandono").innerHTML = eqAbandono.toLocaleUpperCase() + " HA ABANDONADO LA PARTIDA";
+            }
 
+        </script>
     </head>
 
-    <body>
+    <body  onload="getWinner()">
 
         <!--PRIMER JUGADOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
         <article id="primerJugador">
             <div style="width: 100%;">
                 <div class="divisor">
                     <div id="titulo">
-                        <h1>MILLA 200</h1>
+                        <h1 id="abandono"></h1>
                     </div>
                     <div id="grupoSeleccion">
-                        <div>
-                            <p style="font-size: 1.5em">Seleccion de equipo</p>
-                        </div>
-                        <div style="display: none" id="seleccionFinalJ1">
-                            <p id="equipoJ1" style="font-size: 1.5em">P</p>
+                        
+                        <div id="esperando">
+                            <div id="divJugarBTN" onclick="window.location.href='/taller3/'" style="display: inline-block;  margin-left: 15px"> <input id="jugarBTN" type="button" value="Jugar"> de nuevo</div>
                         </div>
 
-                        <label id="menuEquipo" for="equipos">Selecciona un equipo </label>
-                        <select id="equipos">
-                            <option id="posibleEquipo" value="Patrullero">Patrullero</option>
-                            <option id="posibleEquipo" value="Pesquero">Pesquero</option>
-                        </select>
-                        <div id="esperando">
-                            <div id="divCrearBTN" style="display: inline-block;  margin-left: 15px"> <input id="crearBTN" type="button" value="Crear"> partida</div>
-                            <div id="divRecuperarBTN" style="display: inline-block;  margin-left: 15px"> <input id="recuperarBTN" type="button" value="Recuperar"> partida</div>
-                        </div>
-                        <div id="esperandoOponente" style="display: none">
-                            <p style="font-family: sans-serif">Esperando oponente</p>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -154,7 +148,7 @@
 ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
         <script type="text/javascript" src="jquery-3.4.1.min.js"></script>
-        <script type="text/javascript" src="index.js"></script>
+        <!--  <script type="text/javascript" src="index.js"></script> -->
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>

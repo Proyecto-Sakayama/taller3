@@ -48,9 +48,12 @@ public class EndpointSalaEspera {
 		} else {
 
 			if (equipo.equals("start")) {
-				endpointsPartida[1] = this;
-				System.out.println("5");
 				broadcast("2");
+				endpointsPartida[0] = null;
+				endpointsPartida[1] = null;
+				firstTeam = "";
+				System.out.println("5");
+				
 
 			} else {
 				System.out.println("6");

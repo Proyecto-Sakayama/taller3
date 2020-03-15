@@ -16,16 +16,24 @@ window.onload = function() {
 }
 
 
-$('#buttonNuevaPartida').click(function() {
-    let b = document.getElementById("selectBarcoNuevo");
-    equipo = b.options[b.selectedIndex].value;
+$('#crearBTN').click(function() {
+    let b = document.getElementById("equipos");
+    equipo = b.value;
 
     if (equipo == "EMPTY") {
         mostrarError("Debe seleccionar un equipo para comenzar.");
     } else {
-        $('#selectBarcoNuevo').hide();
-        $('#buttonNuevaPartida').hide();
-        $('#loading').show();
+        //$('#selectBarcoNuevo').hide();
+        //$('#buttonNuevaPartida').hide();
+        //$('#loading').show();
+        //$('#primerJugador').show();
+        $('#divCrearBTN').hide();
+        $('#divRecuperarBTN').hide();
+        document.getElementById('equipoJ1').innerHTML = equipo.toUpperCase();
+        $('#menuEquipo').hide();
+        $('#equipos').hide();
+        $('#seleccionFinalJ1').show();
+        $('#esperandoOponente').show();
         saladeespera(equipo);	
     }
 
@@ -33,7 +41,7 @@ $('#buttonNuevaPartida').click(function() {
 
 
 
-$('#unirseAPartida').click(function() {
+$('#unirseBTN').click(function() {
 
     saladeespera("start");
 
@@ -57,10 +65,11 @@ function saladeespera(team){
 
             case "1":
                 //Jugador 2 espera a que el jugador 1 seleccione equipo
-                $('#selectBarcoNuevo').hide();
-                $('#buttonNuevaPartida').hide();
-                $('#loading').show();
-
+                //$('#selectBarcoNuevo').hide();
+                //$('#buttonNuevaPartida').hide();
+                //$('#loading').show();
+                $('#primerJugador').hide();
+                $('#segundoJugador').show();
                 break;
 
 
@@ -93,19 +102,12 @@ function saladeespera(team){
 
 
         if(ready){
-
-            $('#selectBarcoNuevo').hide();
-            $('#buttonNuevaPartida').hide();
-            $('#loading').hide();
-            $('#unirseAPartida').show();
-
-
-
-            if(equipo == "Patrullero"){
-                $('#equipoPatrullero').show();
-            }else{
-                $('#equipoPesquero').show();
-            }
+            $('#primerJugador').hide();
+            $('#segundoJugador').show();          
+            document.getElementById('esperandoEquipoJ2').innerHTML = "Equipo disponible:";
+            document.getElementById('equipoJ2').innerHTML = equipo.toUpperCase();
+            $('#elEquipoqQueQueda').show();
+            $('#divUnirseBTN').show();
 
 
 
