@@ -3,10 +3,10 @@ package persistencia.daos;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import logica.EstadoPartida;
 import logica.excepciones.PersistenciaException;
 import logica.poolConexiones.Conexion;
 import logica.poolConexiones.IConexion;
+import logica.valueObjects.VOEstadoPartida;
 import persistencia.consultas.Consultas;
 
 public class DAOEstadoPartida implements IDAOEstadoPartida {
@@ -16,12 +16,11 @@ public class DAOEstadoPartida implements IDAOEstadoPartida {
 	}
 
 	@Override
-	public void insertar(EstadoPartida estadoPartida, IConexion icon) throws PersistenciaException {
+	public void insertar(VOEstadoPartida estadoPartida, IConexion icon) throws PersistenciaException {
 		try {
 			Conexion con = (Conexion) icon;
 		
 			PreparedStatement pstm = con.getConnection().prepareStatement(Consultas.insertarPartida());
-//			pstm.setInt(1, estadoPartida.getIdPartida());
 			pstm.setString(1, estadoPartida.getDatosPartida());
 			pstm.executeUpdate();
 			pstm.close();
@@ -31,17 +30,17 @@ public class DAOEstadoPartida implements IDAOEstadoPartida {
 		}
 	}
 	
-	public EstadoPartida obtenerUltimaPartida(IConexion icon) throws PersistenciaException{
+	public VOEstadoPartida obtenerUltimaPartida(IConexion icon) throws PersistenciaException{
 		Conexion con = (Conexion) icon;
 
-		EstadoPartida partida = null;
+		VOEstadoPartida partida = null;
 		
 		try {
 			PreparedStatement pst = con.getConnection().prepareStatement(Consultas.listarPartidas());
 			ResultSet rs = pst.executeQuery();
 			
 			if(rs.next()){
-				partida = new EstadoPartida();
+				partida = new VOEstadoPartida();
 				partida.setIdPartida(rs.getInt("idPartida"));
 				partida.setDatosPartida(rs.getString("datosPartida"));
 			}

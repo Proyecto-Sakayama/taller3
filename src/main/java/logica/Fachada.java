@@ -43,35 +43,54 @@ public class Fachada implements IFachada{
 		}
 	}
 	@Override
-	public void insertarEstadoPartida(VOEstadoPartida estadoPartida) throws PersistenciaException {
-		IConexion icon = ipool.obtenerConexion(true);
-		EstadoPartida partida = new EstadoPartida();
-		partida.setDatosPartida(estadoPartida.getDatosPartida());
+	public VOEstadoPartida guardarEstadoPartida(VOEstadoPartida estadoPartida) throws PersistenciaException{
+		String textoPartida = estadoPartida.getDatosPartida();
+		boolean guardarPartida = textoPartida.contains("\"guardarPartida\":true");
+		if(guardarPartida) {
+			textoPartida = textoPartida.replace("\"guardarPartida\":true", "\"guardarPartida\":false");
+			estadoPartida.setDatosPartida(textoPartida);
+			IConexion icon = ipool.obtenerConexion(true);
+			try {
+				daoP.insertar(estadoPartida, icon);
+				ipool.liberarConexion(icon, true);
+			} catch(PersistenciaException  e) {
+				ipool.liberarConexion(icon, false);
+				throw new PersistenciaException(e.getMensaje());
+			} 
+		}
+		return estadoPartida;
+	}
 		
+		
+
+	@Override
+	public VOEstadoPartida restaurarPartida(VOEstadoPartida estadoPartida) throws PersistenciaException {
+		String textoPartida = estadoPartida.getDatosPartida();
+		VOEstadoPartida result = null;
+		boolean restaurarPartida = textoPartida.contains("\"restaurarPartida\":true");
+		IConexion icon = ipool.obtenerConexion(true);
+		if(restaurarPartida) {
+			try {
+				result = this.restaurarPartida(estadoPartida);
+			} catch (PersistenciaException e) {
+				ipool.liberarConexion(icon, false);
+				e.printStackTrace();
+			}
+		}
 		try {
-			daoP.insertar(partida, icon);
+			result = daoP.obtenerUltimaPartida(icon);
 		} catch(PersistenciaException  e) {
 			ipool.liberarConexion(icon, false);
 			throw new PersistenciaException(e.getMensaje());
 		} 
 		ipool.liberarConexion(icon, true);
-		
+		return result;
 	}
 
 	@Override
-	public VOEstadoPartida obtenerUltimoEstado() throws PersistenciaException {
-		IConexion icon = ipool.obtenerConexion(true);
-		VOEstadoPartida voPartida = null;
-		try {
-			voPartida = new VOEstadoPartida();
-			EstadoPartida partida = daoP.obtenerUltimaPartida(icon);
-			voPartida.setDatosPartida(partida.getDatosPartida());
-		} catch(PersistenciaException  e) {
-			ipool.liberarConexion(icon, false);
-			throw new PersistenciaException(e.getMensaje());
-		} 
-		ipool.liberarConexion(icon, true);
-		return voPartida;
+	public void procesarDisparo(VOEstadoPartida estadoPartida) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 

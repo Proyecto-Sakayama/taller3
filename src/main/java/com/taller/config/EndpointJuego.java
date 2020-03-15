@@ -41,20 +41,16 @@ public class EndpointJuego {
 	@OnMessage
 	public void onMessage(Session session, String partida) throws IOException, EncodeException {
 		String partidaEnviar = partida;
+		VOEstadoPartida estadoPartida = new VOEstadoPartida(partida);
 		boolean existeDisparo = partida.contains("\"Disparo\":{\"existe\":true");
-		boolean guardarPartida = partida.contains("\"guardarPartida\":true");
-		boolean restaurarPartida = partida.contains("\"restaurarPartida\":true");
-		if(guardarPartida) {
-			if(endpointsPartida[0].session.equals(session)) //Es el primero en ingresar
-			{
-				partida = partida.replace("\"guardarPartida\":true", "\"guardarPartida\":false");
-				VOEstadoPartida estadoPartida = new VOEstadoPartida();
-				estadoPartida.setDatosPartida(partida);
-				try {
-					fachada.insertarEstadoPartida(estadoPartida);
-				} catch (PersistenciaException e) {
-					e.printStackTrace();
-				}
+		
+		if(endpointsPartida[0].session.equals(session)) //Es el primero en ingresar
+		{
+			try {
+				fachada.guardarEstadoPartida(estadoPartida);
+				estadoPartida = fachada.restaurarPartida(estadoPartida);
+			} catch (PersistenciaException e) {
+				e.printStackTrace();
 			}
 		}
 		if (existeDisparo) {
@@ -72,18 +68,6 @@ public class EndpointJuego {
 				partidaEnviar = partida.replace("\"impacto\":true", "\"impacto\":false");
 			}
 
-		}
-		if(restaurarPartida) {
-			if(endpointsPartida[0].session.equals(session)) //Es el primero en ingresar
-			{
-				try {
-					VOEstadoPartida estadoPartida = new VOEstadoPartida();
-					estadoPartida = fachada.obtenerUltimoEstado();
-					partidaEnviar = estadoPartida.getDatosPartida();
-				} catch (PersistenciaException e) {
-					e.printStackTrace();
-				}
-			}
 		}
 
 		broadcast(partidaEnviar);
