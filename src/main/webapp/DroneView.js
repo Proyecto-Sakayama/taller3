@@ -15,7 +15,7 @@ var parameters = {
     masaHelicoptero: 22,
     masaBote: 32,
     milla200_distancia: 100,
-    metaPesca: 200,
+    metaPesca: 80,
     segundosChequeoTormenta: 30,
     ametralladoraAlcance: 100,
     ametralladoraDanio: 10,
@@ -553,16 +553,23 @@ var DroneViewState = new Phaser.Class({
         ////// CAPTURA DE PESQUERO LIVIANO POR BOTE
         var pesqueroCaptura = globalDroneVariables.pesquero;
 
-        this.matter.world.on('collisionstart', function (event, boteSprite, pesqueroCaptura) {
+        this.matter.world.on('collisionstart', function (event, bodyA, bodyB) {
 
-            if(vehiculoDentroMilla200(partida.Pesqueros.Barcos[0]) && vehiculoDentroMilla200(getBoatWithHelicopter().bote) ){
+            //body ID 7 = Barco pesquero liviano, body ID 12 = Bote patrulla
+            if((bodyA.id == 7 && bodyB.id == 12) || (bodyA.id == 12 && bodyB.id == 7)){
 
-                capturarBarco(partida.Pesqueros.Barcos[0]);
+                if(vehiculoDentroMilla200(partida.Pesqueros.Barcos[0]) && vehiculoDentroMilla200(getBoatWithHelicopter().bote) ){
+
+                    capturarBarco(partida.Pesqueros.Barcos[0]);
+
+                }
 
             }
 
-
         });
+
+
+
 
         console.log('create success');
 

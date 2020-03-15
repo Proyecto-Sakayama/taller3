@@ -16,7 +16,7 @@ import javax.websocket.server.ServerEndpoint;
 public class EndpointAcciones {
 	private Session session;
 	private static final EndpointAcciones[] endpointsPartida = new EndpointAcciones[2];
-	private static int tiempoPartida = 20;
+	private static int tiempoPartida = 300;
 	private static int seconds = tiempoPartida;
 	Timer timer;
 
