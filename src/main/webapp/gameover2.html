@@ -1,7 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
 
-    <head>
+<!doctype html> 
+<html lang="en"> 
+<head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <meta name="description" content="">
@@ -88,103 +88,37 @@
                 var url_string = window.location.href;
                 var url = new URL(url_string);
                 var winner = url.searchParams.get("equipoGanador");
-                document.getElementById("winner").innerHTML = "¡" + (winner + "s").toLocaleUpperCase() + " GANAN!";
+                alert("SI");
+                document.getElementById("winner").innerHTML = "PRUEBA"; //"¡" + ("winner" + "s").toLocaleUpperCase() + " GANAN!";
             }
 
         </script>
     </head>
-
     <body  onload="getWinner()">
 
-        <!--PRIMER JUGADOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-        <article id="primerJugador">
-            <div style="width: 100%;">
-                <div class="divisor">
-                    <div id="titulo">
-                        <h1 id="winner"></h1>
-                    </div>
-                    <div id="grupoSeleccion">
-                        
-                        <div id="esperando">
-                            <div id="divJugarBTN" onclick="window.location.href='/taller3/'" style="display: inline-block;  margin-left: 15px"> <input id="jugarBTN" type="button" value="Jugar"> de nuevo</div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </article>
-
-        <!-- FIN DEL PRIMER JUGADOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-
-
-        <!-- SEGUNDO JUGADOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-
-
-        <article id="segundoJugador">
+          <article id="segundoJugador">
             <div style="width: 100%">
 
                 <div class="divisor">
                     <div id="titulo">
-                        <h1>MILLA 200</h1>
+                        <h1 id="equipoGana">TITULO</h1>
+                        <span id="winner"></span>
                     </div>
                     <div id="grupoSeleccion">
-                        <div id="seleccionTitulo">
-                            <p id="esperandoEquipoJ2">Esperando a que el primer jugador seleccione equipo...</p>
-                        </div>
-                        <div style="display: none" id="elEquipoqQueQueda">
-                            <p style="font-size: 1.5em" id="equipoJ2">P</p>
-                        </div>
-                        <div id="divUnirseBTN" style="display: none"> <input type="submit" id="unirseBTN" value="Unirse"> a la partida</div>
+                        <div id="divJugarBTN"> <input type="submit" id="jugarBTN" value="Jugar"  onclick="window.location.href='/taller3/'"> de nuevo</div>
                     </div>
                 </div>
             </div>
         </article>
-
-
-        <!-- FIN DEL SEGUNDO JUGADOR!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-
 
         <!-- Bootstrap core JavaScript
 ================================================== -->
         <!-- Placed at the end of the document so the pages load faster -->
         <script type="text/javascript" src="jquery-3.4.1.min.js"></script>
-        <!--  <script type="text/javascript" src="index.js"></script> -->
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
     </body>
-
 </html>
-
-<!--<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-<a class="navbar-brand" href="#">Navbar</a>
-<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-<span class="navbar-toggler-icon"></span>
-</button>
-
-<div class="collapse navbar-collapse" id="navbarsExampleDefault">
-<ul class="navbar-nav mr-auto">
-<li class="nav-item active">
-<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="#">Link</a>
-</li>
-<li class="nav-item">
-<a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-</li>
-<li class="nav-item dropdown">
-<a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-<div class="dropdown-menu" aria-labelledby="dropdown01">
-<a class="dropdown-item" href="#">Action</a>
-<a class="dropdown-item" href="#">Another action</a>
-<a class="dropdown-item" href="#">Something else here</a>
-</div>
-</li>
-</ul>
-<form class="form-inline my-2 my-lg-0">
-<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-<button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-</form>
-</div>
-</nav>-->
