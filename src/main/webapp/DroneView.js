@@ -1,6 +1,6 @@
 var parameters = {
     ipServidor: "localhost",
-    //ipServidor: "192.168.1.42", //Casa Guz
+    //ipServidor: "192.168.1.44", //Casa Guz
     //ipServidor: "192.168.1.7", //Casa Marce
     puertoServidor: "8080",
 
@@ -16,7 +16,6 @@ var parameters = {
     masaBote: 32,
     milla200_distancia: 100,
     metaPesca: 80,
-    segundosChequeoTormenta: 30,
     ametralladoraAlcance: 100,
     ametralladoraDanio: 10,
     ametralladoraCadencia: 1,
@@ -65,7 +64,6 @@ var globalDroneVariables = {
     dispararAmetralladora: null,
     dispararCanion: null,
     inmovilizarPesquero: null,
-    iniciarTormenta: null,
 
     teclaGuardarPartida: null,
     teclaRestaurarPartida: null,
@@ -89,9 +87,10 @@ var globalDroneVariables = {
 var partida = {
     tiempoRestantePartida: null,
     hayTormenta: false,
-    ultimoChequeoTormenta: 0,
+    teclaTormenta: false,
     guardarPartida: false,
     restaurarPartida: false,
+    esAdministrador: false,
     Pesqueros: {
         Barcos: []
     },
@@ -167,7 +166,6 @@ var DroneViewState = new Phaser.Class({
         globalDroneVariables.dispararAmetralladora = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z);
         globalDroneVariables.dispararCanion = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.X);
         globalDroneVariables.inmovilizarPesquero = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.I);
-        globalDroneVariables.iniciarTormenta = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.T);
         globalDroneVariables.cambiarBarcoPropio = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
         globalDroneVariables.cambiarBarcoEnemigo = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.CTRL);
 
@@ -585,37 +583,8 @@ var DroneViewState = new Phaser.Class({
     update: function () {
 
         var change = false;
+  
 
-        if(partida.ultimoChequeoTormenta == 0 || partida.ultimoChequeoTormenta == null)
-        {
-            partida.ultimoChequeoTormenta = partida.tiempoRestantePartida;
-        }
-        if(partida.ultimoChequeoTormenta - partida.tiempoRestantePartida >= parameters.segundosChequeoTormenta)
-        {
-            partida.ultimoChequeoTormenta = partida.tiempoRestantePartida;
-            var randomTormenta = Phaser.Math.Between(1, 10);
-            if(randomTormenta < 5)
-            {
-                partida.hayTormenta = true;
-                globalDroneVariables.textoTormenta.setText('Hay tormenta!!');
-            }
-            else
-            {
-                partida.hayTormenta = false;
-                globalDroneVariables.textoTormenta.setText('No hay tormenta');
-            }
-        }
-
-        if(!partida.hayTormenta && Phaser.Input.Keyboard.JustDown(globalDroneVariables.teclaTormenta))
-        {
-            partida.hayTormenta = true;
-            globalDroneVariables.textoTormenta.setText('Hay tormenta!!');        	
-        }
-        if(partida.hayTormenta && Phaser.Input.Keyboard.JustDown(globalDroneVariables.teclaTormenta))
-        {
-            partida.hayTormenta = false;
-            globalDroneVariables.textoTormenta.setText('No hay tormenta');	
-        }
         /***********************************************
 
         SELECCION DE VEHICULO ACTIVO
@@ -797,7 +766,10 @@ var DroneViewState = new Phaser.Class({
         globalDroneVariables.websocket.onmessage = function (event) {
             if (event.data != null) {
                 var partidaFromServer = JSON.parse(event.data);
-
+                
+                partida.hayTormenta = partidaFromServer.hayTormenta;
+                partida.teclaTormenta = partidaFromServer.teclaTormenta;
+                
                 //update boats positions
                 partida.Patrulleros.Barcos.forEach(function(boat){
 
@@ -1248,11 +1220,36 @@ var DroneViewState = new Phaser.Class({
         {
             partida.restaurarPartida = true;
         }
+        
+        /***********************************************
+
+        TECLA TORMENTA
+
+        ************************************************/
+        var cambioTormenta = false;
+        if(!partida.hayTormenta && Phaser.Input.Keyboard.JustDown(globalDroneVariables.teclaTormenta))
+        {
+            partida.teclaTormenta = true;
+            cambioTormenta = true;
+        }
+        if(partida.hayTormenta && Phaser.Input.Keyboard.JustDown(globalDroneVariables.teclaTormenta))
+        {
+        	partida.teclaTormenta = true;
+        	cambioTormenta = true;
+        }
+        if(partida.hayTormenta || partida.teclaTormenta)
+        {
+        	globalDroneVariables.textoTormenta.setText('Hay tormenta!!');
+        }
+        else
+        {
+        	globalDroneVariables.textoTormenta.setText('No hay tormenta');
+        }
 
         ////// SI HUBO ALGUN CAMBIO SE ENVIA AL SERVIDOR
         console.log(globalDroneVariables.vehiculoVolviendo);
         if (isMoving || isShooting || isAlerting || capturaPorHelicoptero || barcoFueImpactado || globalDroneVariables.vehiculoVolviendo 
-            || partida.guardarPartida || partida.restaurarPartida){
+        		|| partida.guardarPartida || partida.restaurarPartida || cambioTormenta){
             enviarJSON(partida);
         }
 

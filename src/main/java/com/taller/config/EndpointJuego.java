@@ -1,8 +1,6 @@
 package com.taller.config;
 
 import java.io.IOException;
-import java.util.Random;
-
 import javax.websocket.EncodeException;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
@@ -39,53 +37,21 @@ public class EndpointJuego {
 	}
 
 	@OnMessage
-	public void onMessage(Session session, String partida) throws IOException, EncodeException {
-		String partidaEnviar = partida;
-		boolean existeDisparo = partida.contains("\"Disparo\":{\"existe\":true");
-		boolean guardarPartida = partida.contains("\"guardarPartida\":true");
-		boolean restaurarPartida = partida.contains("\"restaurarPartida\":true");
-		if(guardarPartida) {
-			if(endpointsPartida[0].session.equals(session)) //Es el primero en ingresar
-			{
-				partida = partida.replace("\"guardarPartida\":true", "\"guardarPartida\":false");
-				VOEstadoPartida estadoPartida = new VOEstadoPartida();
-				estadoPartida.setDatosPartida(partida);
-				try {
-					fachada.insertarEstadoPartida(estadoPartida);
-				} catch (PersistenciaException e) {
-					e.printStackTrace();
-				}
-			}
+	public void onMessage(Session session, String partida, @PathParam("equipo") String equipo) throws IOException, EncodeException {
+		String partidaEnviar;
+		VOEstadoPartida estadoPartida = new VOEstadoPartida(partida);
+		VOEstadoPartida partidaRestaurada = null;
+		try {
+			fachada.guardarEstadoPartida(estadoPartida, equipo);
+			partidaRestaurada = fachada.restaurarPartida(estadoPartida, equipo);
+		} catch (PersistenciaException e) {
+			e.printStackTrace();
 		}
-		if (existeDisparo) {
-
-			int probImpactoHasta = 70;
-
-			Random r = new Random();
-			int minimo = 0;
-			int maximo = 100;
-			int probabilidadObtenida = r.nextInt(maximo - minimo) + minimo;
-
-			if (probabilidadObtenida <= probImpactoHasta) {
-				partidaEnviar = partida;
-			} else {
-				partidaEnviar = partida.replace("\"impacto\":true", "\"impacto\":false");
-			}
-
-		}
-		if(restaurarPartida) {
-			if(endpointsPartida[0].session.equals(session)) //Es el primero en ingresar
-			{
-				try {
-					VOEstadoPartida estadoPartida = new VOEstadoPartida();
-					estadoPartida = fachada.obtenerUltimoEstado();
-					partidaEnviar = estadoPartida.getDatosPartida();
-				} catch (PersistenciaException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-
+		if(partidaRestaurada != null)
+			estadoPartida = partidaRestaurada;
+		estadoPartida = fachada.procesarDisparo(estadoPartida);
+		estadoPartida = fachada.chequearTormenta(estadoPartida);
+		partidaEnviar = estadoPartida.getDatosPartida();
 		broadcast(partidaEnviar);
 	}
 
