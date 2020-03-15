@@ -94,7 +94,29 @@ public class EndpointSalaEspera {
 
 	@OnClose
 	public void onClose(Session session) throws IOException, EncodeException {
+		if (endpointsPartida[0] != null && endpointsPartida[0].session.getId() == session.getId()) {
+			endpointsPartida[0] = null;
+			if (endpointsPartida[1] != null) {
+				String json = "{ \"accion\" : \"salida\", \"motivoSalida\" : \"ABANDONO\"}";
 
+				endpointsPartida[1].session.getBasicRemote().sendText(json);
+			}
+		} else if (endpointsPartida[1] != null && endpointsPartida[1].session.getId() == session.getId()) {
+			endpointsPartida[1] = null;
+			if (endpointsPartida[0] != null) {
+				String json = "{ \"accion\" : \"salida\", \"motivoSalida\" : \"ABANDONO\"}";
+
+				endpointsPartida[0].session.getBasicRemote().sendText(json);
+			}
+
+		}
+		
+		reset();
+	}
+	
+	private void reset() {
+		endpointsPartida[0] = null;
+		endpointsPartida[1] = null;
 	}
 
 	@OnError
