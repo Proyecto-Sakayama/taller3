@@ -23,10 +23,6 @@ $('#crearBTN').click(function() {
     if (equipo == "EMPTY") {
         mostrarError("Debe seleccionar un equipo para comenzar.");
     } else {
-        //$('#selectBarcoNuevo').hide();
-        //$('#buttonNuevaPartida').hide();
-        //$('#loading').show();
-        //$('#primerJugador').show();
         $('#divCrearBTN').hide();
         $('#divRecuperarBTN').hide();
         document.getElementById('equipoJ1').innerHTML = equipo.toUpperCase();
@@ -64,10 +60,6 @@ function saladeespera(team){
                 break;
 
             case "1":
-                //Jugador 2 espera a que el jugador 1 seleccione equipo
-                //$('#selectBarcoNuevo').hide();
-                //$('#buttonNuevaPartida').hide();
-                //$('#loading').show();
                 $('#primerJugador').hide();
                 $('#segundoJugador').show();
                 break;

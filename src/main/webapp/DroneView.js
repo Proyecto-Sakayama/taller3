@@ -1,6 +1,6 @@
 var parameters = {
     ipServidor: "localhost",
-    //ipServidor: "192.168.1.44", //Casa Guz
+    //ipServidor: "192.168.1.42", //Casa Guz
     //ipServidor: "192.168.1.7", //Casa Marce
     puertoServidor: "8080",
 
@@ -717,12 +717,16 @@ var DroneViewState = new Phaser.Class({
                     globalDroneVariables.InfoVehiculo_Info4.setText(textEnemigoSelec);
 
                     var textAvisos = "Avisos: NA";
+                    var textVida = "Vida: NA";
                     if(globalDroneVariables.enemigoActivo !== null){
-                        textAvisos =  'Avisos: ' + globalDroneVariables.enemigoActivo.contadorAvisos;            
+                        textAvisos =  'Avisos: ' + globalDroneVariables.enemigoActivo.contadorAvisos;  
+                        textVida =  'Vida: ' + globalDroneVariables.enemigoActivo.vida;  
+                    
                     }
 
                     globalDroneVariables.InfoVehiculo_Info5T.setText(textAvisos);
-
+                    globalDroneVariables.InfoVehiculo_Info5.setText(textVida);
+                    
                 }else{
                     globalDroneVariables.InfoVehiculo_Info1T.setText('Tipo:');
                     globalDroneVariables.InfoVehiculo_Info1.setText('PESQUERO');
@@ -1358,7 +1362,7 @@ function consumirCombustible(vehiculo){
                 }
                 break;
             case "H":
-                vehiculo.combustible -= (baseConsumo * 2);
+                vehiculo.combustible -= (baseConsumo * 8);
                 returnToShip(vehiculo);
                 break;
             case "L":
