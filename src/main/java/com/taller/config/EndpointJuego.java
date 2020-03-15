@@ -42,15 +42,15 @@ public class EndpointJuego {
 		VOEstadoPartida estadoPartida = new VOEstadoPartida(partida);
 		VOEstadoPartida partidaRestaurada = null;
 		try {
-			fachada.guardarEstadoPartida(estadoPartida);
-			partidaRestaurada = fachada.restaurarPartida(estadoPartida);
+			fachada.guardarEstadoPartida(estadoPartida, equipo);
+			partidaRestaurada = fachada.restaurarPartida(estadoPartida, equipo);
 		} catch (PersistenciaException e) {
 			e.printStackTrace();
 		}
 		if(partidaRestaurada != null)
 			estadoPartida = partidaRestaurada;
 		estadoPartida = fachada.procesarDisparo(estadoPartida);
-		
+		estadoPartida = fachada.chequearTormenta(estadoPartida);
 		partidaEnviar = estadoPartida.getDatosPartida();
 		broadcast(partidaEnviar);
 	}

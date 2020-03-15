@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.Random;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import logica.excepciones.PersistenciaException;
 import logica.poolConexiones.IConexion;
 import logica.poolConexiones.IPoolConexiones;
@@ -18,7 +21,9 @@ public class Fachada implements IFachada{
 	private FabricaAbstracta fabrica = null;
 	
 	private String equipoAdministrador; 
-	
+	private int segundosChequeoTormenta;
+	private boolean hayTormenta;
+	private int ultimoChequeoTormenta;
 	private static Fachada instance = null;
 	
 	public static Fachada getInstance() throws PersistenciaException {
@@ -30,6 +35,9 @@ public class Fachada implements IFachada{
 	private Fachada() throws PersistenciaException {
 		try {
 			equipoAdministrador = "";
+			segundosChequeoTormenta = 30;
+			ultimoChequeoTormenta = 0;
+			hayTormenta = false; 
 			Properties p = new Properties();
 			p.load(getClass().getClassLoader().getResourceAsStream("config.properties"));
 			String poolConcreto = p.getProperty("poolConcreto");
@@ -47,10 +55,10 @@ public class Fachada implements IFachada{
 		}
 	}
 	@Override
-	public VOEstadoPartida guardarEstadoPartida(VOEstadoPartida estadoPartida) throws PersistenciaException{
+	public VOEstadoPartida guardarEstadoPartida(VOEstadoPartida estadoPartida, String equipo) throws PersistenciaException{
 		String textoPartida = estadoPartida.getDatosPartida();
 		boolean guardarPartida = textoPartida.contains("\"guardarPartida\":true");
-		if(guardarPartida) {
+		if(equipo.equals(this.equipoAdministrador) && guardarPartida) {
 			textoPartida = textoPartida.replace("\"guardarPartida\":true", "\"guardarPartida\":false");
 			estadoPartida.setDatosPartida(textoPartida);
 			IConexion icon = ipool.obtenerConexion(true);
@@ -68,11 +76,11 @@ public class Fachada implements IFachada{
 		
 
 	@Override
-	public VOEstadoPartida restaurarPartida(VOEstadoPartida estadoPartida) throws PersistenciaException {
+	public VOEstadoPartida restaurarPartida(VOEstadoPartida estadoPartida, String equipo) throws PersistenciaException {
 		String textoPartida = estadoPartida.getDatosPartida();
 		VOEstadoPartida result = null;
 		boolean restaurarPartida = textoPartida.contains("\"restaurarPartida\":true");
-		if(restaurarPartida) {
+		if(equipo.equals(this.equipoAdministrador) && restaurarPartida) {
 			IConexion icon = ipool.obtenerConexion(true);
 			try {
 				result = daoP.obtenerUltimaPartida(icon);
@@ -117,6 +125,52 @@ public class Fachada implements IFachada{
 	@Override
 	public String obteberAdministrador() {
 		return this.equipoAdministrador;
+	}
+
+	@Override
+	public VOEstadoPartida chequearTormenta(VOEstadoPartida estadoPartida) {
+		VOEstadoPartida result = estadoPartida;
+		String partida = estadoPartida.getDatosPartida();
+		JsonObject jsonObject = new JsonParser().parse(partida).getAsJsonObject();
+		String tiempoRestantePartidaString = jsonObject.get("tiempoRestantePartida").getAsString();
+		int tiempoRestantePartida = Integer.parseInt(tiempoRestantePartidaString.trim());
+		
+		
+		boolean teclaTormenta = partida.contains("\"teclaTormenta\":true");
+		
+		if(!teclaTormenta) {
+	        if(this.ultimoChequeoTormenta == 0)
+	            ultimoChequeoTormenta = tiempoRestantePartida;
+	        
+	        if(ultimoChequeoTormenta - tiempoRestantePartida >= this.segundosChequeoTormenta)
+	        {
+	            ultimoChequeoTormenta = tiempoRestantePartida;
+	            Random r = new Random();
+	            int low = 1;
+	            int high = 10;
+	            int randomTormenta = r.nextInt(high-low) + low;
+	            
+	            if(randomTormenta < 5)
+	            {
+	                hayTormenta = true;
+	            }
+	            else
+	            {
+	                hayTormenta = false;
+	            }
+	        }
+		}
+		else
+			hayTormenta = !hayTormenta;
+        
+		partida = partida.replace("\"teclaTormenta\":true", "\"teclaTormenta\":false");
+		if(hayTormenta)
+			partida = partida.replace("\"hayTormenta\":false", "\"hayTormenta\":true");
+		else
+			partida = partida.replace("\"hayTormenta\":true", "\"hayTormenta\":false");
+		
+		result.setDatosPartida(partida);
+        return result;
 	}
 	
 
