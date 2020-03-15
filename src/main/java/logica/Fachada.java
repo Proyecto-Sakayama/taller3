@@ -72,29 +72,24 @@ public class Fachada implements IFachada{
 		String textoPartida = estadoPartida.getDatosPartida();
 		VOEstadoPartida result = null;
 		boolean restaurarPartida = textoPartida.contains("\"restaurarPartida\":true");
-		IConexion icon = ipool.obtenerConexion(true);
 		if(restaurarPartida) {
+			IConexion icon = ipool.obtenerConexion(true);
 			try {
-				result = this.restaurarPartida(estadoPartida);
-			} catch (PersistenciaException e) {
+				result = daoP.obtenerUltimaPartida(icon);
+				ipool.liberarConexion(icon, true);
+			} catch(PersistenciaException  e) {
 				ipool.liberarConexion(icon, false);
-				e.printStackTrace();
-			}
+				throw new PersistenciaException(e.getMensaje());
+			} 
 		}
-		try {
-			result = daoP.obtenerUltimaPartida(icon);
-		} catch(PersistenciaException  e) {
-			ipool.liberarConexion(icon, false);
-			throw new PersistenciaException(e.getMensaje());
-		} 
-		ipool.liberarConexion(icon, true);
 		return result;
 	}
 
 	@Override
 	public VOEstadoPartida procesarDisparo(VOEstadoPartida estadoPartida) {
-		VOEstadoPartida result = new VOEstadoPartida();
 		String partida = estadoPartida.getDatosPartida();
+		VOEstadoPartida result = new VOEstadoPartida(partida);
+		
 		boolean existeDisparo = partida.contains("\"Disparo\":{\"existe\":true");
 		if (existeDisparo) {
 			int probImpactoHasta = 70;

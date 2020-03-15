@@ -40,16 +40,15 @@ public class EndpointJuego {
 	public void onMessage(Session session, String partida, @PathParam("equipo") String equipo) throws IOException, EncodeException {
 		String partidaEnviar;
 		VOEstadoPartida estadoPartida = new VOEstadoPartida(partida);
-		
-		if(endpointsPartida[0].session.equals(session)) //Es el primero en ingresar
-		{
-			try {
-				fachada.guardarEstadoPartida(estadoPartida);
-				estadoPartida = fachada.restaurarPartida(estadoPartida);
-			} catch (PersistenciaException e) {
-				e.printStackTrace();
-			}
+		VOEstadoPartida partidaRestaurada = null;
+		try {
+			fachada.guardarEstadoPartida(estadoPartida);
+			partidaRestaurada = fachada.restaurarPartida(estadoPartida);
+		} catch (PersistenciaException e) {
+			e.printStackTrace();
 		}
+		if(partidaRestaurada != null)
+			estadoPartida = partidaRestaurada;
 		estadoPartida = fachada.procesarDisparo(estadoPartida);
 		
 		partidaEnviar = estadoPartida.getDatosPartida();
@@ -59,10 +58,6 @@ public class EndpointJuego {
 	@OnClose
 	public void onClose(Session session) throws IOException, EncodeException {
 		try {
-			if(endpointsPartida.length == 0)
-			{
-				fachada.definirAdministrador("");
-			}
 			
 		} catch (Exception e) {
 
