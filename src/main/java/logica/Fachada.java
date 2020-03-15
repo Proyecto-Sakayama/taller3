@@ -2,6 +2,7 @@ package logica;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.Random;
 
 import logica.excepciones.PersistenciaException;
 import logica.poolConexiones.IConexion;
@@ -16,6 +17,8 @@ public class Fachada implements IFachada{
 	private IDAOEstadoPartida daoP;
 	private FabricaAbstracta fabrica = null;
 	
+	private String equipoAdministrador; 
+	
 	private static Fachada instance = null;
 	
 	public static Fachada getInstance() throws PersistenciaException {
@@ -26,6 +29,7 @@ public class Fachada implements IFachada{
 	
 	private Fachada() throws PersistenciaException {
 		try {
+			equipoAdministrador = "";
 			Properties p = new Properties();
 			p.load(getClass().getClassLoader().getResourceAsStream("config.properties"));
 			String poolConcreto = p.getProperty("poolConcreto");
@@ -88,9 +92,36 @@ public class Fachada implements IFachada{
 	}
 
 	@Override
-	public void procesarDisparo(VOEstadoPartida estadoPartida) {
-		// TODO Auto-generated method stub
-		
+	public VOEstadoPartida procesarDisparo(VOEstadoPartida estadoPartida) {
+		VOEstadoPartida result = new VOEstadoPartida();
+		String partida = estadoPartida.getDatosPartida();
+		boolean existeDisparo = partida.contains("\"Disparo\":{\"existe\":true");
+		if (existeDisparo) {
+			int probImpactoHasta = 70;
+
+			Random r = new Random();
+			int minimo = 0;
+			int maximo = 100;
+			int probabilidadObtenida = r.nextInt(maximo - minimo) + minimo;
+
+			if (probabilidadObtenida <= probImpactoHasta) {
+				result.setDatosPartida(partida);
+			} else {
+				result.setDatosPartida(partida.replace("\"impacto\":true", "\"impacto\":false"));
+			}
+
+		}
+		return result;
+	}
+
+	@Override
+	public void definirAdministrador(String equipo) {
+		this.equipoAdministrador = equipo;
+	}
+
+	@Override
+	public String obteberAdministrador() {
+		return this.equipoAdministrador;
 	}
 	
 

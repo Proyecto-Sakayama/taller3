@@ -92,6 +92,7 @@ var partida = {
     ultimoChequeoTormenta: 0,
     guardarPartida: false,
     restaurarPartida: false,
+    esAdministrador: false,
     Pesqueros: {
         Barcos: []
     },

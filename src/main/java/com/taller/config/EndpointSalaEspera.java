@@ -10,14 +10,23 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
+import logica.Fachada;
+import logica.excepciones.PersistenciaException;
+
 @ServerEndpoint(value = "/salaespera/{equipo}")
 public class EndpointSalaEspera {
 	private Session session;
 	private static final EndpointSalaEspera[] endpointsPartida = new EndpointSalaEspera[2];
 	private static String firstTeam = "";
-
+	private Fachada fachada;
+	
 	@OnOpen
 	public void onOpen(Session session, @PathParam("equipo") String equipo) throws IOException, EncodeException {
+		try {
+			fachada = Fachada.getInstance();
+		} catch (PersistenciaException e) {
+			e.printStackTrace();
+		}
 		this.session = session;
 
 		if (equipo.equals("EMPTY")) {
@@ -33,8 +42,11 @@ public class EndpointSalaEspera {
 					System.out.println("2");
 					if (firstTeam.equals("Patrullero")) {
 						newTeam = "Pesquero";
+						fachada.definirAdministrador("Patrullero");
+						
 					} else {
 						newTeam = "Patrullero";
+						fachada.definirAdministrador("Pesquero");
 					}
 					System.out.println("3" + newTeam);
 					session.getBasicRemote().sendText(newTeam);
@@ -60,8 +72,10 @@ public class EndpointSalaEspera {
 				String newTeam = "";
 				if (firstTeam.equals("Patrullero")) {
 					newTeam = "Pesquero";
+					fachada.definirAdministrador("Patrullero");
 				} else {
 					newTeam = "Patrullero";
+					fachada.definirAdministrador("Pesquero");
 				}
 				broadcast(newTeam);
 			}
