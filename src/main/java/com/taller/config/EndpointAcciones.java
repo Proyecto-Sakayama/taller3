@@ -88,14 +88,14 @@ public class EndpointAcciones {
 
 	@OnClose
 	public void onClose(Session session) throws IOException, EncodeException {
-		if (endpointsPartida[0].session.getId() == session.getId()) {
+		if (endpointsPartida[0] != null && endpointsPartida[0].session.getId() == session.getId()) {
 			endpointsPartida[0] = null;
 			if (endpointsPartida[1] != null) {
 				String json = "{ \"accion\" : \"salida\", \"motivoSalida\" : \"ABANDONO\"}";
 
 				endpointsPartida[1].session.getBasicRemote().sendText(json);
 			}
-		} else if (endpointsPartida[1].session.getId() == session.getId()) {
+		} else if (endpointsPartida[1] != null && endpointsPartida[1].session.getId() == session.getId()) {
 			endpointsPartida[1] = null;
 			if (endpointsPartida[0] != null) {
 				String json = "{ \"accion\" : \"salida\", \"motivoSalida\" : \"ABANDONO\"}";
@@ -132,9 +132,12 @@ public class EndpointAcciones {
 	private void reset() {
 		endpointsPartida[0] = null;
 		endpointsPartida[1] = null;
-		timer.cancel();
-		timer.purge();
-		timer = null;
+		if(timer != null)
+		{
+			timer.cancel();
+			timer.purge();
+			timer = null;
+		}
 		seconds = tiempoPartida;
 	}
 
