@@ -139,9 +139,6 @@ var DroneViewState = new Phaser.Class({
         //carga las imagenes al juego
         this.load.image('water', 'assets/water.jpg');
         this.load.image('fishes', 'assets/fishes.png');
-        this.load.image('bote1', 'assets/bote1_h.png');
-        this.load.image('heli', 'assets/heli1.png');
-        this.load.image('patrullero1', 'assets/patrullero1_2.png');
         this.load.image('mask', 'assets/mask.png');
         this.load.image('panel', 'assets/panel.png');
         this.load.image('horizontal', 'assets/horizontal.png');
