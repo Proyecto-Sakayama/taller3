@@ -86,6 +86,7 @@ var globalDroneVariables = {
 
 var partida = {
     tiempoRestantePartida: null,
+    hayGanador: false,
     hayTormenta: false,
     teclaTormenta: false,
     guardarPartida: false,
@@ -869,6 +870,28 @@ var DroneViewState = new Phaser.Class({
 
             }
 
+
+            ////// EVALUACION DE GANADOR
+            if(partidaFromServer.hayGanador){
+                if(evaluarPatrullerosGanadores()){
+                    window.location.replace('gameover.html?equipoGanador=Patrullero');
+                    globalDroneVariables.websocket.close();
+                    globalDroneVariables.websocketTime.close();
+                    globalDroneVariables = null;
+                    partida = null; 
+                    partida.hayGanador = true;
+                }else if(evaluarPesquerosGanadores()){
+                    window.location.replace('gameover.html?equipoGanador=Pesquero');
+                    globalDroneVariables.websocket.close();
+                    globalDroneVariables.websocketTime.close();
+                    globalDroneVariables = null;
+                    partida = null;     
+                    partida.hayGanador = true;
+                }
+
+            }
+
+
         }
 
 
@@ -880,23 +903,6 @@ var DroneViewState = new Phaser.Class({
 
 
 
-        ////// EVALUACION DE GANADOR
-        var huboGanador = false;
-        if(evaluarPatrullerosGanadores()){
-            window.location.replace('gameover.html?equipoGanador=Patrullero');
-            globalDroneVariables.websocket.close();
-            globalDroneVariables.websocketTime.close();
-            globalDroneVariables = null;
-            partida = null; 
-            huboGanador = true;
-        }else if(evaluarPesquerosGanadores()){
-            window.location.replace('gameover.html?equipoGanador=Pesquero');
-            globalDroneVariables.websocket.close();
-            globalDroneVariables.websocketTime.close();
-            globalDroneVariables = null;
-            partida = null;     
-            huboGanador = true;
-        }
 
 
 
@@ -1265,10 +1271,16 @@ var DroneViewState = new Phaser.Class({
 
 
 
+        ////// EVALUACION DE GANADOR
+        if(evaluarPatrullerosGanadores() || evaluarPesquerosGanadores()){
+            partida.hayGanador = true;
+        }
+
+
 
         ////// SI HUBO ALGUN CAMBIO SE ENVIA AL SERVIDOR
         if (isMoving || isShooting || isAlerting || capturaPorHelicoptero || barcoFueImpactado || globalDroneVariables.vehiculoVolviendo 
-            || partida.guardarPartida || partida.restaurarPartida || cambioTormenta || isChangingBoatHeli || huboGanador){
+            || partida.guardarPartida || partida.restaurarPartida || cambioTormenta || isChangingBoatHeli || partida.hayGanador){
             enviarJSON(partida);
         }
 
@@ -1293,7 +1305,7 @@ var DroneViewState = new Phaser.Class({
 
                     case 'salida':
 
-                        if(!evaluarPatrullerosGanadores() && !evaluarPesquerosGanadores()){
+                        if(!partida.hayGanador){
                             if(partida.tiempoRestantePartida >= 1){
 
                                 if(globalDroneVariables.equipo == "Patrullero"){
