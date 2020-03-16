@@ -10,5 +10,6 @@ public interface IFachada {
 	public void definirAdministrador(String equipo);
 	public String obteberAdministrador();
 	public VOEstadoPartida chequearTormenta(VOEstadoPartida estadoPartida);
+	public VOEstadoPartida actualizarAdministrador(VOEstadoPartida estadoPartida);
 	
 }

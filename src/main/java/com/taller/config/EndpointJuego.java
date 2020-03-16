@@ -51,6 +51,7 @@ public class EndpointJuego {
 			estadoPartida = partidaRestaurada;
 		estadoPartida = fachada.procesarDisparo(estadoPartida);
 		estadoPartida = fachada.chequearTormenta(estadoPartida);
+		estadoPartida = fachada.actualizarAdministrador(estadoPartida);
 		partidaEnviar = estadoPartida.getDatosPartida();
 		broadcast(partidaEnviar);
 	}

@@ -72,6 +72,8 @@ var globalDroneVariables = {
     teclaTormenta: null,
 
     avisarPesqueroJustPressed: false,
+    
+    administradorActualizado: false,
 
     //Info vehiculos
     InfoVehiculo_Info1: null,
@@ -99,7 +101,7 @@ var partida = {
     partidaPendienteRestaurar: false,
     
     
-    esAdministrador: false,
+    equipoAdministrador: "",
     Pesqueros: {
         Barcos: []
     },
@@ -344,14 +346,8 @@ var DroneViewState = new Phaser.Class({
             this.add.text(1220, 590, 'A: Aviso');
             this.add.text(1220, 610, 'Z: Metralleta');
             this.add.text(1220, 630, 'X: Canion');
-            if(partida.esAdministrador){
-                this.add.text(1220, 650, 'G: Guardar');
-            }
-        }else{
-            if(partida.esAdministrador){
-                this.add.text(1220, 510, 'G: Guardar');
-            }
         }
+       
 
         //DEFINICION DE OBJETOS
 
@@ -614,7 +610,15 @@ var DroneViewState = new Phaser.Class({
         SELECCION DE VEHICULO ACTIVO
 
         ************************************************/
-
+        if(!globalDroneVariables.administradorActualizado 
+        		&& partida.equipoAdministrador == globalDroneVariables.equipo)
+        {
+        	globalDroneVariables.administradorActualizado = true;
+        	if(globalDroneVariables.equipo == "Pesquero")
+        		this.add.text(1220, 510, 'G: Guardar');
+        	else
+        		this.add.text(1220, 650, 'G: Guardar');
+        }
 
         var vehiculoActivo = null;
         if (globalDroneVariables.equipo == "Patrullero") {
@@ -793,6 +797,11 @@ var DroneViewState = new Phaser.Class({
 
                 partida.hayTormenta = partidaFromServer.hayTormenta;
                 partida.teclaTormenta = partidaFromServer.teclaTormenta;
+                if(partidaFromServer.equipoAdministrador != "")
+                {
+                	partida.equipoAdministrador = partidaFromServer.equipoAdministrador;
+                }
+                
 
                 //update boats positions
                 partida.Patrulleros.Barcos.forEach(function(boat){
@@ -1264,6 +1273,15 @@ var DroneViewState = new Phaser.Class({
         if(Phaser.Input.Keyboard.JustDown(globalDroneVariables.teclaGuardarPartida))
         {
             partida.guardarPartida = true;
+            if(globalDroneVariables.administradorActualizado 
+            		&& partida.equipoAdministrador == globalDroneVariables.equipo)
+            {
+            	globalDroneVariables.administradorActualizado = true;
+            	if(globalDroneVariables.equipo == "Pesquero")
+            		this.add.text(1220, 530, 'Guardado OK');
+            	else
+            		this.add.text(1220, 670, 'Guardado OK');
+            }
         }
 
         /***********************************************
