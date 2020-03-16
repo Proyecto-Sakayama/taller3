@@ -65,8 +65,10 @@ var globalDroneVariables = {
     dispararCanion: null,
     inmovilizarPesquero: null,
 
+    //indica si se seleccionó que se va a restaurar la partida
+    restaurarPartida: false,
+   
     teclaGuardarPartida: null,
-    teclaRestaurarPartida: null,
     teclaTormenta: null,
 
     avisarPesqueroJustPressed: false,
@@ -89,7 +91,13 @@ var partida = {
     hayTormenta: false,
     teclaTormenta: false,
     guardarPartida: false,
+    
+    //indica si se seleccionó que se va a restaurar la partida
     restaurarPartida: false,
+    //hay que restaurar la partida y todavía no se hizo
+    partidaPendienteRestaurar: false,
+    
+    
     esAdministrador: false,
     Pesqueros: {
         Barcos: []
@@ -157,9 +165,24 @@ var DroneViewState = new Phaser.Class({
     *************************************************************************************************************************************************/
 
     create: function () {
-
-        globalDroneVariables.equipo = getTeamFromUrl();
-
+  		
+        globalDroneVariables.equipo = getVarsFromUrl()["equipo"];
+        globalDroneVariables.restaurarPartida = getVarsFromUrl()["recuperar"];
+        
+        if(globalDroneVariables.restaurarPartida == "true")
+        {
+        	partida.restaurarPartida = true;
+        	partida.partidaPendienteRestaurar = true;
+        }
+        else
+        {
+        	partida.restaurarPartida = false;
+        	partida.partidaPendienteRestaurar = false;
+        }
+        
+        console.log("1 partida.restaurarPartida: " + partida.restaurarPartida);
+        console.log("1 partida.partidaPendienteRestaurar: " + partida.partidaPendienteRestaurar);
+         
         globalDroneVariables.desacoplarHelicoptero = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
         globalDroneVariables.desacoplarBote = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
         globalDroneVariables.avisarPesquero = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -174,7 +197,6 @@ var DroneViewState = new Phaser.Class({
         globalDroneVariables.moverDerecha = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);  
 
         globalDroneVariables.teclaGuardarPartida = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
-        globalDroneVariables.teclaRestaurarPartida = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
 
         globalDroneVariables.teclaTormenta = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.T);
 
@@ -566,9 +588,6 @@ var DroneViewState = new Phaser.Class({
 
         });
 
-
-
-
         console.log('create success');
 
     },
@@ -777,7 +796,10 @@ var DroneViewState = new Phaser.Class({
                         return item.id == boat.id;
                     });
 
-                    if(boteServer.id !== vehiculoActivo.id){
+                    console.log("2 partida.restaurarPartida: " + partida.restaurarPartida);
+                    console.log("2 partida.partidaPendienteRestaurar: " + partida.partidaPendienteRestaurar);
+                    
+                    if(boteServer.id !== vehiculoActivo.id || partida.partidaPendienteRestaurar){
 
                         setMovement(boat, boteServer.sprite);
 
@@ -806,11 +828,13 @@ var DroneViewState = new Phaser.Class({
                     var boteServer  = partidaFromServer.Pesqueros.Barcos.find(function(item){
                         return item.id == boat.id;
                     });
-
-                    if(boteServer.id !== vehiculoActivo.id){
+                    console.log("3 partida.restaurarPartida: " + partida.restaurarPartida);
+                    console.log("3 partida.partidaPendienteRestaurar: " + partida.partidaPendienteRestaurar);
+                    if(boteServer.id !== vehiculoActivo.id || partida.partidaPendienteRestaurar){
 
                         setMovement(boat, boteServer.sprite);
                     }
+                    
 
                     boat.combustible = boteServer.combustible;
                     boat.capturado = boteServer.capturado;
@@ -849,6 +873,9 @@ var DroneViewState = new Phaser.Class({
                     }               
 
                 });
+                partida.partidaPendienteRestaurar = partidaFromServer.partidaPendienteRestaurar;
+                console.log("4 partida.restaurarPartida: " + partida.restaurarPartida);
+                console.log("4 partida.partidaPendienteRestaurar: " + partida.partidaPendienteRestaurar);
                 partida.Pesca.BancoPeces.forEach(function(banco){
 
                     var bancoServer  = partidaFromServer.Pesca.BancoPeces.find(function(item){
@@ -1215,11 +1242,6 @@ var DroneViewState = new Phaser.Class({
         {
             partida.guardarPartida = true;
         }
-
-        if(Phaser.Input.Keyboard.JustDown(globalDroneVariables.teclaRestaurarPartida))
-        {
-            partida.restaurarPartida = true;
-        }
         
         /***********************************************
 
@@ -1247,7 +1269,10 @@ var DroneViewState = new Phaser.Class({
         }
 
         ////// SI HUBO ALGUN CAMBIO SE ENVIA AL SERVIDOR
-        console.log(globalDroneVariables.vehiculoVolviendo);
+        
+        console.log("5 partida.restaurarPartida: " + partida.restaurarPartida);
+        console.log("5 partida.partidaPendienteRestaurar: " + partida.partidaPendienteRestaurar);
+        
         if (isMoving || isShooting || isAlerting || capturaPorHelicoptero || barcoFueImpactado || globalDroneVariables.vehiculoVolviendo 
         		|| partida.guardarPartida || partida.restaurarPartida || cambioTormenta){
             enviarJSON(partida);
@@ -1294,8 +1319,9 @@ var DroneViewState = new Phaser.Class({
             }
 
         };
+                
+        
         partida.guardarPartida = false;
-        partida.restaurarPartida = false;
     }
 
 
@@ -1308,12 +1334,12 @@ myGame.scenes.push(DroneViewState);
 
 ////// OBTENER EQUIPO DESDE URL
 
-function getTeamFromUrl() {
+function getVarsFromUrl() {
     var vars = {};
     var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
         vars[key] = value;
     });
-    return vars["equipo"];
+    return vars;
 }
 
 
@@ -1321,7 +1347,11 @@ function getTeamFromUrl() {
 
 function enviarJSON(objeto) {
     let json = JSON.stringify(objeto);
-    globalDroneVariables.websocket.send(json);
+    if(globalDroneVariables.websocket.readyState === WebSocket.OPEN)
+    {
+    	globalDroneVariables.websocket.send(json);
+    }
+    
 }
 
 

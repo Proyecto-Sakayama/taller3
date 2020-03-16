@@ -26,6 +26,8 @@ public class Fachada implements IFachada{
 	private int ultimoChequeoTormenta;
 	private static Fachada instance = null;
 	
+	public static boolean recuperarPartida;
+	
 	public static Fachada getInstance() throws PersistenciaException {
 		if(instance == null)
 			instance = new Fachada();
@@ -34,6 +36,7 @@ public class Fachada implements IFachada{
 	
 	private Fachada() throws PersistenciaException {
 		try {
+			recuperarPartida = false;
 			equipoAdministrador = "";
 			segundosChequeoTormenta = 30;
 			ultimoChequeoTormenta = 0;
