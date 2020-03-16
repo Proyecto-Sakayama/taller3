@@ -44,7 +44,7 @@ $('#unirseBTN').click(function() {
 });   
 
 function saladeespera(team){
-    websocket = new WebSocket('ws://localhost:8080/taller3/salaespera/' + team);
+    websocket = new WebSocket('ws://192.168.1.42:8080/taller3/salaespera/' + team);
 
     websocket.onmessage = function(event) {
         var serverTeam = event.data;

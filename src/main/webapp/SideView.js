@@ -459,20 +459,33 @@ var SideViewState = new Phaser.Class({
 
                 if(barcoAActualizar.hundido){
                     barcoAActualizar.sprite.setVisible(false);
+                    barcoAActualizar.sprite.x = 1300;
 
+                    var activarBoteNoHundido = vehiculosSideView.Pesqueros.Barcos.find(function (item){
+                        return item.id != barcoAActualizar.id;
+                    });
+
+
+                    globalSideVariables.spotlight.x = activarBoteNoHundido.sprite.x;
+                    globalSideVariables.spotlight.y = activarBoteNoHundido.sprite.y;
+
+
+                }else{
+
+                    definirOrientacionVehiculo(barcoAActualizar, barcoFromServerSide);
+
+                    asignarImagenSprite(barcoAActualizar);
+
+                    setMovementAndSize(barcoAActualizar, barcoFromServerSide);
+
+                    if(globalDroneVariables.equipo == "Pesquero" && barcoFromServerSide.activo){
+
+                        globalSideVariables.spotlight.x = barcoAActualizar.sprite.x;
+                        globalSideVariables.spotlight.y = barcoAActualizar.sprite.y;
+                    } 
                 }
 
-                definirOrientacionVehiculo(barcoAActualizar, barcoFromServerSide);
 
-                asignarImagenSprite(barcoAActualizar);
-
-                setMovementAndSize(barcoAActualizar, barcoFromServerSide);
-
-                if(globalDroneVariables.equipo == "Pesquero" && barcoFromServerSide.activo){
-
-                    globalSideVariables.spotlight.x = barcoAActualizar.sprite.x;
-                    globalSideVariables.spotlight.y = barcoAActualizar.sprite.y;
-                }
 
             }
 

@@ -1,6 +1,6 @@
 var parameters = {
-    ipServidor: "localhost",
-    //ipServidor: "192.168.1.44", //Casa Guz
+    //ipServidor: "localhost",
+    ipServidor: "192.168.1.42", //Casa Guz
     //ipServidor: "192.168.1.7", //Casa Marce
     puertoServidor: "8080",
 
@@ -15,12 +15,12 @@ var parameters = {
     masaHelicoptero: 22,
     masaBote: 32,
     milla200_distancia: 100,
-    metaPesca: 80,
-    ametralladoraAlcance: 100,
-    ametralladoraDanio: 10,
+    metaPesca: 100,
+    ametralladoraAlcance: 125,
+    ametralladoraDanio: 20,
     ametralladoraCadencia: 1,
     canionAlcance: 150,
-    canionDanio: 20,
+    canionDanio: 40,
     canionCadencia: 3
 };
 
@@ -324,6 +324,13 @@ var DroneViewState = new Phaser.Class({
             this.add.text(1220, 590, 'A: Aviso');
             this.add.text(1220, 610, 'Z: Metralleta');
             this.add.text(1220, 630, 'X: Canion');
+            if(partida.esAdministrador){
+                this.add.text(1220, 650, 'G: Guardar');
+            }
+        }else{
+            if(partida.esAdministrador){
+                this.add.text(1220, 510, 'G: Guardar');
+            }
         }
 
         //DEFINICION DE OBJETOS
@@ -583,7 +590,7 @@ var DroneViewState = new Phaser.Class({
     update: function () {
 
         var change = false;
-  
+
 
         /***********************************************
 
@@ -690,12 +697,12 @@ var DroneViewState = new Phaser.Class({
                     if(globalDroneVariables.enemigoActivo !== null){
                         textAvisos =  'Avisos: ' + globalDroneVariables.enemigoActivo.contadorAvisos;  
                         textVida =  'Vida: ' + globalDroneVariables.enemigoActivo.vida;  
-                    
+
                     }
 
                     globalDroneVariables.InfoVehiculo_Info5T.setText(textAvisos);
                     globalDroneVariables.InfoVehiculo_Info5.setText(textVida);
-                    
+
                 }else{
                     globalDroneVariables.InfoVehiculo_Info1T.setText('Tipo:');
                     globalDroneVariables.InfoVehiculo_Info1.setText('PESQUERO');
@@ -766,10 +773,10 @@ var DroneViewState = new Phaser.Class({
         globalDroneVariables.websocket.onmessage = function (event) {
             if (event.data != null) {
                 var partidaFromServer = JSON.parse(event.data);
-                
+
                 partida.hayTormenta = partidaFromServer.hayTormenta;
                 partida.teclaTormenta = partidaFromServer.teclaTormenta;
-                
+
                 //update boats positions
                 partida.Patrulleros.Barcos.forEach(function(boat){
 
@@ -926,7 +933,7 @@ var DroneViewState = new Phaser.Class({
             isMoving = true;
         }
 
-        ////// CONSUMO DE COMBUSTIBLE
+        ////// CONSUMO DE COMBUSTIBLE TODO MENOS HELICOPTERO
         if(isMoving && vehiculoActivo.type != "H"){
             consumirCombustible(vehiculoActivo);
         }
@@ -1008,7 +1015,10 @@ var DroneViewState = new Phaser.Class({
         SELECCION DE HELICOPTERO
 
         ************************************************/
-        if (globalDroneVariables.desacoplarHelicoptero.isDown){
+
+
+        var isChangingBoatHeli = false;
+        if (Phaser.Input.Keyboard.JustDown(globalDroneVariables.desacoplarHelicoptero)){
             if (globalDroneVariables.equipo == "Patrullero"){
                 var boatWithHelicopter = partida.Patrulleros.Barcos.find(function (input) {
                     return typeof input.helicoptero !== "undefined";
@@ -1017,6 +1027,7 @@ var DroneViewState = new Phaser.Class({
                 boatWithHelicopter.helicoptero.activo = true;
                 boatWithHelicopter.helicoptero.acoplado = false;
                 boatWithHelicopter.helicoptero.sprite.setMass(parameters.masaHelicoptero);
+                isChangingBoatHeli = true;
             }
         }
 
@@ -1027,7 +1038,10 @@ var DroneViewState = new Phaser.Class({
 
         ************************************************/
 
-        if (globalDroneVariables.desacoplarBote.isDown){
+
+
+
+        if (Phaser.Input.Keyboard.JustDown(globalDroneVariables.desacoplarBote)){
             if (globalDroneVariables.equipo == "Patrullero" && !partida.hayTormenta){
                 var boatWithBoat = partida.Patrulleros.Barcos.find(function (input) {
                     return typeof input.bote !== "undefined";
@@ -1036,6 +1050,7 @@ var DroneViewState = new Phaser.Class({
                 boatWithBoat.bote.activo = true;
                 boatWithBoat.bote.acoplado = false;
                 boatWithBoat.bote.sprite.setMass(parameters.masaBote);
+                isChangingBoatHeli = true;
 
             }
         }
@@ -1190,21 +1205,6 @@ var DroneViewState = new Phaser.Class({
         }
 
 
-        ////// EVALUACION DE GANADOR
-
-        if(evaluarPatrullerosGanadores()){
-            window.location.replace('gameover.html?equipoGanador=Patrullero');
-            globalDroneVariables.websocket.close();
-            globalDroneVariables.websocketTime.close();
-
-
-        }else if(evaluarPesquerosGanadores()){
-            window.location.replace('gameover.html?equipoGanador=Pesquero');
-            globalDroneVariables.websocket.close();
-            globalDroneVariables.websocketTime.close();
-
-        }
-
 
         /***********************************************
 
@@ -1220,7 +1220,7 @@ var DroneViewState = new Phaser.Class({
         {
             partida.restaurarPartida = true;
         }
-        
+
         /***********************************************
 
         TECLA TORMENTA
@@ -1234,25 +1234,41 @@ var DroneViewState = new Phaser.Class({
         }
         if(partida.hayTormenta && Phaser.Input.Keyboard.JustDown(globalDroneVariables.teclaTormenta))
         {
-        	partida.teclaTormenta = true;
-        	cambioTormenta = true;
+            partida.teclaTormenta = true;
+            cambioTormenta = true;
         }
         if(partida.hayTormenta || partida.teclaTormenta)
         {
-        	globalDroneVariables.textoTormenta.setText('Hay tormenta!!');
+            globalDroneVariables.textoTormenta.setText('Hay tormenta!!');
         }
         else
         {
-        	globalDroneVariables.textoTormenta.setText('No hay tormenta');
+            globalDroneVariables.textoTormenta.setText('No hay tormenta');
         }
 
         ////// SI HUBO ALGUN CAMBIO SE ENVIA AL SERVIDOR
-        console.log(globalDroneVariables.vehiculoVolviendo);
         if (isMoving || isShooting || isAlerting || capturaPorHelicoptero || barcoFueImpactado || globalDroneVariables.vehiculoVolviendo 
-        		|| partida.guardarPartida || partida.restaurarPartida || cambioTormenta){
+            || partida.guardarPartida || partida.restaurarPartida || cambioTormenta || isChangingBoatHeli){
             enviarJSON(partida);
         }
 
+
+
+        ////// EVALUACION DE GANADOR
+
+        if(evaluarPatrullerosGanadores()){
+            window.location.replace('gameover.html?equipoGanador=Patrullero');
+            globalDroneVariables.websocket.close();
+            globalDroneVariables.websocketTime.close();
+            globalDroneVariables = null;
+            partida = null;          
+        }else if(evaluarPesquerosGanadores()){
+            window.location.replace('gameover.html?equipoGanador=Pesquero');
+            globalDroneVariables.websocket.close();
+            globalDroneVariables.websocketTime.close();
+            globalDroneVariables = null;
+            partida = null;     
+        }
 
 
         ////// TIEMPO DE PARTIDA
@@ -1283,6 +1299,10 @@ var DroneViewState = new Phaser.Class({
                             }else if(globalDroneVariables.equipo == "Pesquero"){
                                 window.location.replace('error.html?equipoAbandono=Patrullero');
                             }
+                            globalDroneVariables.websocket.close();
+                            globalDroneVariables.websocketTime.close();
+                            globalDroneVariables = null;
+                            partida = null;   
 
                         }
 

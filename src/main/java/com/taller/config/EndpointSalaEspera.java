@@ -33,13 +33,10 @@ public class EndpointSalaEspera {
 			if (endpointsPartida[0] == null && endpointsPartida[1] == null) {
 				endpointsPartida[0] = this;
 				session.getBasicRemote().sendText("0");
-				System.out.println("0");
 			} else {
-				System.out.println("1");
 				endpointsPartida[1] = this;
 				String newTeam = "";
 				if (!firstTeam.equals("")) {
-					System.out.println("2");
 					if (firstTeam.equals("Patrullero")) {
 						newTeam = "Pesquero";
 						fachada.definirAdministrador("Patrullero");
@@ -48,10 +45,8 @@ public class EndpointSalaEspera {
 						newTeam = "Patrullero";
 						fachada.definirAdministrador("Pesquero");
 					}
-					System.out.println("3" + newTeam);
 					session.getBasicRemote().sendText(newTeam);
 				} else {
-					System.out.println("4");
 					endpointsPartida[1] = this;
 					session.getBasicRemote().sendText("1");
 				}
@@ -64,12 +59,9 @@ public class EndpointSalaEspera {
 				endpointsPartida[0] = null;
 				endpointsPartida[1] = null;
 				firstTeam = "";
-				System.out.println("5");
 				
 
 			} else {
-				System.out.println("6");
-				//endpointsPartida[0] = this;
 				firstTeam = equipo;
 				
 				String newTeam = "";

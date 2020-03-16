@@ -48,18 +48,20 @@ public class EndpointAcciones {
 								String json = "{ \"accion\" : \"tiempo\", \"tiempoRestante\" : \" " + seconds + " \"}";
 
 								broadcast(json);
-
+	
 								if(seconds == 0) {
 
-									seconds = tiempoPartida;
+									reset();
 								}
+								
+								seconds = seconds - 1;
 							} else {
 
-								seconds = tiempoPartida;
+								reset();
 								return;
 							}
 
-							seconds = seconds - 1;
+							
 						} catch (IOException e1) {
 							System.out.println("Error en: " + seconds);
 							e1.printStackTrace();
@@ -132,6 +134,7 @@ public class EndpointAcciones {
 		endpointsPartida[1] = null;
 		timer.cancel();
 		timer.purge();
+		timer = null;
 		seconds = tiempoPartida;
 	}
 
