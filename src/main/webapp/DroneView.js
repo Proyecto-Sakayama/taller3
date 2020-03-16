@@ -218,19 +218,19 @@ var DroneViewState = new Phaser.Class({
         var fish4 = this.add.image(900, 440,'fishes');
         fish4.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
-        var fish5 = this.add.image(Phaser.Math.Between(100, 1200), 320,'fishes');
+        var fish5 = this.add.image(900, 440,'fishes');
         fish5.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
-        var fish6 = this.add.image(Phaser.Math.Between(400, 1200), 320,'fishes');
+        var fish6 = this.add.image(900, 440,'fishes');
         fish6.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
-        var fish7 = this.add.image(Phaser.Math.Between(800, 1200), 320,'fishes');
+        var fish7 = this.add.image(900, 440,'fishes');
         fish7.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
-        var fish8 = this.add.image(Phaser.Math.Between(400, 1200), 200,'fishes');
+        var fish8 = this.add.image(900, 440,'fishes');
         fish8.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
-        var fish9 = this.add.image(Phaser.Math.Between(700, 1200), 200,'fishes');
+        var fish9 = this.add.image(900, 440,'fishes');
         fish9.mask = new Phaser.Display.Masks.BitmapMask(this, globalDroneVariables.spotlight);
 
 
@@ -791,13 +791,13 @@ var DroneViewState = new Phaser.Class({
                     }
                     boat.combustible = boteServer.combustible;
 
-                    if (typeof boteServer.helicoptero !== "undefined"){
+                    if (typeof boteServer.helicoptero !== "undefined" && vehiculoActivo.type != "H"){
                         setMovement(boat.helicoptero, boteServer.helicoptero.sprite);
                         boat.helicoptero.combustible = boteServer.helicoptero.combustible;
                         boat.helicoptero.acoplado = boteServer.helicoptero.acoplado;
                     }
 
-                    if (typeof boteServer.bote !== "undefined"){
+                    if (typeof boteServer.bote !== "undefined"  && vehiculoActivo.type != "L"){
 
                         setMovement(boat.bote, boteServer.bote.sprite);
                         boat.bote.combustible = boteServer.bote.combustible;
