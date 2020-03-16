@@ -175,6 +175,14 @@ public class Fachada implements IFachada{
 		result.setDatosPartida(partida);
         return result;
 	}
+
+	@Override
+	public VOEstadoPartida actualizarAdministrador(VOEstadoPartida estadoPartida) {
+		String partida = estadoPartida.getDatosPartida();
+		partida = partida.replace("\"equipoAdministrador\":\"\"", "\"equipoAdministrador\":\"" + this.equipoAdministrador.toString() + "\"" );
+		estadoPartida.setDatosPartida(partida);
+		return estadoPartida;
+	}
 	
 
 }
