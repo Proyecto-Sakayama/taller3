@@ -19,59 +19,25 @@ public class EndpointAcciones {
 	private static int tiempoPartida = 300;
 	private static int seconds = tiempoPartida;
 	Timer timer;
+	TimerTask timerTask;
+	boolean activo = false;
 
 	@OnOpen
 	public void onOpen(Session session, @PathParam("equipo") String equipo) throws IOException, EncodeException {
 
-		if (seconds == 0) {
-			reset();
-		}
-
 		this.session = session;
 		if (endpointsPartida[0] == null) {
 			endpointsPartida[0] = this;
-
 		} else {
 			endpointsPartida[1] = this;
-
 		}
 		try {
-			if (endpointsPartida[0] != null && endpointsPartida[1] != null) {//(equipo.equals("Patrullero")) {
-				timer = new Timer();
-				timer.schedule(new TimerTask() {
-					@Override
-					public void run() {
+			if (endpointsPartida[0] != null && endpointsPartida[1] != null) {
 
-						try {
-							if (seconds >= 0) {
+				activo = true;
+				inicializarTimer();
 
-								String json = "{ \"accion\" : \"tiempo\", \"tiempoRestante\" : \" " + seconds + " \"}";
-
-								broadcast(json);
-	
-								if(seconds == 0) {
-
-									reset();
-								}
-								
-								seconds = seconds - 1;
-							} else {
-
-								reset();
-								return;
-							}
-
-							
-						} catch (IOException e1) {
-							System.out.println("Error en: " + seconds);
-							e1.printStackTrace();
-						} catch (EncodeException e1) {
-							System.out.println("Error en: " + seconds);
-							e1.printStackTrace();
-						}
-
-					}
-				}, 0, 1000);
+				timer.schedule(timerTask, 0, 1000);
 
 			}
 		} catch (Exception e) {
@@ -82,21 +48,20 @@ public class EndpointAcciones {
 
 	@OnMessage
 	public void onMessage(Session session, String accion) throws IOException, EncodeException {
-		broadcast(accion);
 
 	}
 
 	@OnClose
 	public void onClose(Session session) throws IOException, EncodeException {
 		if (endpointsPartida[0] != null && endpointsPartida[0].session.getId() == session.getId()) {
-			endpointsPartida[0] = null;
+
 			if (endpointsPartida[1] != null) {
 				String json = "{ \"accion\" : \"salida\", \"motivoSalida\" : \"ABANDONO\"}";
 
 				endpointsPartida[1].session.getBasicRemote().sendText(json);
 			}
 		} else if (endpointsPartida[1] != null && endpointsPartida[1].session.getId() == session.getId()) {
-			endpointsPartida[1] = null;
+
 			if (endpointsPartida[0] != null) {
 				String json = "{ \"accion\" : \"salida\", \"motivoSalida\" : \"ABANDONO\"}";
 
@@ -104,8 +69,21 @@ public class EndpointAcciones {
 			}
 
 		}
-		
-		reset();
+
+		try {
+			if (activo) {
+				reset();
+			} else {
+				if (session.getId() == endpointsPartida[0].session.getId()) {
+					endpointsPartida[1].reset();
+				} else {
+					endpointsPartida[0].reset();
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	@OnError
@@ -128,17 +106,59 @@ public class EndpointAcciones {
 			}
 		}
 	}
-	
-	private void reset() {
-		endpointsPartida[0] = null;
-		endpointsPartida[1] = null;
-		if(timer != null)
-		{
+
+	public void reset() {
+
+		try {
+			timerTask.cancel();
 			timer.cancel();
 			timer.purge();
-			timer = null;
+			seconds = tiempoPartida;
+			activo = false;
+			endpointsPartida[0] = null;
+			endpointsPartida[1] = null;
+			return;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		seconds = tiempoPartida;
+
+	}
+
+	private void inicializarTimer() {
+		timer = new Timer();
+		timerTask = new TimerTask() {
+			@Override
+			public void run() {
+
+				try {
+					if (seconds >= 0) {
+
+						String json = "{ \"accion\" : \"tiempo\", \"tiempoRestante\" : \" " + seconds + " \"}";
+
+						broadcast(json);
+
+						if (seconds == 0) {
+
+							reset();
+						} else {
+							seconds = seconds - 1;
+						}
+
+					} else {
+
+						reset();
+					}
+
+				} catch (IOException e1) {
+					System.out.println("Error en: " + seconds);
+					e1.printStackTrace();
+				} catch (EncodeException e1) {
+					System.out.println("Error en: " + seconds);
+					e1.printStackTrace();
+				}
+
+			}
+		};
 	}
 
 }

@@ -67,7 +67,7 @@ var globalDroneVariables = {
 
     //indica si se seleccionó que se va a restaurar la partida
     restaurarPartida: false,
-   
+
     teclaGuardarPartida: null,
     teclaTormenta: null,
 
@@ -92,13 +92,13 @@ var partida = {
     hayTormenta: false,
     teclaTormenta: false,
     guardarPartida: false,
-    
+
     //indica si se seleccionó que se va a restaurar la partida
     restaurarPartida: false,
     //hay que restaurar la partida y todavía no se hizo
     partidaPendienteRestaurar: false,
-    
-    
+
+
     esAdministrador: false,
     Pesqueros: {
         Barcos: []
@@ -163,24 +163,24 @@ var DroneViewState = new Phaser.Class({
     *************************************************************************************************************************************************/
 
     create: function () {
-  		
+
         globalDroneVariables.equipo = getVarsFromUrl()["equipo"];
         globalDroneVariables.restaurarPartida = getVarsFromUrl()["recuperar"];
-        
+
         if(globalDroneVariables.restaurarPartida == "true")
         {
-        	partida.restaurarPartida = true;
-        	partida.partidaPendienteRestaurar = true;
+            partida.restaurarPartida = true;
+            partida.partidaPendienteRestaurar = true;
         }
         else
         {
-        	partida.restaurarPartida = false;
-        	partida.partidaPendienteRestaurar = false;
+            partida.restaurarPartida = false;
+            partida.partidaPendienteRestaurar = false;
         }
-        
+
         console.log("1 partida.restaurarPartida: " + partida.restaurarPartida);
         console.log("1 partida.partidaPendienteRestaurar: " + partida.partidaPendienteRestaurar);
-         
+
         globalDroneVariables.desacoplarHelicoptero = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
         globalDroneVariables.desacoplarBote = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
         globalDroneVariables.avisarPesquero = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -803,7 +803,7 @@ var DroneViewState = new Phaser.Class({
 
                     console.log("2 partida.restaurarPartida: " + partida.restaurarPartida);
                     console.log("2 partida.partidaPendienteRestaurar: " + partida.partidaPendienteRestaurar);
-                    
+
                     if(boteServer.id !== vehiculoActivo.id || partida.partidaPendienteRestaurar){
 
                         setMovement(boat, boteServer.sprite);
@@ -839,7 +839,7 @@ var DroneViewState = new Phaser.Class({
 
                         setMovement(boat, boteServer.sprite);
                     }
-                    
+
 
                     boat.combustible = boteServer.combustible;
                     boat.capturado = boteServer.capturado;
@@ -902,19 +902,11 @@ var DroneViewState = new Phaser.Class({
             if(partidaFromServer.hayGanador){
                 if(evaluarPatrullerosGanadores()){
                     window.location.replace('gameover.html?equipoGanador=Patrullero');
-                    globalDroneVariables.websocket.close();
-                    globalDroneVariables.websocketTime.close();
-                    globalDroneVariables = null;
-                    partida = null; 
-                    partida.hayGanador = true;
                 }else if(evaluarPesquerosGanadores()){
                     window.location.replace('gameover.html?equipoGanador=Pesquero');
-                    globalDroneVariables.websocket.close();
-                    globalDroneVariables.websocketTime.close();
-                    globalDroneVariables = null;
-                    partida = null;     
-                    partida.hayGanador = true;
                 }
+                globalDroneVariables.websocket.close();
+                globalDroneVariables.websocketTime.close();
 
             }
 
@@ -922,11 +914,14 @@ var DroneViewState = new Phaser.Class({
         }
 
 
-        /*
+
         globalDroneVariables.websocket.onclose = function () {
-            alert('test');
+            globalDroneVariables.websocket = null;
         };
-        */
+
+        globalDroneVariables.websocketTime.onclose = function () {
+            globalDroneVariables.websocketTime = null;
+        };      
 
 
 
@@ -1303,7 +1298,7 @@ var DroneViewState = new Phaser.Class({
         ////// SI HUBO ALGUN CAMBIO SE ENVIA AL SERVIDOR
         console.log("5 partida.restaurarPartida: " + partida.restaurarPartida);
         console.log("5 partida.partidaPendienteRestaurar: " + partida.partidaPendienteRestaurar);
-        
+
         if (isMoving || isShooting || isAlerting || capturaPorHelicoptero || barcoFueImpactado || globalDroneVariables.vehiculoVolviendo 
             || partida.guardarPartida || partida.restaurarPartida || cambioTormenta || isChangingBoatHeli || partida.hayGanador){
             enviarJSON(partida);
@@ -1341,8 +1336,6 @@ var DroneViewState = new Phaser.Class({
                                 }
                                 globalDroneVariables.websocket.close();
                                 globalDroneVariables.websocketTime.close();
-                                globalDroneVariables = null;
-                                partida = null;   
 
                             }
                         }
@@ -1356,8 +1349,8 @@ var DroneViewState = new Phaser.Class({
             }
 
         };
-                
-        
+
+
         partida.guardarPartida = false;
     }
 
@@ -1386,9 +1379,9 @@ function enviarJSON(objeto) {
     let json = JSON.stringify(objeto);
     if(globalDroneVariables.websocket.readyState === WebSocket.OPEN)
     {
-    	globalDroneVariables.websocket.send(json);
+        globalDroneVariables.websocket.send(json);
     }
-    
+
 }
 
 
