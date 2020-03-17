@@ -153,7 +153,7 @@ public class Fachada implements IFachada{
 	            int high = 10;
 	            int randomTormenta = r.nextInt(high-low) + low;
 	            
-	            if(randomTormenta < 5)
+	            if(randomTormenta <= 5)
 	            {
 	                hayTormenta = true;
 	            }

@@ -997,6 +997,7 @@ var DroneViewState = new Phaser.Class({
             return typeof input.helicoptero !== "undefined";
         });
 
+        //Si el helicóptero está regresando o no está acoplado 
         if(boatWithHelicopterAux.helicoptero.regresando 
            || !boatWithHelicopterAux.helicoptero.acoplado)
         {
@@ -1004,10 +1005,14 @@ var DroneViewState = new Phaser.Class({
             consumirCombustible(boatWithHelicopterAux.helicoptero);
         }
 
+        //Si hay tormenta y el bote no está acoplado
+        //O El el vehículo activo es bote y está regresando y no está acoplado
+        //O El bote está regresando y no está acoplado
         if((partida.hayTormenta && !boatWithHelicopterAux.bote.acoplado)
            || (vehiculoActivo.type == "L" && vehiculoActivo.regresando && !vehiculoActivo.acoplado) 
            || (boatWithHelicopterAux.bote.regresando && !boatWithHelicopterAux.bote.acoplado))
         {
+        	returnToShip(boatWithHelicopterAux.bote);
             moveAutomatically(boatWithHelicopterAux.bote);
             consumirCombustible(boatWithHelicopterAux.bote);
         }
@@ -1444,28 +1449,29 @@ function consumirCombustible(vehiculo){
     }
 }
 
-function returnToShip(vehicule)
-{
-    if(vehicule.combustible < 50 || (vehicule.type == "L" && partida.hayTormenta))
-    {
-        vehicule.regresando = true;
-        var boatWithHelicopter = partida.Patrulleros.Barcos.find(function (input) {
-            return typeof input.helicoptero !== "undefined";
-        });
 
+//Se llama si el combustible del helicóptero o bote es menor a 50
+function returnToShip(vehicle)
+{
+    if(vehicle.combustible < 50 || (partida.hayTormenta && vehicle.type == "L"))
+    {
         var target = new Phaser.Math.Vector2();
-        target.x = boatWithHelicopter.sprite.x;
-        target.y = boatWithHelicopter.sprite.y;
-        var angleToPointer = Phaser.Math.Angle.Between(vehicule.sprite.x, vehicule.sprite.y, target.x, target.y);
-        var angleDelta = Phaser.Math.Angle.Wrap(angleToPointer - vehicule.sprite.rotation);
-        vehicule.sprite.rotation = angleToPointer;
-        vehicule.sprite.setAngularVelocity(0);
-        vehicule.sprite.target = target;
-        vehicule.sprite.thrust(0);
-        vehicule.sprite.thrust(parameters.aceleracion);
+        target.x = getBoatWithHelicopter().sprite.x;
+        target.y = getBoatWithHelicopter().sprite.y;
+        var angleToPointer = Phaser.Math.Angle.Between(vehicle.sprite.x, vehicle.sprite.y, target.x, target.y);
+        var angleDelta = Phaser.Math.Angle.Wrap(angleToPointer - vehicle.sprite.rotation);
+        vehicle.sprite.rotation = angleToPointer;
+        vehicle.sprite.setAngularVelocity(0);
+        vehicle.sprite.target = target;
+        vehicle.sprite.thrust(0);
+        vehicle.sprite.thrust(parameters.aceleracion);
+        vehicle.regresando = true;
+        moveAutomatically(vehicle);
     }
 }
 
+//Se llama para el bote y helicóptero 
+//Detiene el vehículo si la distancia es menor a 4 px y lo acopla a la patrulla oceánica
 function moveAutomatically(vehicle)
 {
     if(vehicle.sprite.target != null)
