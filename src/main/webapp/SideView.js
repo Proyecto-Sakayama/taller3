@@ -470,6 +470,14 @@ var SideViewState = new Phaser.Class({
                     globalSideVariables.spotlight.y = activarBoteNoHundido.sprite.y;
 
 
+                }else if(barcoFromServerSide.capturado){
+                    var activarBoteNoCapturado = vehiculosSideView.Pesqueros.Barcos.find(function (item){
+                        return item.id != barcoFromServerSide.id;
+                    });
+
+                    globalSideVariables.spotlight.x = activarBoteNoCapturado.sprite.x;
+                    globalSideVariables.spotlight.y = activarBoteNoCapturado.sprite.y;
+
                 }else{
 
                     definirOrientacionVehiculo(barcoAActualizar, barcoFromServerSide);
@@ -485,10 +493,7 @@ var SideViewState = new Phaser.Class({
                     } 
                 }
 
-
-
             }
-
 
 
         });
