@@ -74,6 +74,8 @@ var globalDroneVariables = {
     avisarPesqueroJustPressed: false,
     
     administradorActualizado: false,
+    particlesExplosion: null,
+    particlesShot: null,
 
     //Info vehiculos
     InfoVehiculo_Info1: null,
@@ -154,6 +156,10 @@ var DroneViewState = new Phaser.Class({
         this.load.image('panel', 'assets/panel.png');
         this.load.image('horizontal', 'assets/horizontal.png');
         this.load.image('vertical', 'assets/vertical.png');
+        
+        //explision
+        this.load.image('fire', 'assets/muzzleflash3.png');
+        this.load.atlas('flares', 'assets/flares.png', 'assets/flares.json');
     },
 
 
@@ -587,6 +593,8 @@ var DroneViewState = new Phaser.Class({
 
         });
 
+        globalDroneVariables.particlesExplosion = this.add.particles('fire');
+        globalDroneVariables.particlesShot = this.add.particles('flares');
         console.log('create success');
 
     },
@@ -860,7 +868,8 @@ var DroneViewState = new Phaser.Class({
                         });
 
                         if(barcoImpactado.vida > 0){
-
+                        	mostrarDisparo(partidaFromServer.Disparo.patrullero.sprite, barcoImpactado.sprite, partidaFromServer.Disparo.arma.nivelDanio/133);
+                        	mostrarExplosion(barcoImpactado.sprite, partidaFromServer.Disparo.arma.nivelDanio);
                             if(barcoImpactado.vida > partidaFromServer.Disparo.arma.nivelDanio){
 
                                 barcoImpactado.vida -= partidaFromServer.Disparo.arma.nivelDanio;
@@ -1569,4 +1578,39 @@ function evaluarPatrullerosGanadores(){
 
 }
 
+function mostrarExplosion(spritePesquero, nivel)
+{
+	globalDroneVariables.particlesExplosion.createEmitter({
+        alpha: { start: 1, end: 0 },
+        scale: { start: 0.5, end: nivel/20 },
+        tint: { start: 0xff945e, end: 0xff945e },
+        speed: 50,
+        accelerationY: -100,
+        angle: { min: -85, max: -95 },
+        rotate: { min: -180, max: 180 },
+        lifespan: { min: 1000, max: 1050 },
+        blendMode: 'ADD',
+        frequency: 50,
+        maxParticles: 3,
+        x: spritePesquero.x,
+        y: spritePesquero.y
+    });
+}
+
+function mostrarDisparo(spritePatrullero, spritePesquero, nivel)
+{
+	globalDroneVariables.particlesShot.createEmitter({
+		frame: 'yellow',
+        x: spritePatrullero.x,
+        y: spritePatrullero.y,
+        lifespan: 200,
+        speed: { min: 400, max: 600 },
+        angle: Phaser.Math.RAD_TO_DEG * Phaser.Math.Angle.Between(spritePatrullero.x, spritePatrullero.y, spritePesquero.x, spritePesquero.y),
+        gravityY: 0,
+        scale: { start: nivel, end: 0 },//0.15 metralleta y 0.3 cañon 
+        quantity: 2, //GROSOR
+        blendMode: 'ADD',
+        maxParticles: 10
+    });
+}
 
