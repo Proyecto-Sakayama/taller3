@@ -888,6 +888,7 @@ var DroneViewState = new Phaser.Class({
 
                 });
                 partida.partidaPendienteRestaurar = partidaFromServer.partidaPendienteRestaurar;
+                partida.restaurarPartida = partidaFromServer.partidaPendienteRestaurar;
                 console.log("4 partida.restaurarPartida: " + partida.restaurarPartida);
                 console.log("4 partida.partidaPendienteRestaurar: " + partida.partidaPendienteRestaurar);
                 partida.Pesca.BancoPeces.forEach(function(banco){
