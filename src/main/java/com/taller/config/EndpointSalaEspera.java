@@ -38,7 +38,7 @@ public class EndpointSalaEspera {
 			if (endpointsPartida[0] == null && endpointsPartida[1] == null) {
 				endpointsPartida[0] = this;
 				
-				InicioPartida inicio = new InicioPartida("0", fachada.recuperarPartida);
+				InicioPartida inicio = new InicioPartida("0", Fachada.recuperarPartida);
 				session.getBasicRemote().sendText(gson.toJson(inicio));
 			} else {
 				endpointsPartida[1] = this;
@@ -52,11 +52,11 @@ public class EndpointSalaEspera {
 						newTeam = "Patrullero";
 						fachada.definirAdministrador("Pesquero");
 					}
-					InicioPartida inicio = new InicioPartida(newTeam, fachada.recuperarPartida );
+					InicioPartida inicio = new InicioPartida(newTeam, Fachada.recuperarPartida );
 					session.getBasicRemote().sendText(gson.toJson(inicio));
 				} else {
 					endpointsPartida[1] = this;
-					InicioPartida inicio = new InicioPartida("1", fachada.recuperarPartida);
+					InicioPartida inicio = new InicioPartida("1", Fachada.recuperarPartida);
 					session.getBasicRemote().sendText(gson.toJson(inicio));
 				}
 
@@ -74,7 +74,7 @@ public class EndpointSalaEspera {
 				firstTeam = equipo;
 				
 				String newTeam = "";
-				fachada.recuperarPartida = recuperar;
+				Fachada.recuperarPartida = recuperar;
 				if (firstTeam.equals("Patrullero")) {
 					newTeam = "Pesquero";
 					fachada.definirAdministrador("Patrullero");
@@ -128,7 +128,7 @@ public class EndpointSalaEspera {
 
 	public void broadcast(String start) {
 		Gson gson = new Gson();
-		InicioPartida inicio = new InicioPartida(start, fachada.recuperarPartida);
+		InicioPartida inicio = new InicioPartida(start, Fachada.recuperarPartida);
 		try {
 			if (endpointsPartida[0] != null) {
 				endpointsPartida[0].session.getBasicRemote().sendText(gson.toJson(inicio));

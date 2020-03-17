@@ -179,9 +179,6 @@ var DroneViewState = new Phaser.Class({
         	partida.restaurarPartida = false;
         	partida.partidaPendienteRestaurar = false;
         }
-        
-        console.log("1 partida.restaurarPartida: " + partida.restaurarPartida);
-        console.log("1 partida.partidaPendienteRestaurar: " + partida.partidaPendienteRestaurar);
          
         globalDroneVariables.desacoplarHelicoptero = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
         globalDroneVariables.desacoplarBote = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
@@ -810,9 +807,7 @@ var DroneViewState = new Phaser.Class({
                         return item.id == boat.id;
                     });
 
-                    console.log("2 partida.restaurarPartida: " + partida.restaurarPartida);
-                    console.log("2 partida.partidaPendienteRestaurar: " + partida.partidaPendienteRestaurar);
-                    
+
                     if(boteServer.id !== vehiculoActivo.id || partida.partidaPendienteRestaurar){
 
                         setMovement(boat, boteServer.sprite);
@@ -842,8 +837,7 @@ var DroneViewState = new Phaser.Class({
                     var boteServer  = partidaFromServer.Pesqueros.Barcos.find(function(item){
                         return item.id == boat.id;
                     });
-                    console.log("3 partida.restaurarPartida: " + partida.restaurarPartida);
-                    console.log("3 partida.partidaPendienteRestaurar: " + partida.partidaPendienteRestaurar);
+
                     if(boteServer.id !== vehiculoActivo.id || partida.partidaPendienteRestaurar){
 
                         setMovement(boat, boteServer.sprite);
@@ -889,8 +883,7 @@ var DroneViewState = new Phaser.Class({
                 });
                 partida.partidaPendienteRestaurar = partidaFromServer.partidaPendienteRestaurar;
                 partida.restaurarPartida = partidaFromServer.partidaPendienteRestaurar;
-                console.log("4 partida.restaurarPartida: " + partida.restaurarPartida);
-                console.log("4 partida.partidaPendienteRestaurar: " + partida.partidaPendienteRestaurar);
+
                 partida.Pesca.BancoPeces.forEach(function(banco){
 
                     var bancoServer  = partidaFromServer.Pesca.BancoPeces.find(function(item){
@@ -1294,14 +1287,16 @@ var DroneViewState = new Phaser.Class({
         if(!partida.hayTormenta && Phaser.Input.Keyboard.JustDown(globalDroneVariables.teclaTormenta))
         {
             partida.teclaTormenta = true;
+            partida.hayTormenta = true;
             cambioTormenta = true;
         }
         if(partida.hayTormenta && Phaser.Input.Keyboard.JustDown(globalDroneVariables.teclaTormenta))
         {
             partida.teclaTormenta = true;
+            partida.hayTormenta = false;
             cambioTormenta = true;
         }
-        if(partida.hayTormenta || partida.teclaTormenta)
+        if(partida.hayTormenta)
         {
             globalDroneVariables.textoTormenta.setText('Hay tormenta!!');
         }
@@ -1320,8 +1315,6 @@ var DroneViewState = new Phaser.Class({
 
 
         ////// SI HUBO ALGUN CAMBIO SE ENVIA AL SERVIDOR
-        console.log("5 partida.restaurarPartida: " + partida.restaurarPartida);
-        console.log("5 partida.partidaPendienteRestaurar: " + partida.partidaPendienteRestaurar);
         
         if (isMoving || isShooting || isAlerting || capturaPorHelicoptero || barcoFueImpactado || globalDroneVariables.vehiculoVolviendo 
             || partida.guardarPartida || partida.restaurarPartida || cambioTormenta || isChangingBoatHeli || partida.hayGanador){
@@ -1458,7 +1451,7 @@ function consumirCombustible(vehiculo){
 
 function returnToShip(vehicule)
 {
-    if(vehicule.combustible < 50)
+    if(vehicule.combustible < 50 || (vehicule.type == "L" && partida.hayTormenta))
     {
         vehicule.regresando = true;
         var boatWithHelicopter = partida.Patrulleros.Barcos.find(function (input) {
