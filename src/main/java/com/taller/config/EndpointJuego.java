@@ -19,7 +19,7 @@ public class EndpointJuego {
 	private static final EndpointJuego[] endpointsPartida = new EndpointJuego[2];
 
 	private Fachada fachada;
-	
+
 	@OnOpen
 	public void onOpen(Session session, @PathParam("equipo") String equipo) throws IOException, EncodeException {
 		try {
@@ -37,7 +37,8 @@ public class EndpointJuego {
 	}
 
 	@OnMessage
-	public void onMessage(Session session, String partida, @PathParam("equipo") String equipo) throws IOException, EncodeException {
+	public void onMessage(Session session, String partida, @PathParam("equipo") String equipo)
+			throws IOException, EncodeException {
 		String partidaEnviar;
 		VOEstadoPartida estadoPartida = new VOEstadoPartida(partida);
 		VOEstadoPartida partidaRestaurada = null;
@@ -47,7 +48,7 @@ public class EndpointJuego {
 		} catch (PersistenciaException e) {
 			e.printStackTrace();
 		}
-		if(partidaRestaurada != null)
+		if (partidaRestaurada != null)
 			estadoPartida = partidaRestaurada;
 		estadoPartida = fachada.procesarDisparo(estadoPartida);
 		estadoPartida = fachada.chequearTormenta(estadoPartida);
@@ -74,7 +75,7 @@ public class EndpointJuego {
 			}
 
 		}
-		
+
 		reset();
 	}
 
@@ -82,7 +83,7 @@ public class EndpointJuego {
 		endpointsPartida[0] = null;
 		endpointsPartida[1] = null;
 	}
-	
+
 	@OnError
 	public void onError(Session session, Throwable throwable) {
 		throwable.printStackTrace();

@@ -154,6 +154,8 @@ var DroneViewState = new Phaser.Class({
         this.load.image('panel', 'assets/panel.png');
         this.load.image('horizontal', 'assets/horizontal.png');
         this.load.image('vertical', 'assets/vertical.png');
+        
+        //this.load.spritesheet('patrulleroHelicopteroTopSprite', 'assets/patrulleroHelicopteroTopSprite.png', 20, 20);
     },
 
 
@@ -587,6 +589,14 @@ var DroneViewState = new Phaser.Class({
 
         });
 
+        
+        /*
+        var helicopteroSprite = this.physics.add.sprite(100, 100, 'patrulleroHelicopteroTopSprite');
+        var desacoplar = helicopteroSprite.animations.add('desacoplar');
+        
+        helicopteroSprite.animations.play('desacoplar', 30, true);
+        */
+        
         console.log('create success');
 
     },
