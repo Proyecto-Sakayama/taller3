@@ -1,0 +1,22 @@
+{
+   "ipServidor":"localhost",
+   "puertoServidor":"8080",
+   "velocidadRotacion":0.07,
+   "aceleracion":0.04,
+   "distanciaAviso":150,
+   "tiempoEntreAvisos":3,
+   "baseConsumoCombustible":0.05,
+   "cantidadAvisosParaDisparar":2,
+   "masaBarcosPesados":90,
+   "masaBarcosLivianos":45,
+   "masaHelicoptero":22,
+   "masaBote":32,
+   "milla200_distancia":100,
+   "metaPesca":100,
+   "ametralladoraAlcance":125,
+   "ametralladoraDanio":20,
+   "ametralladoraCadencia":1,
+   "canionAlcance":150,
+   "canionDanio":40,
+   "canionCadencia":3
+}

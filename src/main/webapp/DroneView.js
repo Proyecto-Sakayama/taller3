@@ -138,7 +138,9 @@ var DroneViewState = new Phaser.Class({
     *************************************************************************************************************************************************/
 
     preload: function () {
-
+    	$.getJSON("parameters.json", function(json) {
+    	    parameters = json;
+    	});
         //Patrulleros
         this.load.image('patrulleroLivianoTop', 'assets/patrulleroLivianoTop.png');
         this.load.image('patrulleroPesadoTop', 'assets/patrulleroPesadoTop.png');

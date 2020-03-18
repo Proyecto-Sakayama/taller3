@@ -69,63 +69,67 @@ $('#unirseBTN').click(function() {
 function saladeespera(team, recuperar){
 	let equipoEnviar = new equipoJSON(team, recuperar);
 	
-    websocket = new WebSocket('ws://localhost:8080/taller3/salaespera/' + team + '/' + recuperar);
+	$.getJSON("parameters.json", function(json) {
+		let parameters = json;
+		websocket = new WebSocket('ws://' + parameters.ipServidor + ':' + parameters.puertoServidor +'/taller3/salaespera/' + team + '/' + recuperar);
 
-    websocket.onmessage = function(event) {
-        var serverResponse = JSON.parse(event.data);
-    	var serverTeam = serverResponse.nombreEquipo;
-    	var serverRecuperar = serverResponse.recuperar;
+	    websocket.onmessage = function(event) {
+	        var serverResponse = JSON.parse(event.data);
+	    	var serverTeam = serverResponse.nombreEquipo;
+	    	var serverRecuperar = serverResponse.recuperar;
 
-        switch (serverTeam){
+	        switch (serverTeam){
 
-            case "0":
-                //Jugador 1 seleccionando equipo
+	            case "0":
+	                //Jugador 1 seleccionando equipo
 
-                break;
+	                break;
 
-            case "1":
-                $('#primerJugador').hide();
-                $('#segundoJugador').show();
-                break;
-
-
-            case "Patrullero":
-
-                if(equipo == "EMPTY"){
-                    equipo = "Patrullero";
-                    ready = true;
-                }
+	            case "1":
+	                $('#primerJugador').hide();
+	                $('#segundoJugador').show();
+	                break;
 
 
-                break;
+	            case "Patrullero":
 
-            case "Pesquero":
-
-                if(equipo == "EMPTY"){
-                    equipo = "Pesquero";
-                    ready = true;
-                }
-
-                break;
-
-            case "2":
-
-                window.location.href = 'game.html?equipo=' + equipo + "&recuperar=" + serverRecuperar;
-
-                break;
-        }
+	                if(equipo == "EMPTY"){
+	                    equipo = "Patrullero";
+	                    ready = true;
+	                }
 
 
-        if(ready){
-            $('#primerJugador').hide();
-            $('#segundoJugador').show();          
-            document.getElementById('esperandoEquipoJ2').innerHTML = "Equipo disponible:";
-            document.getElementById('equipoJ2').innerHTML = equipo.toUpperCase();
-            $('#elEquipoqQueQueda').show();
-            $('#divUnirseBTN').show();
-            
-        }
+	                break;
 
-    };
+	            case "Pesquero":
+
+	                if(equipo == "EMPTY"){
+	                    equipo = "Pesquero";
+	                    ready = true;
+	                }
+
+	                break;
+
+	            case "2":
+
+	                window.location.href = 'game.html?equipo=' + equipo + "&recuperar=" + serverRecuperar;
+
+	                break;
+	        }
+
+
+	        if(ready){
+	            $('#primerJugador').hide();
+	            $('#segundoJugador').show();          
+	            document.getElementById('esperandoEquipoJ2').innerHTML = "Equipo disponible:";
+	            document.getElementById('equipoJ2').innerHTML = equipo.toUpperCase();
+	            $('#elEquipoqQueQueda').show();
+	            $('#divUnirseBTN').show();
+	            
+	        }
+
+	    };
+	});
+    
 
 }
