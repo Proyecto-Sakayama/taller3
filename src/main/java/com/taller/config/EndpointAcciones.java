@@ -18,7 +18,7 @@ import logica.Fachada;
 public class EndpointAcciones {
 	private Session session;
 	private static final EndpointAcciones[] endpointsPartida = new EndpointAcciones[2];
-	private static int tiempoPartida = 300;
+	private static int tiempoPartida;
 	private static int seconds = tiempoPartida;
 	Timer timer;
 	TimerTask timerTask;
@@ -131,6 +131,7 @@ public class EndpointAcciones {
 		try {
 			Fachada laFachada = Fachada.getInstance();
 			tiempoPartida = laFachada.getTiempoPartida();
+			seconds = tiempoPartida;
 			
 		}catch(Exception e) {
 			e.printStackTrace();

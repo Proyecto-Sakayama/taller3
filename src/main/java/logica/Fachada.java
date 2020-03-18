@@ -65,11 +65,6 @@ public class Fachada implements IFachada {
 			throws PersistenciaException {
 		String textoPartida = estadoPartida.getDatosPartida();
 
-		/*
-		 * boolean guardarPartida =
-		 * textoPartida.contains("\"tiempoRestantePartida\":true");
-		 */
-
 		boolean guardarPartida = textoPartida.contains("\"guardarPartida\":true");
 		if (equipo.equals(this.equipoAdministrador) && guardarPartida) {
 			textoPartida = textoPartida.replace("\"guardarPartida\":true", "\"guardarPartida\":false");
@@ -95,6 +90,13 @@ public class Fachada implements IFachada {
 			IConexion icon = ipool.obtenerConexion(true);
 			try {
 				result = daoP.obtenerUltimaPartida(icon);
+				
+				String partidaGuardada = result.getDatosPartida();
+				int posInicialTime = partidaGuardada.indexOf(":", 1);  
+				int posFinalTime = partidaGuardada.indexOf(",", 1);   
+				String tiempoRestanteGuardado = partidaGuardada.substring(posInicialTime + 2, posFinalTime -1);
+				this.tiempoPartida = Integer.parseInt(tiempoRestanteGuardado.replace(" ",""));  
+				
 				ipool.liberarConexion(icon, true);
 			} catch (PersistenciaException e) {
 				ipool.liberarConexion(icon, false);
