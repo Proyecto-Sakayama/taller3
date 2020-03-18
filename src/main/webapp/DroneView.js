@@ -72,7 +72,7 @@ var globalDroneVariables = {
     teclaTormenta: null,
 
     avisarPesqueroJustPressed: false,
-    
+
     administradorActualizado: false,
     particlesExplosion: null,
     particlesShot: null,
@@ -156,8 +156,9 @@ var DroneViewState = new Phaser.Class({
         this.load.image('panel', 'assets/panel.png');
         this.load.image('horizontal', 'assets/horizontal.png');
         this.load.image('vertical', 'assets/vertical.png');
+        //this.load.spritesheet('patrulleroHelicopteroTopSprite', 'assets/patrulleroHelicopteroTopSprite.png', 20, 20);
+        //explosion
         
-        //explision
         this.load.image('fire', 'assets/muzzleflash3.png');
         this.load.atlas('flares', 'assets/flares.png', 'assets/flares.json');
     },
@@ -185,7 +186,7 @@ var DroneViewState = new Phaser.Class({
             partida.restaurarPartida = false;
             partida.partidaPendienteRestaurar = false;
         }
-        
+
 
         globalDroneVariables.desacoplarHelicoptero = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
         globalDroneVariables.desacoplarBote = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
@@ -351,7 +352,7 @@ var DroneViewState = new Phaser.Class({
             this.add.text(1220, 610, 'Z: Metralleta');
             this.add.text(1220, 630, 'X: Canion');
         }
-       
+
 
         //DEFINICION DE OBJETOS
 
@@ -593,8 +594,16 @@ var DroneViewState = new Phaser.Class({
 
         });
 
+        
+        /*
+        var helicopteroSprite = this.physics.add.sprite(100, 100, 'patrulleroHelicopteroTopSprite');
+        globalDroneVariables.particlesExplosion = this.add.particles('fire');
+        
+        globalDroneVariables.particlesShot = this.add.particles('flares');
+        */
         globalDroneVariables.particlesExplosion = this.add.particles('fire');
         globalDroneVariables.particlesShot = this.add.particles('flares');
+
         console.log('create success');
 
     },
@@ -617,13 +626,16 @@ var DroneViewState = new Phaser.Class({
 
         ************************************************/
         if(!globalDroneVariables.administradorActualizado 
-        		&& partida.equipoAdministrador == globalDroneVariables.equipo)
+           && partida.equipoAdministrador == globalDroneVariables.equipo)
         {
-        	globalDroneVariables.administradorActualizado = true;
-        	if(globalDroneVariables.equipo == "Pesquero")
-        		this.add.text(1220, 510, 'G: Guardar');
-        	else
-        		this.add.text(1220, 650, 'G: Guardar');
+            globalDroneVariables.administradorActualizado = true;
+            if(globalDroneVariables.equipo == "Pesquero"){
+                this.add.text(1220, 510, ':ADMIN:');
+                this.add.text(1220, 530, 'G: Guardar');
+            }else{
+                this.add.text(1220, 650, ':ADMIN:');
+                this.add.text(1220, 670, 'G: Guardar');
+            }
         }
 
         var vehiculoActivo = null;
@@ -805,9 +817,9 @@ var DroneViewState = new Phaser.Class({
                 partida.teclaTormenta = partidaFromServer.teclaTormenta;
                 if(partidaFromServer.equipoAdministrador != "")
                 {
-                	partida.equipoAdministrador = partidaFromServer.equipoAdministrador;
+                    partida.equipoAdministrador = partidaFromServer.equipoAdministrador;
                 }
-                
+
 
                 //update boats positions
                 partida.Patrulleros.Barcos.forEach(function(boat){
@@ -817,7 +829,7 @@ var DroneViewState = new Phaser.Class({
                     });
 
 
-                    
+
                     if(boteServer.id !== vehiculoActivo.id || partida.partidaPendienteRestaurar){
 
                         setMovement(boat, boteServer.sprite);
@@ -1279,13 +1291,13 @@ var DroneViewState = new Phaser.Class({
         {
             partida.guardarPartida = true;
             if(globalDroneVariables.administradorActualizado 
-            		&& partida.equipoAdministrador == globalDroneVariables.equipo)
+               && partida.equipoAdministrador == globalDroneVariables.equipo)
             {
-            	globalDroneVariables.administradorActualizado = true;
-            	if(globalDroneVariables.equipo == "Pesquero")
-            		this.add.text(1220, 530, 'Guardado OK');
-            	else
-            		this.add.text(1220, 670, 'Guardado OK');
+                globalDroneVariables.administradorActualizado = true;
+                if(globalDroneVariables.equipo == "Pesquero")
+                    this.add.text(1220, 550, 'Guardado OK');
+                else
+                    this.add.text(1220, 690, 'Guardado OK');
             }
         }
 

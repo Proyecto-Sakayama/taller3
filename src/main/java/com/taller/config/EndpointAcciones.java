@@ -12,11 +12,13 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
+import logica.Fachada;
+
 @ServerEndpoint(value = "/acciones/{equipo}")
 public class EndpointAcciones {
 	private Session session;
 	private static final EndpointAcciones[] endpointsPartida = new EndpointAcciones[2];
-	private static int tiempoPartida = 300;
+	private static int tiempoPartida;
 	private static int seconds = tiempoPartida;
 	Timer timer;
 	TimerTask timerTask;
@@ -125,6 +127,15 @@ public class EndpointAcciones {
 	}
 
 	private void inicializarTimer() {
+	
+		try {
+			Fachada laFachada = Fachada.getInstance();
+			tiempoPartida = laFachada.getTiempoPartida();
+			seconds = tiempoPartida;
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 		timer = new Timer();
 		timerTask = new TimerTask() {
 			@Override

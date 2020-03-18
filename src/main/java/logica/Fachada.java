@@ -14,40 +14,42 @@ import logica.valueObjects.VOEstadoPartida;
 import persistencia.daos.IDAOEstadoPartida;
 import persistencia.fabricas.FabricaAbstracta;
 
-public class Fachada implements IFachada{
+public class Fachada implements IFachada {
 
 	private IPoolConexiones ipool;
 	private IDAOEstadoPartida daoP;
 	private FabricaAbstracta fabrica = null;
-	
+
 	public static String equipoAdministrador = ""; 
 	private int segundosChequeoTormenta;
 	private boolean hayTormenta;
 	private int ultimoChequeoTormenta;
 	private static Fachada instance = null;
-	
+	private int tiempoPartida;
+
 	public static boolean recuperarPartida = false;
 ;
-	
+
 	public static Fachada getInstance() throws PersistenciaException {
-		if(instance == null)
+		if (instance == null)
 			instance = new Fachada();
 		return instance;
 	}
-	
+
 	private Fachada() throws PersistenciaException {
 		try {
 			segundosChequeoTormenta = 30;
 			ultimoChequeoTormenta = 0;
-			hayTormenta = false; 
+			hayTormenta = false;
 			Properties p = new Properties();
 			p.load(getClass().getClassLoader().getResourceAsStream("config.properties"));
 			String poolConcreto = p.getProperty("poolConcreto");
 			String nomFab = p.getProperty("nomFab");
+			tiempoPartida = Integer.parseInt(p.getProperty("tiempoPartida"));
 			fabrica = (FabricaAbstracta) Class.forName(nomFab).newInstance();
 			ipool = (IPoolConexiones) Class.forName(poolConcreto).newInstance();
 			daoP = fabrica.crearIDAOEstadoPartida();
-			
+
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 			e.printStackTrace();
 			throw new PersistenciaException(e.getMessage());
@@ -56,9 +58,12 @@ public class Fachada implements IFachada{
 			throw new PersistenciaException("Error cargando configuracion de fachada");
 		}
 	}
+
 	@Override
-	public VOEstadoPartida guardarEstadoPartida(VOEstadoPartida estadoPartida, String equipo) throws PersistenciaException{
+	public VOEstadoPartida guardarEstadoPartida(VOEstadoPartida estadoPartida, String equipo)
+			throws PersistenciaException {
 		String textoPartida = estadoPartida.getDatosPartida();
+
 		boolean guardarPartida = textoPartida.contains("\"guardarPartida\":true");
 		if(equipo.equals(equipoAdministrador) && guardarPartida) {
 			textoPartida = textoPartida.replace("\"guardarPartida\":true", "\"guardarPartida\":false");
@@ -67,15 +72,13 @@ public class Fachada implements IFachada{
 			try {
 				daoP.insertar(estadoPartida, icon);
 				ipool.liberarConexion(icon, true);
-			} catch(PersistenciaException  e) {
+			} catch (PersistenciaException e) {
 				ipool.liberarConexion(icon, false);
 				throw new PersistenciaException(e.getMensaje());
-			} 
+			}
 		}
 		return estadoPartida;
 	}
-		
-		
 
 	@Override
 	public VOEstadoPartida restaurarPartida(VOEstadoPartida estadoPartida, String equipo) throws PersistenciaException {
@@ -86,11 +89,18 @@ public class Fachada implements IFachada{
 			IConexion icon = ipool.obtenerConexion(true);
 			try {
 				result = daoP.obtenerUltimaPartida(icon);
+				
+				String partidaGuardada = result.getDatosPartida();
+				int posInicialTime = partidaGuardada.indexOf(":", 1);  
+				int posFinalTime = partidaGuardada.indexOf(",", 1);   
+				String tiempoRestanteGuardado = partidaGuardada.substring(posInicialTime + 2, posFinalTime -1);
+				this.tiempoPartida = Integer.parseInt(tiempoRestanteGuardado.replace(" ",""));  
+				
 				ipool.liberarConexion(icon, true);
-			} catch(PersistenciaException  e) {
+			} catch (PersistenciaException e) {
 				ipool.liberarConexion(icon, false);
 				throw new PersistenciaException(e.getMensaje());
-			} 
+			}
 		}
 		return result;
 	}
@@ -99,7 +109,7 @@ public class Fachada implements IFachada{
 	public VOEstadoPartida procesarDisparo(VOEstadoPartida estadoPartida) {
 		String partida = estadoPartida.getDatosPartida();
 		VOEstadoPartida result = new VOEstadoPartida(partida);
-		
+
 		boolean existeDisparo = partida.contains("\"Disparo\":{\"existe\":true");
 		if (existeDisparo) {
 			int probImpactoHasta = 70;
@@ -127,52 +137,51 @@ public class Fachada implements IFachada{
 		JsonObject jsonObject = new JsonParser().parse(partida).getAsJsonObject();
 		String tiempoRestantePartidaString = jsonObject.get("tiempoRestantePartida").getAsString();
 		int tiempoRestantePartida = Integer.parseInt(tiempoRestantePartidaString.trim());
-		
-		
+
 		boolean teclaTormenta = partida.contains("\"teclaTormenta\":true");
-		
-		if(!teclaTormenta) {
-	        if(this.ultimoChequeoTormenta == 0)
-	            ultimoChequeoTormenta = tiempoRestantePartida;
-	        
-	        if(ultimoChequeoTormenta - tiempoRestantePartida >= this.segundosChequeoTormenta)
-	        {
-	            ultimoChequeoTormenta = tiempoRestantePartida;
-	            Random r = new Random();
-	            int low = 1;
-	            int high = 10;
-	            int randomTormenta = r.nextInt(high-low) + low;
-	            
-	            if(randomTormenta <= 5)
-	            {
-	                hayTormenta = true;
-	            }
-	            else
-	            {
-	                hayTormenta = false;
-	            }
-	        }
-		}
-		else
+
+		if (!teclaTormenta) {
+			if (this.ultimoChequeoTormenta == 0)
+				ultimoChequeoTormenta = tiempoRestantePartida;
+
+			if (ultimoChequeoTormenta - tiempoRestantePartida >= this.segundosChequeoTormenta) {
+				ultimoChequeoTormenta = tiempoRestantePartida;
+				Random r = new Random();
+				int low = 1;
+				int high = 10;
+				int randomTormenta = r.nextInt(high - low) + low;
+
+				if (randomTormenta < 5) {
+					hayTormenta = true;
+				} else {
+					hayTormenta = false;
+				}
+			}
+		} else
 			hayTormenta = !hayTormenta;
-        
+
 		partida = partida.replace("\"teclaTormenta\":true", "\"teclaTormenta\":false");
-		if(hayTormenta)
+		if (hayTormenta)
 			partida = partida.replace("\"hayTormenta\":false", "\"hayTormenta\":true");
 		else
 			partida = partida.replace("\"hayTormenta\":true", "\"hayTormenta\":false");
-		
+
 		result.setDatosPartida(partida);
-        return result;
+		return result;
 	}
 
 	@Override
 	public VOEstadoPartida actualizarAdministrador(VOEstadoPartida estadoPartida) {
 		String partida = estadoPartida.getDatosPartida();
-		partida = partida.replace("\"equipoAdministrador\":\"\"", "\"equipoAdministrador\":\"" + Fachada.equipoAdministrador.toString() + "\"" );
+		partida = partida.replace("\"equipoAdministrador\":\"\"",
+				"\"equipoAdministrador\":\"" + this.equipoAdministrador.toString() + "\"");
 		estadoPartida.setDatosPartida(partida);
 		return estadoPartida;
 	}
-	
+
+	public int getTiempoPartida() {
+
+		return this.tiempoPartida;
+	}
 
 }
