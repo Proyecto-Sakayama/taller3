@@ -76,6 +76,7 @@ var globalDroneVariables = {
     administradorActualizado: false,
     particlesExplosion: null,
     particlesShot: null,
+    particlesRain: null,
 
     //Info vehiculos
     InfoVehiculo_Info1: null,
@@ -159,8 +160,8 @@ var DroneViewState = new Phaser.Class({
         this.load.image('horizontal', 'assets/horizontal.png');
         this.load.image('vertical', 'assets/vertical.png');
         //this.load.spritesheet('patrulleroHelicopteroTopSprite', 'assets/patrulleroHelicopteroTopSprite.png', 20, 20);
-        //explosion
         
+        //explosion y lluvia
         this.load.image('fire', 'assets/muzzleflash3.png');
         this.load.atlas('flares', 'assets/flares.png', 'assets/flares.json');
     },
@@ -605,6 +606,7 @@ var DroneViewState = new Phaser.Class({
         */
         globalDroneVariables.particlesExplosion = this.add.particles('fire');
         globalDroneVariables.particlesShot = this.add.particles('flares');
+        globalDroneVariables.particlesRain = this.add.particles('flares');
 
         console.log('create success');
 
@@ -1393,6 +1395,10 @@ var DroneViewState = new Phaser.Class({
         };
 
 
+        if(partida.hayTormenta)
+        {
+        	mostrarLluvia();
+        }
         partida.guardarPartida = false;
     }
 
@@ -1628,3 +1634,19 @@ function mostrarDisparo(spritePatrullero, spritePesquero, nivel)
     });
 }
 
+
+function mostrarLluvia()
+{
+	globalDroneVariables.particlesRain.createEmitter({
+        frame: 'blue',
+        x: {min: 0, max: 1200},
+        y: 0,
+        lifespan: 1000,
+        speedY: 800,
+        scaleY: .5,
+        scaleX: .01,
+        quantity: 10,
+        blendMode: 'ADD',
+        maxParticles: 5
+    });
+}

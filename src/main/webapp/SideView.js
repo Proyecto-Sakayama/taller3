@@ -54,7 +54,9 @@ var globalSideVariables = {
     spriteBoteDL: null,
     spriteBoteDR: null,
 
-    spotlight: null
+    spotlight: null,
+    
+    particlesRain: null,
 };
 
 var vehiculosSideView = {
@@ -149,6 +151,8 @@ var SideViewState = new Phaser.Class({
         this.load.image('boatSideDL', 'assets/side/patrulleroBoteDL.png');
         this.load.image('boatSideDR', 'assets/side/patrulleroBoteDR.png');
 
+        //LLUVIA
+        this.load.atlas('flares', 'assets/flares.png', 'assets/flares.json');
     },
 
 
@@ -409,6 +413,9 @@ var SideViewState = new Phaser.Class({
         vehiculosSideView.Bote = boteOb;
 
 
+        //LLUVIA
+        globalSideVariables.particlesRain = this.add.particles('flares');
+        
         console.log('create success');
 
     },
@@ -524,6 +531,10 @@ var SideViewState = new Phaser.Class({
             globalSideVariables.spotlight.y = vehiculosSideView.Bote.sprite.y;
         }
 
+        if(partida.hayTormenta)
+        {
+        	mostrarLluvia();
+        }
     }
 
 
@@ -746,4 +757,20 @@ function asignarImagenSprite(vehiculo){
 
     vehiculo.sprite.setVisible(true);
 
+}
+
+function mostrarLluvia()
+{
+	globalSideVariables.particlesRain.createEmitter({
+		frame: 'blue',
+        x: {min: 0, max: 1200},
+        y: 0,
+        lifespan: 1000,
+        speedY: 800,
+        scaleY: .5,
+        scaleX: .01,
+        quantity: 10,
+        blendMode: 'ADD',
+        maxParticles: 5
+    });
 }
