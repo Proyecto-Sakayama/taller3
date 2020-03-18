@@ -20,13 +20,14 @@ public class Fachada implements IFachada{
 	private IDAOEstadoPartida daoP;
 	private FabricaAbstracta fabrica = null;
 	
-	private String equipoAdministrador; 
+	public static String equipoAdministrador = ""; 
 	private int segundosChequeoTormenta;
 	private boolean hayTormenta;
 	private int ultimoChequeoTormenta;
 	private static Fachada instance = null;
 	
-	public static boolean recuperarPartida;
+	public static boolean recuperarPartida = false;
+;
 	
 	public static Fachada getInstance() throws PersistenciaException {
 		if(instance == null)
@@ -36,8 +37,6 @@ public class Fachada implements IFachada{
 	
 	private Fachada() throws PersistenciaException {
 		try {
-			recuperarPartida = false;
-			equipoAdministrador = "";
 			segundosChequeoTormenta = 30;
 			ultimoChequeoTormenta = 0;
 			hayTormenta = false; 
@@ -61,7 +60,7 @@ public class Fachada implements IFachada{
 	public VOEstadoPartida guardarEstadoPartida(VOEstadoPartida estadoPartida, String equipo) throws PersistenciaException{
 		String textoPartida = estadoPartida.getDatosPartida();
 		boolean guardarPartida = textoPartida.contains("\"guardarPartida\":true");
-		if(equipo.equals(this.equipoAdministrador) && guardarPartida) {
+		if(equipo.equals(equipoAdministrador) && guardarPartida) {
 			textoPartida = textoPartida.replace("\"guardarPartida\":true", "\"guardarPartida\":false");
 			estadoPartida.setDatosPartida(textoPartida);
 			IConexion icon = ipool.obtenerConexion(true);
@@ -83,7 +82,7 @@ public class Fachada implements IFachada{
 		String textoPartida = estadoPartida.getDatosPartida();
 		VOEstadoPartida result = null;
 		boolean restaurarPartida = textoPartida.contains("\"restaurarPartida\":true");
-		if(equipo.equals(this.equipoAdministrador) && restaurarPartida) {
+		if(equipo.equals(equipoAdministrador) && restaurarPartida) {
 			IConexion icon = ipool.obtenerConexion(true);
 			try {
 				result = daoP.obtenerUltimaPartida(icon);
@@ -120,15 +119,6 @@ public class Fachada implements IFachada{
 		return result;
 	}
 
-	@Override
-	public void definirAdministrador(String equipo) {
-		this.equipoAdministrador = equipo;
-	}
-
-	@Override
-	public String obteberAdministrador() {
-		return this.equipoAdministrador;
-	}
 
 	@Override
 	public VOEstadoPartida chequearTormenta(VOEstadoPartida estadoPartida) {
@@ -179,7 +169,7 @@ public class Fachada implements IFachada{
 	@Override
 	public VOEstadoPartida actualizarAdministrador(VOEstadoPartida estadoPartida) {
 		String partida = estadoPartida.getDatosPartida();
-		partida = partida.replace("\"equipoAdministrador\":\"\"", "\"equipoAdministrador\":\"" + this.equipoAdministrador.toString() + "\"" );
+		partida = partida.replace("\"equipoAdministrador\":\"\"", "\"equipoAdministrador\":\"" + Fachada.equipoAdministrador.toString() + "\"" );
 		estadoPartida.setDatosPartida(partida);
 		return estadoPartida;
 	}

@@ -9,27 +9,17 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
-
 import com.google.gson.Gson;
-
 import logica.Fachada;
-import logica.excepciones.PersistenciaException;
 
 @ServerEndpoint(value = "/salaespera/{equipo}/{recuperar}")
 public class EndpointSalaEspera {
 	private Session session;
 	private static final EndpointSalaEspera[] endpointsPartida = new EndpointSalaEspera[2];
 	private static String firstTeam = "";
-	private Fachada fachada;
-
 	
 	@OnOpen
 	public void onOpen(Session session, @PathParam("equipo") String equipo,  @PathParam("recuperar") boolean recuperar) throws IOException, EncodeException {
-		try {
-			fachada = Fachada.getInstance();
-		} catch (PersistenciaException e) {
-			e.printStackTrace();
-		}
 		this.session = session;
 
 		Gson gson = new Gson();
@@ -46,11 +36,11 @@ public class EndpointSalaEspera {
 				if (!firstTeam.equals("")) {
 					if (firstTeam.equals("Patrullero")) {
 						newTeam = "Pesquero";
-						fachada.definirAdministrador("Patrullero");
+						Fachada.equipoAdministrador = "Patrullero";
 						
 					} else {
 						newTeam = "Patrullero";
-						fachada.definirAdministrador("Pesquero");
+						Fachada.equipoAdministrador = "Pesquero";
 					}
 					InicioPartida inicio = new InicioPartida(newTeam, Fachada.recuperarPartida );
 					session.getBasicRemote().sendText(gson.toJson(inicio));
@@ -77,10 +67,10 @@ public class EndpointSalaEspera {
 				Fachada.recuperarPartida = recuperar;
 				if (firstTeam.equals("Patrullero")) {
 					newTeam = "Pesquero";
-					fachada.definirAdministrador("Patrullero");
+					Fachada.equipoAdministrador = "Patrullero";
 				} else {
 					newTeam = "Patrullero";
-					fachada.definirAdministrador("Pesquero");
+					Fachada.equipoAdministrador = "Pesquero";
 				}
 				broadcast(newTeam);
 			}
