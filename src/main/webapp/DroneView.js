@@ -1282,9 +1282,9 @@ var DroneViewState = new Phaser.Class({
             {
                 globalDroneVariables.administradorActualizado = true;
                 if(globalDroneVariables.equipo == "Pesquero")
-                    this.add.text(1220, 530, 'Guardado OK');
+                    this.add.text(1220, 550, 'Guardado OK');
                 else
-                    this.add.text(1220, 670, 'Guardado OK');
+                    this.add.text(1220, 690, 'Guardado OK');
             }
         }
 
