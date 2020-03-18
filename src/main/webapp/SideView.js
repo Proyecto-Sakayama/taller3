@@ -56,6 +56,8 @@ var globalSideVariables = {
 
     spotlight: null,
     
+    particlesExplosion: null,
+    particlesShot: null,
     particlesRain: null,
 };
 
@@ -151,8 +153,9 @@ var SideViewState = new Phaser.Class({
         this.load.image('boatSideDL', 'assets/side/patrulleroBoteDL.png');
         this.load.image('boatSideDR', 'assets/side/patrulleroBoteDR.png');
 
-        //LLUVIA
+        //LLUVIA Y DISPAROS
         this.load.atlas('flares', 'assets/flares.png', 'assets/flares.json');
+        this.load.image('fire', 'assets/muzzleflash3.png');
     },
 
 
@@ -413,9 +416,10 @@ var SideViewState = new Phaser.Class({
         vehiculosSideView.Bote = boteOb;
 
 
-        //LLUVIA
+        //LLUVIA Y DISPAROS
         globalSideVariables.particlesRain = this.add.particles('flares');
-        
+        globalSideVariables.particlesExplosion = this.add.particles('fire');
+        globalSideVariables.particlesShot = this.add.particles('flares');
         console.log('create success');
 
     },
@@ -462,8 +466,24 @@ var SideViewState = new Phaser.Class({
             });
 
             if(barcoAActualizar !== null){
-                barcoAActualizar.hundido = barcoFromServerSide.hundido;
+            	if (globalDroneVariables.flagMostrarDisparo)
+            	{
+            		var barcoDispara = vehiculosSideView.Patrulleros.Barcos.find(function (itemSide){
 
+                        return itemSide.id == globalDroneVariables.patrulleroDispara.id;
+
+                    });
+            		var barcoImpactado = vehiculosSideView.Pesqueros.Barcos.find(function (itemSide){
+
+                        return itemSide.id == globalDroneVariables.barcoImpactadoDisparo.id;
+
+                    });
+            		mostrarDisparo(barcoDispara.sprite, barcoImpactado.sprite, globalDroneVariables.nivelDanioDisparo/133);
+                	mostrarExplosion(barcoImpactado.sprite, globalDroneVariables.nivelDanioDisparo);
+                	globalDroneVariables.flagMostrarDisparo = false;
+            	}
+                barcoAActualizar.hundido = barcoFromServerSide.hundido;
+                
                 if(barcoAActualizar.hundido){
                     barcoAActualizar.sprite.setVisible(false);
                     barcoAActualizar.sprite.x = 1300;
@@ -772,5 +792,41 @@ function mostrarLluvia()
         quantity: 10,
         blendMode: 'ADD',
         maxParticles: 5
+    });
+}
+
+function mostrarExplosion(spritePesquero, nivel)
+{
+	globalSideVariables.particlesExplosion.createEmitter({
+        alpha: { start: 1, end: 0 },
+        scale: { start: nivel/60, end: nivel/30 },
+        tint: { start: 0xff945e, end: 0xff945e },
+        speed: 50,
+        accelerationY: -10,
+        angle: { min: -85, max: -95 },
+        rotate: { min: -180, max: 180 },
+        lifespan: { min: 1000, max: 1050 },
+        blendMode: 'ADD',
+        frequency: 50,
+        maxParticles: 3,
+        x: spritePesquero.x,
+        y: spritePesquero.y
+    });
+}
+
+function mostrarDisparo(spritePatrullero, spritePesquero, nivel)
+{
+	globalSideVariables.particlesShot.createEmitter({
+		frame: 'yellow',
+        x: spritePatrullero.x,
+        y: spritePatrullero.y,
+        lifespan: 200,
+        speed: { min: 400, max: 600 },
+        angle: Phaser.Math.RAD_TO_DEG * Phaser.Math.Angle.Between(spritePatrullero.x, spritePatrullero.y, spritePesquero.x, spritePesquero.y),
+        gravityY: 0,
+        scale: { start: nivel, end: 0 },//0.15 metralleta y 0.3 cañon 
+        quantity: 2, //GROSOR
+        blendMode: 'ADD',
+        maxParticles: 10
     });
 }

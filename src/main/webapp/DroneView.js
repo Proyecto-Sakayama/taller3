@@ -43,6 +43,10 @@ var globalDroneVariables = {
     pesquero: null,
     milla200: null,
     vehiculoVolviendo: false,
+    flagMostrarDisparo: false,
+    patrulleroDispara: null,
+	barcoImpactadoDisparo: null,
+	nivelDanioDisparo: 0,
 
     //Messages
     texto: null,
@@ -886,7 +890,15 @@ var DroneViewState = new Phaser.Class({
                         if(barcoImpactado.vida > 0){
                         	mostrarDisparo(partidaFromServer.Disparo.patrullero.sprite, barcoImpactado.sprite, partidaFromServer.Disparo.arma.nivelDanio/133);
                         	mostrarExplosion(barcoImpactado.sprite, partidaFromServer.Disparo.arma.nivelDanio);
-                            if(barcoImpactado.vida > partidaFromServer.Disparo.arma.nivelDanio){
+                        	
+                        	//PARAMETROS PARA MOSTRAR DISPARO EN VISTA LATERAL
+                        	globalDroneVariables.patrulleroDispara = partidaFromServer.Disparo.patrullero;
+                        	globalDroneVariables.barcoImpactadoDisparo = barcoImpactado;
+                        	globalDroneVariables.nivelDanioDisparo = partidaFromServer.Disparo.arma.nivelDanio;
+                        	globalDroneVariables.flagMostrarDisparo = true;
+                        	/////////////////
+                            
+                        	if(barcoImpactado.vida > partidaFromServer.Disparo.arma.nivelDanio){
 
                                 barcoImpactado.vida -= partidaFromServer.Disparo.arma.nivelDanio;
 
