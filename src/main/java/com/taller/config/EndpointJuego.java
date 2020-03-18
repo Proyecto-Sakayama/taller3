@@ -40,6 +40,9 @@ public class EndpointJuego {
 	public void onMessage(Session session, String partida, @PathParam("equipo") String equipo)
 			throws IOException, EncodeException {
 		String partidaEnviar;
+		
+		//Se llaman a métodos de la fachada
+		//Para determinar si se guarda, recupera, procesa disparo, etc.
 		VOEstadoPartida estadoPartida = new VOEstadoPartida(partida);
 		VOEstadoPartida partidaRestaurada = null;
 		try {
@@ -57,6 +60,7 @@ public class EndpointJuego {
 		broadcast(partidaEnviar);
 	}
 
+	//Se envía información del motivo de salida cuando se desconecta el jugador
 	@OnClose
 	public void onClose(Session session) throws IOException, EncodeException {
 		if (endpointsPartida[0] != null && endpointsPartida[0].session.getId() == session.getId()) {
@@ -89,6 +93,7 @@ public class EndpointJuego {
 		throwable.printStackTrace();
 	}
 
+	//Se envía el mensaje a todos los jugadores
 	private static void broadcast(String partida) throws IOException, EncodeException {
 		for (int i = 0; i < 2; i++) {
 

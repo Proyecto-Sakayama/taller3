@@ -33,6 +33,7 @@ public class EndpointSalaEspera {
 			} else {
 				endpointsPartida[1] = this;
 				String newTeam = "";
+				/*******Se determina el equipo administrador (primero en conectarse *****/			
 				if (!firstTeam.equals("")) {
 					if (firstTeam.equals("Patrullero")) {
 						newTeam = "Pesquero";
@@ -42,6 +43,8 @@ public class EndpointSalaEspera {
 						newTeam = "Patrullero";
 						Fachada.equipoAdministrador = "Pesquero";
 					}
+					
+					/************/
 					InicioPartida inicio = new InicioPartida(newTeam, Fachada.recuperarPartida );
 					session.getBasicRemote().sendText(gson.toJson(inicio));
 				} else {
@@ -61,6 +64,7 @@ public class EndpointSalaEspera {
 				
 
 			} else {
+				/*******Se determina el equipo administrador (primero en conectarse *****/	
 				firstTeam = equipo;
 				
 				String newTeam = "";
@@ -84,6 +88,7 @@ public class EndpointSalaEspera {
 
 	}
 
+	//Se envía información del motivo de salida cuando se desconecta el jugador
 	@OnClose
 	public void onClose(Session session) throws IOException, EncodeException {
 		if (endpointsPartida[0] != null && endpointsPartida[0].session.getId() == session.getId()) {

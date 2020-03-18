@@ -33,6 +33,7 @@ public class EndpointAcciones {
 		} else {
 			endpointsPartida[1] = this;
 		}
+		//Se inicializa tiempo de partida
 		try {
 			if (endpointsPartida[0] != null && endpointsPartida[1] != null) {
 
@@ -53,6 +54,7 @@ public class EndpointAcciones {
 
 	}
 
+	//Se envía información del motivo de salida cuando se desconecta el jugador
 	@OnClose
 	public void onClose(Session session) throws IOException, EncodeException {
 		if (endpointsPartida[0] != null && endpointsPartida[0].session.getId() == session.getId()) {
@@ -129,8 +131,7 @@ public class EndpointAcciones {
 	private void inicializarTimer() {
 	
 		try {
-			Fachada laFachada = Fachada.getInstance();
-			tiempoPartida = laFachada.getTiempoPartida();
+			tiempoPartida = Fachada.tiempoPartida;
 			seconds = tiempoPartida;
 			
 		}catch(Exception e) {

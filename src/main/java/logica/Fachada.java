@@ -8,7 +8,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import logica.excepciones.PersistenciaException;
-import logica.poolConexiones.IConexion;
 import logica.poolConexiones.IPoolConexiones;
 import logica.valueObjects.VOEstadoPartida;
 import persistencia.daos.IDAOEstadoPartida;
@@ -25,10 +24,9 @@ public class Fachada implements IFachada {
 	private boolean hayTormenta;
 	private int ultimoChequeoTormenta;
 	private static Fachada instance = null;
-	private int tiempoPartida;
+	public static int tiempoPartida;
 
 	public static boolean recuperarPartida = false;
-;
 
 	public static Fachada getInstance() throws PersistenciaException {
 		if (instance == null)
@@ -59,6 +57,8 @@ public class Fachada implements IFachada {
 		}
 	}
 
+	//Analiza la partida y actualiza el JSON.
+	//Delega el guardado a la partida
 	@Override
 	public VOEstadoPartida guardarEstadoPartida(VOEstadoPartida estadoPartida, String equipo)
 			throws PersistenciaException {
@@ -68,39 +68,22 @@ public class Fachada implements IFachada {
 		if(equipo.equals(equipoAdministrador) && guardarPartida) {
 			textoPartida = textoPartida.replace("\"guardarPartida\":true", "\"guardarPartida\":false");
 			estadoPartida.setDatosPartida(textoPartida);
-			IConexion icon = ipool.obtenerConexion(true);
-			try {
-				daoP.insertar(estadoPartida, icon);
-				ipool.liberarConexion(icon, true);
-			} catch (PersistenciaException e) {
-				ipool.liberarConexion(icon, false);
-				throw new PersistenciaException(e.getMensaje());
-			}
+			EstadoPartida partida = new EstadoPartida();
+			partida.guardar(ipool, daoP, estadoPartida);
 		}
 		return estadoPartida;
 	}
 
+	//Analiza la partida y actualiza el JSON.
+	//Delega el acceso a la BD a la partida
 	@Override
 	public VOEstadoPartida restaurarPartida(VOEstadoPartida estadoPartida, String equipo) throws PersistenciaException {
 		String textoPartida = estadoPartida.getDatosPartida();
 		VOEstadoPartida result = null;
 		boolean restaurarPartida = textoPartida.contains("\"restaurarPartida\":true");
 		if(equipo.equals(equipoAdministrador) && restaurarPartida) {
-			IConexion icon = ipool.obtenerConexion(true);
-			try {
-				result = daoP.obtenerUltimaPartida(icon);
-				
-				String partidaGuardada = result.getDatosPartida();
-				int posInicialTime = partidaGuardada.indexOf(":", 1);  
-				int posFinalTime = partidaGuardada.indexOf(",", 1);   
-				String tiempoRestanteGuardado = partidaGuardada.substring(posInicialTime + 2, posFinalTime -1);
-				this.tiempoPartida = Integer.parseInt(tiempoRestanteGuardado.replace(" ",""));  
-				
-				ipool.liberarConexion(icon, true);
-			} catch (PersistenciaException e) {
-				ipool.liberarConexion(icon, false);
-				throw new PersistenciaException(e.getMensaje());
-			}
+			EstadoPartida partida = new EstadoPartida();
+			result = partida.restaurarPartida(ipool, daoP);
 		}
 		return result;
 	}
@@ -179,9 +162,5 @@ public class Fachada implements IFachada {
 		return estadoPartida;
 	}
 
-	public int getTiempoPartida() {
-
-		return this.tiempoPartida;
-	}
 
 }
