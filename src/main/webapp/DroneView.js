@@ -816,155 +816,157 @@ var DroneViewState = new Phaser.Class({
         ************************************************/
         var barcoFueImpactado = false;
 
-        //get data from server
-        globalDroneVariables.websocket.onmessage = function (event) {
-            if (event.data != null) {
-                var partidaFromServer = JSON.parse(event.data);
-
-                partida.hayTormenta = partidaFromServer.hayTormenta;
-                partida.teclaTormenta = partidaFromServer.teclaTormenta;
-                if(partidaFromServer.equipoAdministrador != "")
-                {
-                    partida.equipoAdministrador = partidaFromServer.equipoAdministrador;
-                }
-
-
-                //update boats positions
-                partida.Patrulleros.Barcos.forEach(function(boat){
-
-                    var boteServer  = partidaFromServer.Patrulleros.Barcos.find(function(item){
-                        return item.id == boat.id;
-                    });
-
-
-
-                    if(boteServer.id !== vehiculoActivo.id || partida.partidaPendienteRestaurar){
-
-                        setMovement(boat, boteServer.sprite);
-
-                    }
-                    boat.combustible = boteServer.combustible;
-
-                    if (typeof boteServer.helicoptero !== "undefined" && vehiculoActivo.type != "H"){
-                        setMovement(boat.helicoptero, boteServer.helicoptero.sprite);
-                        boat.helicoptero.combustible = boteServer.helicoptero.combustible;
-                        boat.helicoptero.acoplado = boteServer.helicoptero.acoplado;
-                    }
-
-                    if (typeof boteServer.bote !== "undefined"  && vehiculoActivo.type != "L"){
-
-                        setMovement(boat.bote, boteServer.bote.sprite);
-                        boat.bote.combustible = boteServer.bote.combustible;
-                        boat.bote.acoplado = boteServer.bote.acoplado;
-                    }
-
-
-
-                });
-
-                partida.Pesqueros.Barcos.forEach(function(boat){
-
-                    var boteServer  = partidaFromServer.Pesqueros.Barcos.find(function(item){
-                        return item.id == boat.id;
-                    });
-
-                    if(boteServer.id !== vehiculoActivo.id || partida.partidaPendienteRestaurar){
-
-                        setMovement(boat, boteServer.sprite);
-                    }
-
-
-                    boat.combustible = boteServer.combustible;
-                    boat.capturado = boteServer.capturado;
-                    boat.vida = boteServer.vida;
-                    boat.contadorAvisos = boteServer.contadorAvisos;
-                    boat.ultimoAvisoRecibido = boteServer.ultimoAvisoRecibido;
-                    boat.cantidadPesca = boteServer.cantidadPesca;
-
-
-                    if(partidaFromServer.Disparo.existe && partidaFromServer.Disparo.impacto && boat.id == partidaFromServer.Disparo.pesquero.id)    {
-                        var barcoImpactado = partida.Pesqueros.Barcos.find(function(item){
-                            return item.id == boat.id;
-                        });
-
-                        if(barcoImpactado.vida > 0){
-                        	mostrarDisparo(partidaFromServer.Disparo.patrullero.sprite, barcoImpactado.sprite, partidaFromServer.Disparo.arma.nivelDanio/133);
-                        	mostrarExplosion(barcoImpactado.sprite, partidaFromServer.Disparo.arma.nivelDanio);
-                        	
-                        	//PARAMETROS PARA MOSTRAR DISPARO EN VISTA LATERAL
-                        	globalDroneVariables.patrulleroDispara = partidaFromServer.Disparo.patrullero;
-                        	globalDroneVariables.barcoImpactadoDisparo = barcoImpactado;
-                        	globalDroneVariables.nivelDanioDisparo = partidaFromServer.Disparo.arma.nivelDanio;
-                        	globalDroneVariables.flagMostrarDisparo = true;
-                        	/////////////////
-                            
-                        	if(barcoImpactado.vida > partidaFromServer.Disparo.arma.nivelDanio){
-
-                                barcoImpactado.vida -= partidaFromServer.Disparo.arma.nivelDanio;
-
-                            }else{
-                                barcoImpactado.vida = 0;
-                                barcoImpactado.hundido = true;
-                                barcoImpactado.sprite.x = 1300;
-                                barcoImpactado.sprite.setVisible(false);
-                            }
-
-                        }else{
-                            barcoImpactado.hundido = true;
-                            barcoImpactado.sprite.x = 1300;
-                            barcoImpactado.sprite.setVisible(false);
-                        }
-                        barcoFueImpactado = true;
-
-
-                    }               
-
-                });
-                partida.partidaPendienteRestaurar = partidaFromServer.partidaPendienteRestaurar;
-                partida.restaurarPartida = partidaFromServer.partidaPendienteRestaurar;
-
-                partida.Pesca.BancoPeces.forEach(function(banco){
-
-                    var bancoServer  = partidaFromServer.Pesca.BancoPeces.find(function(item){
-                        return item.id == banco.id;
-                    });
-
-                    banco.cantidadPesca=bancoServer.cantidadPesca;
-                    banco.activo=bancoServer.activo;
-                    banco.sprite.setVisible(bancoServer.sprite.visible);
-
-                });
-
-
-
-            }
-
-
-            ////// EVALUACION DE GANADOR
-            if(partidaFromServer.hayGanador){
-                if(evaluarPatrullerosGanadores()){
-                    window.location.replace('gameover.html?equipoGanador=Patrullero');
-                }else if(evaluarPesquerosGanadores()){
-                    window.location.replace('gameover.html?equipoGanador=Pesquero');
-                }
-                globalDroneVariables.websocket.close();
-                globalDroneVariables.websocketTime.close();
-
-            }
-
+        if(globalDroneVariables.websocket != null){
+	        //get data from server
+	        globalDroneVariables.websocket.onmessage = function (event) {
+	            if (event.data != null) {
+	                var partidaFromServer = JSON.parse(event.data);
+	
+	                partida.hayTormenta = partidaFromServer.hayTormenta;
+	                partida.teclaTormenta = partidaFromServer.teclaTormenta;
+	                if(partidaFromServer.equipoAdministrador != "")
+	                {
+	                    partida.equipoAdministrador = partidaFromServer.equipoAdministrador;
+	                }
+	
+	
+	                //update boats positions
+	                partida.Patrulleros.Barcos.forEach(function(boat){
+	
+	                    var boteServer  = partidaFromServer.Patrulleros.Barcos.find(function(item){
+	                        return item.id == boat.id;
+	                    });
+	
+	
+	
+	                    if(boteServer.id !== vehiculoActivo.id || partida.partidaPendienteRestaurar){
+	
+	                        setMovement(boat, boteServer.sprite);
+	
+	                    }
+	                    boat.combustible = boteServer.combustible;
+	
+	                    if (typeof boteServer.helicoptero !== "undefined" && vehiculoActivo.type != "H"){
+	                        setMovement(boat.helicoptero, boteServer.helicoptero.sprite);
+	                        boat.helicoptero.combustible = boteServer.helicoptero.combustible;
+	                        boat.helicoptero.acoplado = boteServer.helicoptero.acoplado;
+	                    }
+	
+	                    if (typeof boteServer.bote !== "undefined"  && vehiculoActivo.type != "L"){
+	
+	                        setMovement(boat.bote, boteServer.bote.sprite);
+	                        boat.bote.combustible = boteServer.bote.combustible;
+	                        boat.bote.acoplado = boteServer.bote.acoplado;
+	                    }
+	
+	
+	
+	                });
+	
+	                partida.Pesqueros.Barcos.forEach(function(boat){
+	
+	                    var boteServer  = partidaFromServer.Pesqueros.Barcos.find(function(item){
+	                        return item.id == boat.id;
+	                    });
+	
+	                    if(boteServer.id !== vehiculoActivo.id || partida.partidaPendienteRestaurar){
+	
+	                        setMovement(boat, boteServer.sprite);
+	                    }
+	
+	
+	                    boat.combustible = boteServer.combustible;
+	                    boat.capturado = boteServer.capturado;
+	                    boat.vida = boteServer.vida;
+	                    boat.contadorAvisos = boteServer.contadorAvisos;
+	                    boat.ultimoAvisoRecibido = boteServer.ultimoAvisoRecibido;
+	                    boat.cantidadPesca = boteServer.cantidadPesca;
+	
+	
+	                    if(partidaFromServer.Disparo.existe && partidaFromServer.Disparo.impacto && boat.id == partidaFromServer.Disparo.pesquero.id)    {
+	                        var barcoImpactado = partida.Pesqueros.Barcos.find(function(item){
+	                            return item.id == boat.id;
+	                        });
+	
+	                        if(barcoImpactado.vida > 0){
+	                        	mostrarDisparo(partidaFromServer.Disparo.patrullero.sprite, barcoImpactado.sprite, partidaFromServer.Disparo.arma.nivelDanio/133);
+	                        	mostrarExplosion(barcoImpactado.sprite, partidaFromServer.Disparo.arma.nivelDanio);
+	                        	
+	                        	//PARAMETROS PARA MOSTRAR DISPARO EN VISTA LATERAL
+	                        	globalDroneVariables.patrulleroDispara = partidaFromServer.Disparo.patrullero;
+	                        	globalDroneVariables.barcoImpactadoDisparo = barcoImpactado;
+	                        	globalDroneVariables.nivelDanioDisparo = partidaFromServer.Disparo.arma.nivelDanio;
+	                        	globalDroneVariables.flagMostrarDisparo = true;
+	                        	/////////////////
+	                            
+	                        	if(barcoImpactado.vida > partidaFromServer.Disparo.arma.nivelDanio){
+	
+	                                barcoImpactado.vida -= partidaFromServer.Disparo.arma.nivelDanio;
+	
+	                            }else{
+	                                barcoImpactado.vida = 0;
+	                                barcoImpactado.hundido = true;
+	                                barcoImpactado.sprite.x = 1300;
+	                                barcoImpactado.sprite.setVisible(false);
+	                            }
+	
+	                        }else{
+	                            barcoImpactado.hundido = true;
+	                            barcoImpactado.sprite.x = 1300;
+	                            barcoImpactado.sprite.setVisible(false);
+	                        }
+	                        barcoFueImpactado = true;
+	
+	
+	                    }               
+	
+	                });
+	                partida.partidaPendienteRestaurar = partidaFromServer.partidaPendienteRestaurar;
+	                partida.restaurarPartida = partidaFromServer.partidaPendienteRestaurar;
+	
+	                partida.Pesca.BancoPeces.forEach(function(banco){
+	
+	                    var bancoServer  = partidaFromServer.Pesca.BancoPeces.find(function(item){
+	                        return item.id == banco.id;
+	                    });
+	
+	                    banco.cantidadPesca=bancoServer.cantidadPesca;
+	                    banco.activo=bancoServer.activo;
+	                    banco.sprite.setVisible(bancoServer.sprite.visible);
+	
+	                });
+	
+	
+	
+	            }
+	
+	
+	            ////// EVALUACION DE GANADOR
+	            if(partidaFromServer.hayGanador){
+	                if(evaluarPatrullerosGanadores()){
+	                    window.location.replace('gameover.html?equipoGanador=Patrullero');
+	                }else if(evaluarPesquerosGanadores()){
+	                    window.location.replace('gameover.html?equipoGanador=Pesquero');
+	                }
+	                globalDroneVariables.websocket.close();
+	                globalDroneVariables.websocketTime.close();
+	
+	            }
+	
+	
+	        }
 
         }
-
-
-
-        globalDroneVariables.websocket.onclose = function () {
-            globalDroneVariables.websocket = null;
-        };
-
-        globalDroneVariables.websocketTime.onclose = function () {
-            globalDroneVariables.websocketTime = null;
-        };      
-
+        if(globalDroneVariables.websocket != null){
+	        globalDroneVariables.websocket.onclose = function () {
+	            globalDroneVariables.websocket = null;
+	        };
+        }
+	        if(globalDroneVariables.websocketTime != null){
+	        globalDroneVariables.websocketTime.onclose = function () {
+	            globalDroneVariables.websocketTime = null;
+	        };      
+        }
 
 
 
@@ -1363,50 +1365,50 @@ var DroneViewState = new Phaser.Class({
 
         ////// TIEMPO DE PARTIDA
 
+        if(globalDroneVariables.websocketTime != null){
+	        globalDroneVariables.websocketTime.onmessage = function(event) {
+	            if(event.data != null) {
+	
+	                let mensaje = JSON.parse(event.data);
+	
+	                switch (mensaje.accion){
+	
+	                    case 'tiempo':
+	                        partida.tiempoRestantePartida = mensaje.tiempoRestante;
+	                        // Actualizacion del timer
+	                        globalDroneVariables.textoTiempo.setText('Tiempo: ' + formatTime(partida.tiempoRestantePartida));
+	
+	
+	                        break;
+	
+	                    case 'salida':
+	
+	                        if(!partida.hayGanador){
+	                            if(partida.tiempoRestantePartida >= 1){
+	
+	                                if(globalDroneVariables.equipo == "Patrullero"){
+	                                    window.location.replace('error.html?equipoAbandono=Pesquero');
+	
+	                                }else if(globalDroneVariables.equipo == "Pesquero"){
+	                                    window.location.replace('error.html?equipoAbandono=Patrullero');
+	                                }
+	                                globalDroneVariables.websocket.close();
+	                                globalDroneVariables.websocketTime.close();
+	
+	                            }
+	                        }
+	
+	
+	
+	                        break;
+	
+	
+	                }
+	            }
+	
+	        };
 
-        globalDroneVariables.websocketTime.onmessage = function(event) {
-            if(event.data != null) {
-
-                let mensaje = JSON.parse(event.data);
-
-                switch (mensaje.accion){
-
-                    case 'tiempo':
-                        partida.tiempoRestantePartida = mensaje.tiempoRestante;
-                        // Actualizacion del timer
-                        globalDroneVariables.textoTiempo.setText('Tiempo: ' + formatTime(partida.tiempoRestantePartida));
-
-
-                        break;
-
-                    case 'salida':
-
-                        if(!partida.hayGanador){
-                            if(partida.tiempoRestantePartida >= 1){
-
-                                if(globalDroneVariables.equipo == "Patrullero"){
-                                    window.location.replace('error.html?equipoAbandono=Pesquero');
-
-                                }else if(globalDroneVariables.equipo == "Pesquero"){
-                                    window.location.replace('error.html?equipoAbandono=Patrullero');
-                                }
-                                globalDroneVariables.websocket.close();
-                                globalDroneVariables.websocketTime.close();
-
-                            }
-                        }
-
-
-
-                        break;
-
-
-                }
-            }
-
-        };
-
-
+        }
         if(partida.hayTormenta)
         {
         	mostrarLluvia();
@@ -1437,7 +1439,7 @@ function getVarsFromUrl() {
 
 function enviarJSON(objeto) {
     let json = JSON.stringify(objeto);
-    if(globalDroneVariables.websocket.readyState === WebSocket.OPEN)
+    if(globalDroneVariables.websocket != null && globalDroneVariables.websocket.readyState === WebSocket.OPEN)
     {
         globalDroneVariables.websocket.send(json);
     }

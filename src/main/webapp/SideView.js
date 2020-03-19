@@ -153,9 +153,6 @@ var SideViewState = new Phaser.Class({
         this.load.image('boatSideDL', 'assets/side/patrulleroBoteDL.png');
         this.load.image('boatSideDR', 'assets/side/patrulleroBoteDR.png');
 
-        //LLUVIA Y DISPAROS
-        this.load.atlas('flares', 'assets/flares.png', 'assets/flares.json');
-        this.load.image('fire', 'assets/muzzleflash3.png');
     },
 
 
