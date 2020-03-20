@@ -1,7 +1,5 @@
 var parameters = {
     ipServidor: "localhost",
-    //ipServidor: "192.168.1.44", //Casa Guz
-    //ipServidor: "192.168.1.7", //Casa Marce
     puertoServidor: "8080",
 
     velocidadRotacion: 0.07, //0.007
@@ -356,7 +354,7 @@ var DroneViewState = new Phaser.Class({
             this.add.text(1220, 550, 'H: Helicoptero');
             this.add.text(1220, 570, 'B: Bote');
             this.add.text(1220, 590, 'A: Aviso');
-            this.add.text(1220, 610, 'Z: Metralleta');
+            this.add.text(1220, 610, 'Z: Ametralladora');
             this.add.text(1220, 630, 'X: Canion');
         }
 
@@ -1520,7 +1518,7 @@ function moveAutomatically(vehicle)
     if(vehicle.sprite.target != null)
     {
         var distance = Phaser.Math.Distance.Between(vehicle.sprite.x, vehicle.sprite.y, vehicle.sprite.target.x, vehicle.sprite.target.y);
-        if (vehicle.sprite.body.speed > 0 && vehicle.regresando)
+        if (vehicle.regresando)
         {
             globalDroneVariables.vehiculoVolviendo = true;
             if (distance < 4)
