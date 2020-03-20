@@ -10,4 +10,5 @@ copy taller3.war %tomcat_webapp_location%
 cd %tomcat_bin_location%
 startup
 
+echo Aplicación instalada correctamente
 pause
